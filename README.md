@@ -13,6 +13,20 @@ Proyecto académico **SENA** compuesto por dos partes:
 - Maven 3.8+
 - PostgreSQL 14+ (base de datos `SACE_db`, usuario `postgres`, contraseña `1234`, puerto `5432`)
 
+## Crear la base de datos (una sola vez)
+
+La BD **no está incluida en el repo** (no es necesaria): solo se crea vacía y el
+proyecto la llena solo. Con PostgreSQL corriendo:
+
+```sql
+CREATE DATABASE SACE_db;
+```
+
+Al arrancar el backend, Hibernate crea todas las tablas (`ddl-auto=update`) y
+`DataInitializer` inserta los datos iniciales: el administrador, el catálogo de
+servicios/destinos y las preguntas frecuentes del chatbot.
+(`backend-SACE/src/main/resources/schema_pagos.sql` queda como referencia de la tabla `pago`.)
+
 ## Ejecutar el backend
 
 ```powershell
