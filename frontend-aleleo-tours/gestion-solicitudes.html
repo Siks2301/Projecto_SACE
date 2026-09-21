@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Gestión Administrativa de Solicitudes y Atención a Clientes – Sistema SACE AleLeo Tours.">
+  <title>Gestión de Solicitudes | ALELEO TOURS SACE</title>
+  <link rel="icon" type="image/jpeg" href="img/logo-aleleo.jpg">
+
+  <!-- Google Fonts: Outfit & Dosis -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dosis:wght@400;600;700;800&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5.3 CSS & Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  <!-- Estilos AleLeo Tours -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/chatbot.css">
+</head>
+<body>
+
+  <!-- ENCABEZADO -->
+  <header class="franja" role="banner">
+    <a href="index.html" class="logo" aria-label="AleLeo Tours – Inicio">
+      <img src="img/logo-aleleo.jpg" alt="AleLeo Tours" class="logo-img"> ALELEO <span>TOURS</span>
+    </a>
+
+    <button class="nav-toggle" aria-controls="nav-principal" aria-expanded="false" aria-label="Abrir menú"><i class="bi bi-list" aria-hidden="true"></i></button>
+
+    <nav class="tabs" id="nav-principal" role="navigation" aria-label="Navegación principal">
+      <button onclick="window.location.href='index.html'">
+        <i class="bi bi-house-fill" aria-hidden="true"></i> Inicio
+      </button>
+      <button onclick="window.location.href='destinos.html'">
+        <i class="bi bi-compass-fill" aria-hidden="true"></i> Destinos
+      </button>
+      <button onclick="window.location.href='mis-solicitudes.html'" id="nav-mis-solicitudes" style="display:none;">
+        <i class="bi bi-calendar-check-fill" aria-hidden="true"></i> Mis Reservas
+      </button>
+      <button onclick="window.location.href='panel-empleado.html'" id="nav-panel-empleado" style="display:none; background:var(--grad-primary);">
+        <i class="bi bi-headset" aria-hidden="true"></i> Panel Asesor
+      </button>
+
+      <!-- Menú Desplegable Administrativo SACE (Solo Administradores) -->
+      <div class="dropdown d-none" id="nav-gestion-dropdown" style="display:none;">
+        <button class="btn dropdown-toggle nav-btn-dropdown" type="button" id="btnDropdownGestionSol" data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="bi bi-sliders" aria-hidden="true"></i> Gestión Admin
+        </button>
+        <ul class="dropdown-menu dropdown-menu-dark shadow-lg border-0 rounded-4 mt-2" aria-labelledby="btnDropdownGestionSol">
+          <li><a class="dropdown-item py-2 fw-semibold" href="reportes.html"><i class="bi bi-pie-chart-fill text-warning me-2"></i> Reportes & Estadísticas</a></li>
+          <li><hr class="dropdown-divider"></li>
+          <li><a class="dropdown-item py-2 fw-semibold" href="gestion-solicitudes.html"><i class="bi bi-card-checklist text-primary me-2"></i> Gestión Solicitudes</a></li>
+          <li><a class="dropdown-item py-2 fw-semibold" href="gestion-clientes.html"><i class="bi bi-people-fill text-info me-2"></i> Gestión Clientes</a></li>
+          <li><a class="dropdown-item py-2 fw-semibold" href="gestion-empleados.html"><i class="bi bi-person-badge-fill text-warning me-2"></i> Gestión Empleados</a></li>
+          <li><a class="dropdown-item py-2 fw-semibold" href="gestion-servicios.html"><i class="bi bi-briefcase-fill text-success me-2"></i> Gestión Servicios</a></li>
+        </ul>
+      </div>
+
+      <!-- Autenticación -->
+      <button onclick="window.location.href='login.html'" id="nav-sesion">
+        <i class="bi bi-box-arrow-in-right" aria-hidden="true"></i> Iniciar Sesión
+      </button>
+      <button onclick="window.location.href='registro.html'" id="nav-registro">
+        <i class="bi bi-person-plus-fill" aria-hidden="true"></i> Registrarse
+      </button>
+      <span id="nav-nombre" class="nav-nombre" style="display:none;" aria-live="polite"></span>
+      <button id="nav-salir" style="display:none; background:var(--grad-promo); color:#fff;">
+        <i class="bi bi-box-arrow-right" aria-hidden="true"></i> Salir
+      </button>
+    </nav>
+  </header>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <main id="contenido-principal" class="admin-container">
+
+    <div class="admin-header">
+      <div>
+        <h2 class="mb-0"><i class="bi bi-card-checklist text-primary me-2"></i> Gestión de Solicitudes</h2>
+        <p class="text-muted small mb-0 mt-1">Asignación de solicitudes, cambios de estado, asignación de asesores y servicios generados.</p>
+      </div>
+    </div>
+
+    <!-- Mensaje feedback -->
+    <div id="msg-admin" class="mensaje mb-4" role="alert" aria-live="assertive"></div>
+
+    <!-- FORMULARIO DE GESTIÓN -->
+    <section class="card p-4 rounded-4 shadow-sm border-0 mb-4">
+      <h3 id="form-titulo" class="h5 fw-bold text-dark mb-3 border-bottom pb-2">
+        <i class="bi bi-pencil-square text-primary me-1"></i> Crear o Editar Solicitud
+      </h3>
+
+      <form id="form-solicitud" novalidate aria-label="Formulario de solicitud">
+        <input type="hidden" id="sol-id">
+
+        <div class="row g-3">
+          <div class="col-md-6 campo-form">
+            <label for="sol-titulo">Título del Asunto *</label>
+            <input type="text" id="sol-titulo" placeholder="Ej: Cotización Paquete San Andrés 2x1" required minlength="2">
+          </div>
+          <div class="col-md-6 campo-form">
+            <label for="sol-asunto">Asunto detallado</label>
+            <input type="text" id="sol-asunto" placeholder="Resumen corto del requerimiento">
+          </div>
+
+          <div class="col-md-12 campo-form">
+            <label for="sol-descripcion">Descripción del requerimiento</label>
+            <textarea id="sol-descripcion" class="form-control" rows="2" placeholder="Detalle completo ingresado por el usuario o asesor"></textarea>
+          </div>
+
+          <div class="col-md-4 campo-form">
+            <label for="sol-estado">Estado de la Solicitud</label>
+            <select id="sol-estado" class="form-select">
+              <option value="PENDIENTE">Pendiente</option>
+              <option value="EN_PROCESO">En Proceso</option>
+              <option value="RESUELTA">Resuelta / Atendida</option>
+              <option value="CANCELADA">Cancelada</option>
+            </select>
+          </div>
+          <div class="col-md-4 campo-form">
+            <label for="sol-prioridad">Prioridad</label>
+            <select id="sol-prioridad" class="form-select">
+              <option value="BAJA">Baja</option>
+              <option value="MEDIA">Media</option>
+              <option value="ALTA">Alta</option>
+              <option value="URGENTE">Urgente</option>
+            </select>
+          </div>
+          <div class="col-md-4 campo-form">
+            <label for="sol-categoria">Categoría</label>
+            <select id="sol-categoria" class="form-select">
+              <option value="">Sin especificar</option>
+              <option value="COTIZACION">Cotización</option>
+              <option value="RESERVA">Reserva</option>
+              <option value="CAMBIO_FECHA">Cambio de fecha</option>
+              <option value="CANCELACION_REEMBOLSO">Cancelación / reembolso</option>
+              <option value="PQR_SERVICIO">PQR de servicio</option>
+              <option value="CONSULTA_GENERAL">Consulta general</option>
+            </select>
+          </div>
+
+          <div class="col-md-6 campo-form">
+            <label for="sol-cliente">Cliente Asignado</label>
+            <select id="sol-cliente" class="form-select">
+              <option value="">Sin asignar</option>
+            </select>
+          </div>
+          <div class="col-md-6 campo-form">
+            <label for="sol-empleado">Empleado / Asesor Asignado</label>
+            <select id="sol-empleado" class="form-select">
+              <option value="">Sin asignar</option>
+            </select>
+          </div>
+
+          <div class="col-md-6 campo-form">
+            <label for="sol-chatbot">Chatbot Asignado</label>
+            <select id="sol-chatbot" class="form-select">
+              <option value="">Sin asignar</option>
+            </select>
+          </div>
+          <div class="col-md-6 campo-form">
+            <label for="sol-servicio">Servicio Generado</label>
+            <select id="sol-servicio" class="form-select">
+              <option value="">Sin asignar</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="d-flex gap-2 mt-4">
+          <button type="submit" class="btn btn-success fw-bold px-4" id="btn-guardar" style="background:var(--color-success); border:none;">
+            <i class="bi bi-save-fill me-1"></i> Guardar Solicitud
+          </button>
+          <button type="button" class="btn btn-danger fw-bold px-4" id="btn-eliminar" disabled>
+            <i class="bi bi-trash-fill me-1"></i> Eliminar
+          </button>
+          <button type="button" class="btn btn-light fw-bold px-4 border" id="btn-limpiar">
+            <i class="bi bi-eraser-fill me-1"></i> Limpiar
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <!-- TABLA DE RESULTADOS -->
+    <section class="tabla-wrapper">
+      <div class="p-3 bg-dark text-white d-flex justify-content-between align-items-center">
+        <h3 class="h6 mb-0 text-white fw-bold"><i class="bi bi-table me-2 text-warning"></i> Solicitudes Registradas en SACE</h3>
+      </div>
+      <div class="table-responsive">
+        <table class="tabla-admin">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Título del Asunto</th>
+              <th>Cliente</th>
+              <th>Estado</th>
+              <th>Prioridad</th>
+              <th>Empleado Asignado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="tabla-solicitudes-body">
+            <tr><td colspan="7" class="text-center py-4 text-muted">Cargando solicitudes...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MODAL DE CHAT CON EL CLIENTE (ADMINISTRADOR) -->
+  <div class="modal fade" id="modalChatAdmin" tabindex="-1" aria-labelledby="modalChatAdminLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content border-0 shadow-lg" style="border-radius: 24px; overflow: hidden;">
+        <div class="modal-header text-white" style="background:var(--grad-dark); border-bottom:3px solid var(--color-accent);">
+          <div class="d-flex align-items-center gap-2">
+            <div class="rounded-circle bg-warning text-dark d-flex align-items-center justify-content-center" style="width:40px; height:40px;">
+              <i class="bi bi-chat-dots-fill fs-5"></i>
+            </div>
+            <div>
+              <h5 class="modal-title mb-0 fw-bold" id="modalChatAdminLabel">Consola Administrativa de Chat</h5>
+              <small class="text-info" id="chat-admin-subtitulo">Solicitud #SOL-</small>
+            </div>
+          </div>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+
+        <div class="modal-body p-0 d-flex flex-column" style="height: 480px; background: #f8fafc;">
+          <div class="p-3 bg-white border-bottom d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <div>
+              <strong id="chat-admin-cliente" class="text-dark d-block">Cliente: -</strong>
+              <small class="text-muted" id="chat-admin-asunto">Asunto: -</small>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+              <label for="chat-admin-estado-select" class="small fw-bold text-dark mb-0">Estado:</label>
+              <select id="chat-admin-estado-select" class="form-select form-select-sm fw-bold border-primary" style="width: auto;">
+                <option value="PENDIENTE">PENDIENTE</option>
+                <option value="EN_PROCESO">EN PROCESO</option>
+                <option value="RESUELTA">RESUELTA</option>
+                <option value="CANCELADA">CANCELADA</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="flex-grow-1 p-3 overflow-auto d-flex flex-column gap-2" id="chat-admin-mensajes">
+            <!-- Mensajes dinámicos -->
+          </div>
+        </div>
+
+        <div class="modal-footer bg-white border-top p-3 d-flex align-items-center gap-2">
+          <input type="text" class="form-control rounded-pill px-3 py-2 shadow-sm" id="chat-admin-input" placeholder="Escribe una respuesta para el cliente..." style="font-size: 14px; background: #f8fafc; border: 1.5px solid #cbd5e1;">
+          <button class="btn btn-primary rounded-pill px-4 py-2 fw-bold d-inline-flex align-items-center gap-2 shadow-sm" id="chat-admin-enviar-btn" style="background:var(--grad-primary); border:none; flex-shrink: 0;">
+            <span>Enviar Respuesta</span> <i class="bi bi-send-fill"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER OFICIAL -->
+  <footer class="footer-oficial">
+    <div class="footer-bottom text-center">
+      <p>© 2026 ALELEO TOURS S.A.S. — Módulo de Administración SACE.</p>
+    </div>
+  </footer>
+
+  <div id="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/core/app.js"></script>
+  <script src="js/admin/gestion-solicitudes.js"></script>
+  <script src="js/components/chatbot.js"></script>
+</body>
+</html>

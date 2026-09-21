@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="AleLeo Tours – Consulta y gestiona tus reservas de viajes y solicitudes de soporte en tiempo real.">
+  <title>Mis Reservas & Solicitudes | ALELEO TOURS</title>
+  <link rel="icon" type="image/jpeg" href="img/logo-aleleo.jpg">
+
+  <!-- Google Fonts: Outfit & Dosis -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dosis:wght@400;600;700;800&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5.3 CSS & Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  <!-- Estilos AleLeo Tours -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/chatbot.css">
+
+  <style>
+    .hero-reservas {
+      background: var(--grad-dark);
+      color: #ffffff;
+      padding: 2.5rem 2rem;
+      border-radius: 24px;
+      margin-bottom: 2rem;
+      box-shadow: 0 14px 35px rgba(10, 25, 47, 0.25);
+      position: relative;
+      overflow: hidden;
+      border: 2px solid rgba(255, 183, 3, 0.4);
+    }
+    .filtro-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin-bottom: 1.5rem;
+    }
+    .filtro-pill {
+      background: #ffffff;
+      color: var(--color-muted);
+      border: 1.5px solid #cbd5e1;
+      padding: 0.5rem 1.2rem;
+      border-radius: 30px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .filtro-pill:hover,
+    .filtro-pill.activo {
+      background: var(--color-primary);
+      color: #ffffff;
+      border-color: var(--color-primary);
+      box-shadow: 0 4px 12px rgba(0, 168, 150, 0.35);
+    }
+    .card-solicitud {
+      background: #ffffff;
+      border: 1px solid var(--color-border);
+      border-radius: 20px;
+      padding: 1.5rem;
+      margin-bottom: 1.25rem;
+      box-shadow: var(--shadow-md);
+      transition: all 0.25s ease;
+    }
+    .card-solicitud:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--color-primary);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ENCABEZADO -->
+  <header class="franja" role="banner">
+    <a href="index.html" class="logo" aria-label="AleLeo Tours – Inicio">
+      <img src="img/logo-aleleo.jpg" alt="AleLeo Tours" class="logo-img"> ALELEO <span>TOURS</span>
+    </a>
+
+    <button class="nav-toggle" aria-controls="nav-principal" aria-expanded="false" aria-label="Abrir menú"><i class="bi bi-list" aria-hidden="true"></i></button>
+
+    <nav class="tabs" id="nav-principal" role="navigation" aria-label="Navegación principal">
+      <button onclick="window.location.href='index.html'">
+        <i class="bi bi-house-fill" aria-hidden="true"></i> Inicio
+      </button>
+      <button onclick="window.location.href='destinos.html'">
+        <i class="bi bi-compass-fill" aria-hidden="true"></i> Destinos
+      </button>
+      <button onclick="window.location.href='mis-solicitudes.html'" id="nav-mis-solicitudes" aria-current="page" style="display:none;">
+        <i class="bi bi-calendar-check-fill" aria-hidden="true"></i> Mis Reservas
+      </button>
+      <button onclick="window.location.href='panel-empleado.html'" id="nav-panel-empleado" style="display:none; background:var(--grad-primary);">
+        <i class="bi bi-headset" aria-hidden="true"></i> Panel Asesor
+      </button>
+
+      <!-- Gestión Administrativa (Dropdown exclusivo Administrador) -->
+      <div class="dropdown d-none" id="nav-gestion-dropdown" style="display:none;">
+        <button class="btn btn-outline-light dropdown-toggle d-flex align-items-center gap-1" type="button" id="dropdownGestionMenu" data-bs-toggle="dropdown" aria-expanded="false" style="border-radius:20px; font-size:14px; font-weight:600; padding:6px 14px;">
+          <i class="bi bi-gear-fill" aria-hidden="true"></i> Gestión Admin
+        </button>
+        <ul class="dropdown-menu dropdown-menu-dark shadow" aria-labelledby="dropdownGestionMenu">
+          <li><a class="dropdown-item" href="gestion-solicitudes.html"><i class="bi bi-card-checklist me-2"></i>Solicitudes</a></li>
+          <li><a class="dropdown-item" href="gestion-clientes.html"><i class="bi bi-people-fill me-2"></i>Clientes</a></li>
+          <li><a class="dropdown-item" href="gestion-empleados.html"><i class="bi bi-person-badge-fill me-2"></i>Empleados</a></li>
+          <li><a class="dropdown-item" href="gestion-servicios.html"><i class="bi bi-briefcase-fill me-2"></i>Servicios</a></li>
+          <li><hr class="dropdown-divider"></li>
+          <li><a class="dropdown-item text-warning fw-bold" href="reportes.html"><i class="bi bi-bar-chart-line-fill me-2"></i>Reportes & Estadísticas</a></li>
+        </ul>
+      </div>
+
+      <!-- Autenticación -->
+      <button onclick="window.location.href='login.html'" id="nav-sesion">
+        <i class="bi bi-box-arrow-in-right" aria-hidden="true"></i> Iniciar Sesión
+      </button>
+      <button onclick="window.location.href='registro.html'" id="nav-registro">
+        <i class="bi bi-person-plus-fill" aria-hidden="true"></i> Registrarse
+      </button>
+      <span id="nav-nombre" class="nav-nombre" style="display:none;" aria-live="polite"></span>
+      <button id="nav-salir" style="display:none; background:var(--grad-promo); color:#fff;">
+        <i class="bi bi-box-arrow-right" aria-hidden="true"></i> Salir
+      </button>
+    </nav>
+  </header>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <main id="contenido-principal" class="container py-4" style="max-width: 1140px;">
+
+    <!-- HERO DE BIENVENIDA -->
+    <div class="hero-reservas">
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+        <div>
+          <span class="badge bg-warning text-dark fw-bold uppercase px-3 py-1 rounded-pill mb-2">GESTIÓN DE RESERVAS SACE</span>
+          <h1 class="h2 fw-extrabold mb-2 text-white">
+            <i class="bi bi-airplane-engines-fill text-warning me-2"></i> Mis Reservas & Solicitudes
+          </h1>
+          <p class="mb-0 text-light opacity-90 fs-5">
+            Hola <strong id="usuario-saludo" class="text-warning">viajero</strong>, aquí puedes seguir el estado de tus planes todo incluido y contactar asesores.
+          </p>
+        </div>
+        <div>
+          <button type="button" class="btn btn-warning text-dark fw-extrabold px-4 py-3 shadow" id="btn-abrir-nueva-solicitud">
+            <i class="bi bi-plus-circle-fill me-1"></i> Nueva Consulta / Solicitud
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- BARRA DE FILTROS -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+      <div class="filtro-pills" role="tablist">
+        <button class="filtro-pill activo" data-filtro="TODAS">
+          <i class="bi bi-collection-fill"></i> Todas <span class="badge bg-secondary ms-1" id="count-todas">0</span>
+        </button>
+        <button class="filtro-pill" data-filtro="PENDIENTE">
+          <i class="bi bi-hourglass-split text-warning"></i> Pendientes <span class="badge bg-warning text-dark ms-1" id="count-pendientes">0</span>
+        </button>
+        <button class="filtro-pill" data-filtro="EN_PROCESO">
+          <i class="bi bi-gear-fill text-info"></i> En Proceso <span class="badge bg-info ms-1" id="count-proceso">0</span>
+        </button>
+        <button class="filtro-pill" data-filtro="RESUELTA">
+          <i class="bi bi-check-circle-fill text-success"></i> Resueltas <span class="badge bg-success ms-1" id="count-resueltas">0</span>
+        </button>
+        <button class="filtro-pill" data-filtro="CANCELADA">
+          <i class="bi bi-x-circle-fill text-danger"></i> Canceladas <span class="badge bg-danger ms-1" id="count-canceladas">0</span>
+        </button>
+      </div>
+
+      <div class="input-group" style="max-width: 300px;">
+        <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+        <input type="text" class="form-control" id="buscador-reservas" placeholder="Buscar por título o ID...">
+      </div>
+    </div>
+
+    <!-- CONTENEDOR DE TARJETAS DE SOLICITUDES -->
+    <div id="contenedor-solicitudes" aria-live="polite">
+      <div class="text-center py-5">
+        <div class="spinner-border text-primary" role="status"></div>
+        <p class="mt-2 text-muted fw-semibold">Cargando tus reservas y solicitudes...</p>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- MODAL NUEVA CONSULTA / SOLICITUD -->
+  <div class="modal fade" id="modalNuevaSolicitud" tabindex="-1" aria-labelledby="modalNuevaSolicitudLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg" style="border-radius: 24px; overflow: hidden;">
+        <div class="modal-header text-white" style="background:var(--grad-dark); border-bottom:3px solid var(--color-accent);">
+          <h5 class="modal-title fw-bold" id="modalNuevaSolicitudLabel">
+            <i class="bi bi-chat-left-text-fill text-warning me-2"></i>Nueva Consulta o Reserva SACE
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <form id="form-nueva-solicitud">
+          <div class="modal-body p-4">
+            <div id="msg-nueva-solicitud" class="mensaje mb-3"></div>
+
+            <div class="mb-3">
+              <label for="nueva-sol-titulo" class="form-label fw-bold text-dark">Título del Asunto *</label>
+              <input type="text" class="form-control" id="nueva-sol-titulo" placeholder="Ej: Consulta sobre paquete Cartagena 2x1" required>
+            </div>
+
+            <div class="row g-3 mb-3">
+              <div class="col-md-6">
+                <label for="nueva-sol-categoria" class="form-label fw-bold text-dark">Categoría</label>
+                <select class="form-select" id="nueva-sol-categoria">
+                  <option value="CONSULTA" selected>Consulta de Viaje</option>
+                  <option value="RESERVA">Reserva Especial</option>
+                  <option value="CAMBIO_FECHA">Cambio de Fecha</option>
+                  <option value="EQUIPAJE">Información de Equipaje</option>
+                  <option value="OTRO">Otro Requerimiento</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label for="nueva-sol-prioridad" class="form-label fw-bold text-dark">Prioridad</label>
+                <select class="form-select" id="nueva-sol-prioridad">
+                  <option value="BAJA">Baja</option>
+                  <option value="MEDIA" selected>Media</option>
+                  <option value="ALTA">Alta (Urgente)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="nueva-sol-descripcion" class="form-label fw-bold text-dark">Mensaje para el Asesor *</label>
+              <textarea class="form-control" id="nueva-sol-descripcion" rows="4" placeholder="Escribe tu requerimiento detallado..." required></textarea>
+            </div>
+          </div>
+          <div class="modal-footer bg-light">
+            <button type="button" class="btn btn-outline-secondary fw-bold px-4" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-primary fw-bold px-4" id="btn-enviar-solicitud" style="background:var(--grad-primary); border:none;">
+              <i class="bi bi-send-fill me-1"></i> Enviar Solicitud
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL DE CHAT CON EL ASESOR (CLIENTE) -->
+  <div class="modal fade" id="modalChatCliente" tabindex="-1" aria-labelledby="modalChatClienteLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content border-0 shadow-lg" style="border-radius: 24px; overflow: hidden;">
+        <div class="modal-header text-white" style="background:var(--grad-dark); border-bottom:3px solid var(--color-primary);">
+          <div class="d-flex align-items-center gap-2">
+            <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center" style="width:40px; height:40px;">
+              <i class="bi bi-chat-dots-fill fs-5"></i>
+            </div>
+            <div>
+              <h5 class="modal-title mb-0 fw-bold" id="modalChatClienteLabel">Chat de Atención y Asesoría AleLeo Tours</h5>
+              <small class="text-warning" id="chat-cliente-subtitulo">Solicitud #SOL-</small>
+            </div>
+          </div>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+
+        <div class="modal-body p-0 d-flex flex-column" style="height: 480px; background: #f8fafc;">
+          <div class="p-3 bg-white border-bottom d-flex justify-content-between align-items-center">
+            <div>
+              <strong id="chat-cliente-titulo" class="text-dark">Reserva: -</strong>
+              <div class="small text-muted" id="chat-cliente-estado-badge">Estado: Pendiente</div>
+            </div>
+            <span class="badge bg-success-subtle text-success border border-success fw-bold px-3 py-1">
+              <i class="bi bi-shield-check me-1"></i> Asesoría Oficial
+            </span>
+          </div>
+
+          <div class="flex-grow-1 p-3 overflow-auto d-flex flex-column gap-2" id="chat-cliente-mensajes">
+            <!-- Mensajes dinámicos -->
+          </div>
+        </div>
+
+        <div class="modal-footer bg-white border-top p-3 d-flex align-items-center gap-2">
+          <input type="text" class="form-control rounded-pill px-3 py-2 shadow-sm" id="chat-cliente-input" placeholder="Escribe tu mensaje para el asesor..." style="font-size: 14px; background: #f8fafc; border: 1.5px solid #cbd5e1;">
+          <button class="btn btn-primary rounded-pill px-4 py-2 fw-bold d-inline-flex align-items-center gap-2 shadow-sm" id="chat-cliente-enviar-btn" style="background:var(--grad-primary); border:none; flex-shrink: 0;">
+            <span>Enviar</span> <i class="bi bi-send-fill"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL PROCESAR PAGO / ABONO CON LLAVE Bre-B @VXM301 -->
+  <div class="modal fade" id="modalPagoSolicitud" tabindex="-1" aria-labelledby="modalPagoSolicitudLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content border-0 shadow-lg" style="border-radius: 24px; overflow: hidden;">
+        <div class="modal-header text-white" style="background:var(--grad-dark); border-bottom:3px solid #ffc107;">
+          <h5 class="modal-title fw-bold" id="modalPagoSolicitudLabel">
+            <i class="bi bi-credit-card-2-front-fill text-warning me-2"></i> Confirmar Pago & Reserva — AleLeo Tours
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <form id="form-procesar-pago">
+          <input type="hidden" id="pago-solicitud-id">
+          <div class="modal-body p-4">
+            <div id="msg-modal-pago" class="mensaje mb-3"></div>
+
+            <!-- Destacado de la Llave de Transferencia Bre-B @VXM301 -->
+            <div class="p-3 mb-4 rounded-4 text-white shadow-sm d-flex flex-column flex-md-row align-items-center justify-content-between gap-3" style="background: linear-gradient(135deg, #0a192f 0%, #1e3a8a 100%); border: 2px solid #ffb703;">
+              <div>
+                <span class="badge bg-warning text-dark fw-bold px-3 py-1 rounded-pill mb-1">LLAVE OFICIAL DE ABONO SACE</span>
+                <h4 class="mb-0 fw-bold text-warning font-monospace fs-3" id="llave-destacada-label">Bre-B @VXM301</h4>
+                <small class="text-light opacity-90">Ingresa esta llave exacta al realizar tu transferencia bancaria o pago.</small>
+              </div>
+              <button type="button" class="btn btn-warning text-dark fw-extrabold px-3 py-2 rounded-pill shadow-sm text-nowrap" id="btn-copiar-llave">
+                <i class="bi bi-clipboard-check-fill me-1"></i> Copiar Llave
+              </button>
+            </div>
+
+            <!-- Detalles de la Reserva -->
+            <div class="row g-3 mb-3">
+              <div class="col-md-6">
+                <div class="p-3 bg-light rounded-3 border">
+                  <small class="text-muted fw-bold uppercase d-block">Solicitud / Tour:</small>
+                  <strong class="text-dark fs-6" id="pago-tour-titulo">Cargando...</strong>
+                  <div class="small text-muted" id="pago-solicitud-badge">#SOL-</div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="p-3 bg-light rounded-3 border">
+                  <label for="pago-monto-input" class="form-label fw-bold text-dark mb-1">Precio Fijo de la Reserva (COP) * <i class="bi bi-lock-fill text-warning" title="Precio fijo: no editable"></i></label>
+                  <div class="input-group">
+                    <span class="input-group-text bg-primary text-white fw-bold">$</span>
+                    <input type="number" step="0.01" min="1" class="form-control fw-bold fs-5 text-success" id="pago-monto-input" placeholder="Precio fijo" readonly style="background:#f8f9fa; cursor:not-allowed;" title="Precio fijo de la reserva: no editable" required>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Selección de Método de Pago -->
+            <div class="mb-3">
+              <label class="form-label fw-bold text-dark me-2">Método de Pago *</label>
+              <div class="row g-2" role="radiogroup">
+                <div class="col-md-6">
+                  <div class="form-check card-select-metodo p-3 border rounded-3 bg-white shadow-sm cursor-pointer">
+                    <input class="form-check-input" type="radio" name="metodoPagoRadio" id="metodo-transferencia" value="TRANSFERENCIA" checked>
+                    <label class="form-check-label fw-bold text-dark w-100 cursor-pointer ms-1" for="metodo-transferencia">
+                      <i class="bi bi-bank2 text-primary me-2 fs-5"></i> Transferencia Bancaria
+                      <small class="d-block text-muted fw-normal">Abono directo a la llave <code>Bre-B @VXM301</code></small>
+                    </label>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-check card-select-metodo p-3 border rounded-3 bg-white shadow-sm cursor-pointer">
+                    <input class="form-check-input" type="radio" name="metodoPagoRadio" id="metodo-tarjeta" value="TARJETA">
+                    <label class="form-check-label fw-bold text-dark w-100 cursor-pointer ms-1" for="metodo-tarjeta">
+                      <i class="bi bi-credit-card-fill text-success me-2 fs-5"></i> Tarjeta Débito / Crédito
+                      <small class="d-block text-muted fw-normal">Procesamiento seguro en línea</small>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="pago-notas-input" class="form-label fw-semibold text-dark">Notas o Número de Referencia (Opcional)</label>
+              <input type="text" class="form-control" id="pago-notas-input" placeholder="Ej: Transferencia desde Nequi / Bancolombia Ref: #98421">
+            </div>
+
+            <div class="alert alert-info border-info-subtle mb-0 small text-dark d-flex align-items-center gap-2">
+              <i class="bi bi-shield-lock-fill text-primary fs-4"></i>
+              <div>
+                Al confirmar el pago, se generará tu <strong>Comprobante PDF Oficial estilo recibo</strong> y se enviará una notificación con el comprobante adjunto al propietario de la plataforma.
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-footer bg-light">
+            <button type="button" class="btn btn-outline-secondary fw-bold px-4" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-warning text-dark fw-extrabold px-4" id="btn-confirmar-pago" onclick="procesarPagoSolicitud(event)" style="background:#ffc107; border:none;">
+              <i class="bi bi-check-circle-fill me-1"></i> Confirmar Pago & Generar PDF
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER OFICIAL -->
+  <footer class="footer-oficial">
+    <div class="footer-bottom text-center">
+      <p>© 2026 ALELEO TOURS S.A.S. — Todos los derechos reservados.</p>
+    </div>
+  </footer>
+
+  <div id="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/core/app.js"></script>
+  <script src="js/cliente/mis-solicitudes.js"></script>
+  <script src="js/components/chatbot.js"></script>
+</body>
+</html>

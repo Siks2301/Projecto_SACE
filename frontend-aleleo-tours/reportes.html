@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Panel de Reportes y Estadísticas SACE – AleLeo Tours.">
+  <title>Reportes y Estadísticas | ALELEO TOURS SACE</title>
+  <link rel="icon" type="image/jpeg" href="img/logo-aleleo.jpg">
+
+  <!-- Google Fonts: Outfit & Dosis -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dosis:wght@400;600;700;800&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5.3 CSS & Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  <!-- Estilos AleLeo Tours -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/chatbot.css">
+
+  <!-- Chart.js para Gráficos -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    .hero-reportes {
+      background: var(--grad-dark);
+      color: #ffffff;
+      padding: 2.2rem 2rem;
+      border-radius: 24px;
+      margin-bottom: 2rem;
+      box-shadow: 0 16px 36px rgba(10, 25, 47, 0.3);
+      border: 2px solid var(--color-primary);
+    }
+
+    .kpi-card {
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: var(--shadow-md);
+      border: 1px solid var(--color-border);
+      transition: all 0.3s ease;
+    }
+    .kpi-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--color-primary);
+    }
+    .kpi-card .kpi-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      margin-bottom: 10px;
+    }
+    .kpi-card .kpi-val {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--color-dark);
+      line-height: 1.1;
+    }
+    .kpi-card .kpi-lbl {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--color-text-light);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .chart-card {
+      background: #ffffff;
+      border-radius: 24px;
+      padding: 22px;
+      box-shadow: var(--shadow-md);
+      border: 1px solid var(--color-border);
+      height: 100%;
+      transition: all 0.3s ease;
+    }
+    .chart-card:hover {
+      box-shadow: var(--shadow-lg);
+    }
+    .chart-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      border-bottom: 1px solid #f1f5f9;
+      padding-bottom: 10px;
+    }
+    .chart-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--color-dark);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0;
+    }
+    .chart-container {
+      position: relative;
+      min-height: 250px;
+      max-height: 300px;
+    }
+
+    .btn-export {
+      background: var(--grad-primary);
+      color: white;
+      border: none;
+      padding: 10px 22px;
+      border-radius: 14px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s ease;
+    }
+    .btn-export:hover {
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(13, 110, 253, 0.3);
+    }
+
+    .print-only-header {
+      display: none;
+    }
+
+    /* ESTILOS DE IMPRESIÓN PROFESIONALES */
+    @media print {
+      @page {
+        size: letter portrait;
+        margin: 10mm 12mm;
+      }
+
+      body {
+        background: #ffffff !important;
+        color: #0f172a !important;
+        font-family: 'Outfit', 'Segoe UI', system-ui, sans-serif !important;
+        font-size: 10pt !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+
+      header,
+      .nav-toggle,
+      #nav-principal,
+      .hero-reportes,
+      .btn-export,
+      #chatbot-widget,
+      #toast-container,
+      .no-print {
+        display: none !important;
+      }
+
+      .print-only-header {
+        display: block !important;
+        border-bottom: 2.5px solid #0d6efd !important;
+        padding-bottom: 8px !important;
+        margin-bottom: 16px !important;
+      }
+
+      .print-brand-title {
+        font-size: 18pt !important;
+        font-weight: 800 !important;
+        color: #0a192f !important;
+        margin: 0 !important;
+        line-height: 1.1 !important;
+      }
+
+      .print-sub-title {
+        font-size: 11pt !important;
+        font-weight: 700 !important;
+        color: #0284c7 !important;
+        margin: 2px 0 0 0 !important;
+      }
+
+      .print-meta-text {
+        font-size: 9pt !important;
+        color: #64748b !important;
+        margin: 0 !important;
+      }
+
+      .kpi-row-print {
+        display: grid !important;
+        grid-template-columns: repeat(6, 1fr) !important;
+        gap: 8px !important;
+        margin-bottom: 16px !important;
+      }
+
+      .kpi-card {
+        box-shadow: none !important;
+        border: 1px solid #cbd5e1 !important;
+        background: #f8fafc !important;
+        border-radius: 8px !important;
+        padding: 8px 4px !important;
+        text-align: center !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+
+      .kpi-card .kpi-icon {
+        display: none !important;
+      }
+
+      .kpi-card .kpi-val {
+        font-size: 1.3rem !important;
+        font-weight: 800 !important;
+        color: #0f172a !important;
+        line-height: 1 !important;
+        margin-bottom: 2px !important;
+      }
+
+      .kpi-card .kpi-lbl {
+        font-size: 7pt !important;
+        font-weight: 700 !important;
+        color: #475569 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.3px !important;
+      }
+
+      .charts-row-print {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 14px !important;
+      }
+
+      .chart-col-print-6 {
+        grid-column: span 1 !important;
+      }
+
+      .chart-card {
+        box-shadow: none !important;
+        border: 1px solid #cbd5e1 !important;
+        background: #ffffff !important;
+        border-radius: 10px !important;
+        padding: 12px !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        height: auto !important;
+      }
+
+      .chart-header {
+        margin-bottom: 8px !important;
+        padding-bottom: 6px !important;
+        border-bottom: 1px solid #e2e8f0 !important;
+      }
+
+      .chart-title {
+        font-size: 10pt !important;
+        font-weight: 700 !important;
+        color: #0f172a !important;
+      }
+
+      .chart-container {
+        position: relative !important;
+        height: 180px !important;
+        max-height: 180px !important;
+        min-height: 180px !important;
+      }
+
+      canvas {
+        max-width: 100% !important;
+        max-height: 175px !important;
+      }
+
+      * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ENCABEZADO Y NAVEGACIÓN COMPLETA -->
+  <header class="franja" role="banner">
+    <a href="index.html" class="logo" aria-label="AleLeo Tours – Inicio">
+      <img src="img/logo-aleleo.jpg" alt="AleLeo Tours" class="logo-img"> ALELEO <span>TOURS</span>
+    </a>
+
+    <button class="nav-toggle" aria-controls="nav-principal" aria-expanded="false" aria-label="Abrir menú"><i class="bi bi-list" aria-hidden="true"></i></button>
+
+    <nav class="tabs" id="nav-principal" role="navigation" aria-label="Navegación principal">
+      <button onclick="window.location.href='index.html'">
+        <i class="bi bi-house-fill" aria-hidden="true"></i> Inicio
+      </button>
+      <button onclick="window.location.href='destinos.html'">
+        <i class="bi bi-compass-fill" aria-hidden="true"></i> Destinos
+      </button>
+      <button onclick="window.location.href='panel-empleado.html'" id="nav-panel-empleado" style="display:none;">
+        <i class="bi bi-headset" aria-hidden="true"></i> Panel Asesor
+      </button>
+      <button onclick="window.location.href='mis-solicitudes.html'" id="nav-mis-solicitudes" style="display:none;">
+        <i class="bi bi-calendar-check-fill" aria-hidden="true"></i> Mis Reservas
+      </button>
+
+      <!-- Menú Desplegable Administrativo SACE (Solo Administradores) -->
+      <div class="dropdown d-none" id="nav-gestion-dropdown" style="display:none;">
+        <button class="btn dropdown-toggle nav-btn-dropdown" type="button" id="btnDropdownGestionReportes" data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="bi bi-sliders" aria-hidden="true"></i> Gestión Admin
+        </button>
+        <ul class="dropdown-menu dropdown-menu-dark shadow-lg border-0 rounded-4 mt-2" aria-labelledby="btnDropdownGestionReportes">
+          <li><a class="dropdown-item py-2 fw-semibold active" href="reportes.html"><i class="bi bi-pie-chart-fill text-warning me-2"></i> Reportes & Estadísticas</a></li>
+          <li><hr class="dropdown-divider"></li>
+          <li><a class="dropdown-item py-2 fw-semibold" href="gestion-solicitudes.html"><i class="bi bi-card-checklist text-primary me-2"></i> Gestión Solicitudes</a></li>
+          <li><a class="dropdown-item py-2 fw-semibold" href="gestion-clientes.html"><i class="bi bi-people-fill text-info me-2"></i> Gestión Clientes</a></li>
+          <li><a class="dropdown-item py-2 fw-semibold" href="gestion-empleados.html"><i class="bi bi-person-badge-fill text-warning me-2"></i> Gestión Empleados</a></li>
+          <li><a class="dropdown-item py-2 fw-semibold" href="gestion-servicios.html"><i class="bi bi-briefcase-fill text-success me-2"></i> Gestión Servicios</a></li>
+        </ul>
+      </div>
+      <button onclick="window.location.href='reportes.html'" id="nav-reportes" style="display:none; background:var(--grad-primary);">
+        <i class="bi bi-bar-chart-line-fill" aria-hidden="true"></i> Dashboard
+      </button>
+
+      <!-- Autenticación -->
+      <button onclick="window.location.href='login.html'" id="nav-sesion">
+        <i class="bi bi-box-arrow-in-right" aria-hidden="true"></i> Iniciar Sesión
+      </button>
+      <button onclick="window.location.href='registro.html'" id="nav-registro">
+        <i class="bi bi-person-plus-fill" aria-hidden="true"></i> Registrarse
+      </button>
+      <span id="nav-nombre" class="nav-nombre" style="display:none;" aria-live="polite"></span>
+      <button id="nav-salir" style="display:none; background:var(--grad-promo); color:#fff;">
+        <i class="bi bi-box-arrow-right" aria-hidden="true"></i> Salir
+      </button>
+    </nav>
+  </header>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <main class="container py-4" id="contenido-principal">
+
+    <!-- ENCABEZADO EXCLUSIVO PARA IMPRESIÓN -->
+    <div class="print-only-header">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <h2 class="print-brand-title">ALELEO TOURS SACE</h2>
+          <p class="print-sub-title">Reporte Oficial de Gestión y Métricas Operativas</p>
+        </div>
+        <div class="text-end">
+          <p id="print-fecha-impresion" class="print-meta-text fw-bold"></p>
+          <p id="print-usuario-impresion" class="print-meta-text"></p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- BANNER DE ENCABEZADO -->
+    <div class="hero-reportes">
+      <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
+        <div>
+          <h1 class="display-6 fw-bold mb-1">
+            <i class="bi bi-pie-chart-fill text-warning me-2"></i> Consola de Reportes & Estadísticas
+          </h1>
+          <p class="lead mb-0 opacity-75">Análisis estratégico de operaciones, tiempos de atención y rendimiento de asesores.</p>
+        </div>
+        <div class="d-flex flex-wrap align-items-center gap-2 no-print">
+          <button class="btn btn-warning fw-extrabold px-3 py-2 rounded-3 shadow-sm d-inline-flex align-items-center gap-2" id="btn-exportar-csv">
+            <i class="bi bi-file-earmark-spreadsheet-fill"></i> Exportar Excel (CSV)
+          </button>
+          <button class="btn-export" id="btn-descargar-pdf" onclick="descargarReportePdf()">
+            <i class="bi bi-file-earmark-pdf-fill"></i> Descargar PDF
+          </button>
+          <button class="btn btn-outline-light fw-semibold px-3 py-2 rounded-3" onclick="imprimirReporte()">
+            <i class="bi bi-printer-fill"></i> Vista de Impresión
+          </button>
+        </div>
+      </div>
+
+      <!-- BARRA DE FILTROS POR FECHA Y HERRAMIENTAS -->
+      <div class="bg-white bg-opacity-10 rounded-4 p-3 border border-light border-opacity-25 no-print">
+        <div class="row g-3 align-items-center">
+          <div class="col-12 col-xl-7">
+            <div class="d-flex flex-wrap align-items-center gap-2">
+              <span class="fw-bold text-warning small uppercase me-1"><i class="bi bi-funnel-fill"></i> Período:</span>
+              <button class="btn btn-sm btn-outline-light rounded-pill px-3 fw-semibold active-filter" data-preset="HISTORICO">Todo el Histórico</button>
+              <button class="btn btn-sm btn-outline-light rounded-pill px-3 fw-semibold" data-preset="HOY">Hoy</button>
+              <button class="btn btn-sm btn-outline-light rounded-pill px-3 fw-semibold" data-preset="SEMANA">Últimos 7 Días</button>
+              <button class="btn btn-sm btn-outline-light rounded-pill px-3 fw-semibold" data-preset="MES_ACTUAL">Este Mes</button>
+              <button class="btn btn-sm btn-outline-light rounded-pill px-3 fw-semibold" data-preset="MES_ANTERIOR">Mes Anterior</button>
+            </div>
+          </div>
+          <div class="col-12 col-xl-5">
+            <div class="d-flex flex-wrap align-items-center justify-content-xl-end gap-2">
+              <div class="d-flex align-items-center gap-1">
+                <input type="date" id="filtro-fecha-desde" class="form-control form-control-sm rounded-3 bg-white text-dark fw-semibold" style="max-width:130px;">
+                <span class="text-light small">a</span>
+                <input type="date" id="filtro-fecha-hasta" class="form-control form-control-sm rounded-3 bg-white text-dark fw-semibold" style="max-width:130px;">
+              </div>
+              <button class="btn btn-sm btn-warning text-dark fw-bold rounded-3 px-3" id="btn-aplicar-fechas">
+                <i class="bi bi-search"></i> Filtrar
+              </button>
+              <div class="form-check form-switch ms-2 text-light small d-flex align-items-center gap-1">
+                <input class="form-check-input" type="checkbox" id="toggle-autorefresh">
+                <label class="form-check-label text-nowrap" for="toggle-autorefresh">Auto 30s</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+    <!-- TARJETAS KPI SOLICITUDES -->
+    <div class="row g-3 mb-4 kpi-row-print">
+      <div class="col-6 col-md-4 col-lg-2">
+        <div class="kpi-card">
+          <div class="kpi-icon bg-primary bg-opacity-10 text-primary">
+            <i class="bi bi-folder-symlink-fill"></i>
+          </div>
+          <div class="kpi-val" id="kpi-total">0</div>
+          <div class="kpi-lbl">Solicitudes</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-4 col-lg-2">
+        <div class="kpi-card">
+          <div class="kpi-icon bg-warning bg-opacity-10 text-warning">
+            <i class="bi bi-hourglass-split"></i>
+          </div>
+          <div class="kpi-val" id="kpi-pendientes">0</div>
+          <div class="kpi-lbl">Pendientes</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-4 col-lg-2">
+        <div class="kpi-card">
+          <div class="kpi-icon bg-info bg-opacity-10 text-info">
+            <i class="bi bi-arrow-repeat"></i>
+          </div>
+          <div class="kpi-val" id="kpi-proceso">0</div>
+          <div class="kpi-lbl">En Proceso</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-4 col-lg-2">
+        <div class="kpi-card">
+          <div class="kpi-icon bg-success bg-opacity-10 text-success">
+            <i class="bi bi-check-circle-fill"></i>
+          </div>
+          <div class="kpi-val" id="kpi-resueltas">0</div>
+          <div class="kpi-lbl">Resueltas</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-4 col-lg-2">
+        <div class="kpi-card">
+          <div class="kpi-icon bg-danger bg-opacity-10 text-danger">
+            <i class="bi bi-x-circle-fill"></i>
+          </div>
+          <div class="kpi-val" id="kpi-canceladas">0</div>
+          <div class="kpi-lbl">Canceladas</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-4 col-lg-2">
+        <div class="kpi-card">
+          <div class="kpi-icon bg-secondary bg-opacity-10 text-secondary">
+            <i class="bi bi-graph-up-arrow"></i>
+          </div>
+          <div class="kpi-val" id="kpi-efectividad">0%</div>
+          <div class="kpi-lbl">Efectividad</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BANNER & SECCIÓN FINANCIERA DE LA LLAVE Bre-B @VXM301 -->
+    <div class="card border-0 shadow-sm rounded-4 mb-4 overflow-hidden" style="background: linear-gradient(135deg, #0a192f 0%, #0f172a 100%); border: 1.5px solid #ffc107 !important;">
+      <div class="card-body p-4 text-white">
+        <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-3">
+          <div>
+            <span class="badge bg-warning text-dark fw-bold uppercase px-3 py-1 rounded-pill mb-1">AUDITORÍA DE RECAUDO FINANCIERO SACE</span>
+            <h3 class="h4 fw-extrabold text-warning mb-0">
+              <i class="bi bi-bank2 me-2"></i> Recaudo Oficial<span class="font-monospace"></span>
+            </h3>
+          </div>
+          <span class="badge bg-success-subtle text-success border border-success fw-bold px-3 py-2 fs-6">
+            <i class="bi bi-shield-check me-1"></i> Transacciones Sanitizadas & Verificadas
+          </span>
+        </div>
+
+        <div class="row g-3">
+          <div class="col-12 col-md-4">
+            <div class="p-3 bg-white bg-opacity-10 rounded-3 border border-light border-opacity-25">
+              <div class="small text-warning fw-bold uppercase"><i class="bi bi-cash-stack me-1"></i> Total Ingresos (Bre-B @VXM301)</div>
+              <div class="fs-3 fw-extrabold text-white" id="kpi-recaudado-breb">$ 0 COP</div>
+              <small class="text-light opacity-75">Suma total de abonos confirmados</small>
+            </div>
+          </div>
+          <div class="col-12 col-md-4">
+            <div class="p-3 bg-white bg-opacity-10 rounded-3 border border-light border-opacity-25">
+              <div class="small text-info fw-bold uppercase"><i class="bi bi-receipt-cutoff me-1"></i> Pagos Confirmados</div>
+              <div class="fs-3 fw-extrabold text-white" id="kpi-pagos-count">0</div>
+              <small class="text-light opacity-75">Comprobantes PDF emitidos</small>
+            </div>
+          </div>
+          <div class="col-12 col-md-4">
+            <div class="p-3 bg-white bg-opacity-10 rounded-3 border border-light border-opacity-25">
+              <div class="small text-success fw-bold uppercase"><i class="bi bi-calculator me-1"></i> Promedio por Transacción</div>
+              <div class="fs-3 fw-extrabold text-white" id="kpi-promedio-pago">$ 0 COP</div>
+              <small class="text-light opacity-75">Ticket promedio por reserva</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECCIÓN DE GRÁFICOS INTERACTIVOS -->
+    <div class="row g-4 mb-4 charts-row-print">
+      
+      <!-- Gráfico 1: Estado de Solicitudes (Doughnut) -->
+      <div class="col-12 col-md-6 col-lg-4 chart-col-print-6">
+        <div class="chart-card">
+          <div class="chart-header">
+            <h3 class="chart-title">
+              <i class="bi bi-donut-chart-fill text-primary"></i> Estado de Solicitudes
+            </h3>
+          </div>
+          <div class="chart-container d-flex align-items-center justify-content-center">
+            <canvas id="chartEstados"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Gráfico 2: Solicitudes por Categoría (Bar) -->
+      <div class="col-12 col-md-6 col-lg-8 chart-col-print-6">
+        <div class="chart-card">
+          <div class="chart-header">
+            <h3 class="chart-title">
+              <i class="bi bi-bar-chart-steps text-info"></i> Solicitudes por Categoría
+            </h3>
+          </div>
+          <div class="chart-container">
+            <canvas id="chartCategorias"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Gráfico 3: Tendencia Temporal (Line) -->
+      <div class="col-12 col-lg-7 chart-col-print-6">
+        <div class="chart-card">
+          <div class="chart-header">
+            <h3 class="chart-title">
+              <i class="bi bi-graph-up text-success"></i> Tendencia de Solicitudes
+            </h3>
+          </div>
+          <div class="chart-container">
+            <canvas id="chartTendencia"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Gráfico 4: Rendimiento Asesores (Horizontal Bar) -->
+      <div class="col-12 col-lg-5 chart-col-print-6">
+        <div class="chart-card">
+          <div class="chart-header">
+            <h3 class="chart-title">
+              <i class="bi bi-person-badge-fill text-warning"></i> Solicitudes Atendidas por Asesor
+            </h3>
+          </div>
+          <div class="chart-container">
+            <canvas id="chartEmpleados"></canvas>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Script interactivo de Dashboard -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/core/app.js"></script>
+  <script src="js/admin/reportes.js"></script>
+
+</body>
+</html>

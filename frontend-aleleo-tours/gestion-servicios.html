@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Gestión Administrativa de Servicios y Paquetes Turísticos – Sistema SACE AleLeo Tours.">
+  <title>Gestión de Servicios | ALELEO TOURS SACE</title>
+  <link rel="icon" type="image/jpeg" href="img/logo-aleleo.jpg">
+
+  <!-- Google Fonts: Outfit & Dosis -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dosis:wght@400;600;700;800&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5.3 CSS & Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  <!-- Estilos AleLeo Tours -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/chatbot.css">
+</head>
+<body>
+
+  <!-- ENCABEZADO -->
+  <header class="franja" role="banner">
+    <a href="index.html" class="logo" aria-label="AleLeo Tours – Inicio">
+      <img src="img/logo-aleleo.jpg" alt="AleLeo Tours" class="logo-img"> ALELEO <span>TOURS</span>
+    </a>
+
+    <button class="nav-toggle" aria-controls="nav-principal" aria-expanded="false" aria-label="Abrir menú"><i class="bi bi-list" aria-hidden="true"></i></button>
+
+    <nav class="tabs" id="nav-principal" role="navigation" aria-label="Navegación principal">
+      <button onclick="window.location.href='index.html'">
+        <i class="bi bi-house-fill" aria-hidden="true"></i> Inicio
+      </button>
+      <button onclick="window.location.href='destinos.html'">
+        <i class="bi bi-compass-fill" aria-hidden="true"></i> Destinos
+      </button>
+      <button onclick="window.location.href='mis-solicitudes.html'" id="nav-mis-solicitudes" style="display:none;">
+        <i class="bi bi-calendar-check-fill" aria-hidden="true"></i> Mis Reservas
+      </button>
+      <button onclick="window.location.href='panel-empleado.html'" id="nav-panel-empleado" style="display:none; background:var(--grad-primary);">
+        <i class="bi bi-headset" aria-hidden="true"></i> Panel Asesor
+      </button>
+
+      <!-- Menú Desplegable Administrativo SACE (Solo Administradores) -->
+      <div class="dropdown d-none" id="nav-gestion-dropdown" style="display:none;">
+        <button class="btn dropdown-toggle nav-btn-dropdown" type="button" id="btnDropdownGestionSrv" data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="bi bi-sliders" aria-hidden="true"></i> Gestión Admin
+        </button>
+        <ul class="dropdown-menu dropdown-menu-dark shadow-lg border-0 rounded-4 mt-2" aria-labelledby="btnDropdownGestionSrv">
+          <li><a class="dropdown-item py-2 fw-semibold" href="reportes.html"><i class="bi bi-pie-chart-fill text-warning me-2"></i> Reportes & Estadísticas</a></li>
+          <li><hr class="dropdown-divider"></li>
+          <li><a class="dropdown-item py-2 fw-semibold" href="gestion-solicitudes.html"><i class="bi bi-card-checklist text-primary me-2"></i> Gestión Solicitudes</a></li>
+          <li><a class="dropdown-item py-2 fw-semibold" href="gestion-clientes.html"><i class="bi bi-people-fill text-info me-2"></i> Gestión Clientes</a></li>
+          <li><a class="dropdown-item py-2 fw-semibold" href="gestion-empleados.html"><i class="bi bi-person-badge-fill text-warning me-2"></i> Gestión Empleados</a></li>
+          <li><a class="dropdown-item py-2 fw-semibold" href="gestion-servicios.html"><i class="bi bi-briefcase-fill text-success me-2"></i> Gestión Servicios</a></li>
+        </ul>
+      </div>
+
+      <!-- Autenticación -->
+      <button onclick="window.location.href='login.html'" id="nav-sesion">
+        <i class="bi bi-box-arrow-in-right" aria-hidden="true"></i> Iniciar Sesión
+      </button>
+      <button onclick="window.location.href='registro.html'" id="nav-registro">
+        <i class="bi bi-person-plus-fill" aria-hidden="true"></i> Registrarse
+      </button>
+      <span id="nav-nombre" class="nav-nombre" style="display:none;" aria-live="polite"></span>
+      <button id="nav-salir" style="display:none; background:var(--grad-promo); color:#fff;">
+        <i class="bi bi-box-arrow-right" aria-hidden="true"></i> Salir
+      </button>
+    </nav>
+  </header>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <main id="contenido-principal" class="admin-container">
+
+    <div class="admin-header">
+      <div>
+        <h2 class="mb-0"><i class="bi bi-briefcase-fill text-primary me-2"></i> Gestión de Servicios y Paquetes</h2>
+        <p class="text-muted small mb-0 mt-1">Configuración del catálogo oficial de planes, pasadías y ofertas todo incluido AleLeo Tours.</p>
+      </div>
+    </div>
+
+    <!-- Mensaje feedback -->
+    <div id="msg-admin" class="mensaje mb-4" role="alert" aria-live="assertive"></div>
+
+    <!-- FORMULARIO DE GESTIÓN -->
+    <section class="card p-4 rounded-4 shadow-sm border-0 mb-4">
+      <h3 id="form-titulo" class="h5 fw-bold text-dark mb-3 border-bottom pb-2">
+        <i class="bi bi-plus-circle-fill text-primary me-1"></i> Crear o Modificar Servicio
+      </h3>
+
+      <form id="form-servicio" novalidate aria-label="Formulario de servicio">
+        <input type="hidden" id="srv-id">
+
+        <div class="row g-3">
+          <div class="col-md-8 campo-form">
+            <label for="srv-nombre">Nombre del paquete o servicio *</label>
+            <input type="text" id="srv-nombre" placeholder="Ej: Paquete Todo Incluido San Andrés" required minlength="2">
+          </div>
+          <div class="col-md-4 campo-form">
+            <label for="srv-precio">Precio por persona ($ COP) *</label>
+            <input type="number" id="srv-precio" placeholder="1399000" min="0" step="0.01" required>
+          </div>
+
+          <div class="col-md-12 campo-form">
+            <label for="srv-descripcion">Descripción detallada</label>
+            <textarea id="srv-descripcion" class="form-control" rows="2" placeholder="Incluye vuelos, alimentación, hotel frente al mar..."></textarea>
+          </div>
+
+          <div class="col-md-4 campo-form">
+            <label for="srv-tipo">Tipo de servicio</label>
+            <select id="srv-tipo" class="form-select">
+              <option value="PAQUETE_TODO_INCLUIDO">Paquete Todo Incluido</option>
+              <option value="SOLO_HOTEL">Solo Hotel 2x1</option>
+              <option value="VUELO_HOTEL">Vuelo + Hotel</option>
+              <option value="TOUR_EXCURSION">Tour / Excursión</option>
+              <option value="PASADIA">Pasadía</option>
+              <option value="ASISTENCIA_MEDICA">Asistencia Médica</option>
+              <option value="OTRO">Otro</option>
+            </select>
+          </div>
+
+          <div class="col-md-4 campo-form">
+            <label for="srv-duracion">Duración estimada</label>
+            <input type="text" id="srv-duracion" placeholder="Ej: 4 días / 3 noches">
+          </div>
+
+          <div class="col-md-4 campo-form">
+            <label for="srv-destino">Destino principal</label>
+            <input type="text" id="srv-destino" placeholder="Ej: San Andrés, Cartagena, Guajira">
+          </div>
+        </div>
+
+        <div class="d-flex gap-2 mt-4">
+          <button type="submit" class="btn btn-success fw-bold px-4" id="btn-guardar" style="background:var(--color-success); border:none;">
+            <i class="bi bi-save-fill me-1"></i> Guardar Servicio
+          </button>
+          <button type="button" class="btn btn-danger fw-bold px-4" id="btn-eliminar" disabled>
+            <i class="bi bi-trash-fill me-1"></i> Eliminar
+          </button>
+          <button type="button" class="btn btn-light fw-bold px-4 border" id="btn-limpiar">
+            <i class="bi bi-eraser-fill me-1"></i> Limpiar
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <!-- TABLA DE RESULTADOS -->
+    <section class="tabla-wrapper">
+      <div class="p-3 bg-dark text-white d-flex justify-content-between align-items-center">
+        <h3 class="h6 mb-0 text-white fw-bold"><i class="bi bi-table me-2 text-warning"></i> Catálogo de Servicios Registrados</h3>
+      </div>
+      <div class="table-responsive">
+        <table class="tabla-admin">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nombre del Servicio</th>
+              <th>Tipo</th>
+              <th>Destino</th>
+              <th>Duración</th>
+              <th>Precio</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="tabla-servicios-body">
+            <tr><td colspan="7" class="text-center py-4 text-muted">Cargando catálogo...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER OFICIAL -->
+  <footer class="footer-oficial">
+    <div class="footer-bottom text-center">
+      <p>© 2026 ALELEO TOURS S.A.S. — Módulo de Administración SACE.</p>
+    </div>
+  </footer>
+
+  <div id="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/core/app.js"></script>
+  <script src="js/admin/gestion-servicios.js"></script>
+  <script src="js/components/chatbot.js"></script>
+</body>
+</html>

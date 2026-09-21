@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="AleLeo Tours – Paquetes turísticos Todo Incluido, Hoteles 2x1 y vuelos a Cartagena, San Andrés, Guajira, Santa Marta y más.">
+  <title>Destinos turísticos Todo Incluido | ALELEO TOURS</title>
+  <link rel="icon" type="image/jpeg" href="img/logo-aleleo.jpg">
+
+  <!-- Google Fonts: Outfit & Dosis -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dosis:wght@400;600;700;800&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5.3 CSS & Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  <!-- Estilos AleLeo Tours -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/chatbot.css">
+</head>
+<body>
+  <!-- ENCABEZADO Y NAVEGACIÓN -->
+  <header class="franja">
+    <a href="index.html" class="logo" aria-label="AleLeo Tours – Inicio">
+      <img src="img/logo-aleleo.jpg" alt="AleLeo Tours" class="logo-img"> ALELEO <span>TOURS</span>
+    </a>
+
+    <button class="nav-toggle" aria-controls="nav-principal" aria-expanded="false" aria-label="Abrir menú de navegación">
+      <i class="bi bi-list" aria-hidden="true"></i>
+    </button>
+
+    <nav class="tabs" id="nav-principal" aria-label="Navegación principal">
+      <button onclick="window.location.href='index.html'" aria-current="page">
+        <i class="bi bi-house-fill" aria-hidden="true"></i> Inicio
+      </button>
+      <button onclick="window.location.href='destinos.html'">
+        <i class="bi bi-compass-fill" aria-hidden="true"></i> Destinos
+      </button>
+      <button onclick="window.location.href='mis-solicitudes.html'" id="nav-mis-solicitudes" style="display:none;">
+        <i class="bi bi-calendar-check-fill" aria-hidden="true"></i> Mis Reservas
+      </button>
+      <button onclick="window.location.href='panel-empleado.html'" id="nav-panel-empleado" style="display:none; background:var(--grad-primary);">
+        <i class="bi bi-headset" aria-hidden="true"></i> Panel Asesor
+      </button>
+
+      <!-- Menú Desplegable Administrativo SACE (Solo Administradores) -->
+      <div class="dropdown d-none" id="nav-gestion-dropdown" style="display:none;">
+        <button class="btn dropdown-toggle nav-btn-dropdown" type="button" id="btnDropdownGestionIdx" data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="bi bi-sliders" aria-hidden="true"></i> Gestión Admin
+        </button>
+        <ul class="dropdown-menu dropdown-menu-dark shadow-lg border-0 rounded-4 mt-2" aria-labelledby="btnDropdownGestionIdx">
+          <li><a class="dropdown-item py-2 fw-semibold" href="reportes.html"><i class="bi bi-pie-chart-fill text-warning me-2"></i> Reportes & Estadísticas</a></li>
+          <li><hr class="dropdown-divider"></li>
+          <li><a class="dropdown-item py-2 fw-semibold" href="gestion-solicitudes.html"><i class="bi bi-card-checklist text-primary me-2"></i> Gestión Solicitudes</a></li>
+          <li><a class="dropdown-item py-2 fw-semibold" href="gestion-clientes.html"><i class="bi bi-people-fill text-info me-2"></i> Gestión Clientes</a></li>
+          <li><a class="dropdown-item py-2 fw-semibold" href="gestion-empleados.html"><i class="bi bi-person-badge-fill text-warning me-2"></i> Gestión Empleados</a></li>
+          <li><a class="dropdown-item py-2 fw-semibold" href="gestion-servicios.html"><i class="bi bi-briefcase-fill text-success me-2"></i> Gestión Servicios</a></li>
+        </ul>
+      </div>
+
+      <!-- Autenticación -->
+      <button onclick="window.location.href='login.html'" id="nav-sesion">
+        <i class="bi bi-box-arrow-in-right" aria-hidden="true"></i> Iniciar Sesión
+      </button>
+      <button onclick="window.location.href='registro.html'" id="nav-registro">
+        <i class="bi bi-person-plus-fill" aria-hidden="true"></i> Registrarse
+      </button>
+      <span id="nav-nombre" class="nav-nombre" style="display:none;" aria-live="polite"></span>
+      <button id="nav-salir" style="display:none; background:var(--grad-promo); color:#fff;" aria-label="Cerrar sesión">
+        <i class="bi bi-box-arrow-right" aria-hidden="true"></i> Salir
+      </button>
+    </nav>
+  </header>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <main id="contenido-principal">
+
+    <!-- HERO SECTION -->
+    <section class="hero" aria-labelledby="hero-titulo">
+      <div class="hero-content">
+                <h1 id="hero-titulo">El Caribe te espera <span>Todo Incluido</span></h1>
+        <p>Aprovecha las mejores tarifas en vuelos, hoteles 2x1 y experiencias inolvidables en San Andrés, Cartagena, Guajira y Amazonas.</p>
+      </div>
+
+      <!-- WIDGET DE BÚSQUEDA INTERACTIVO -->
+      <div class="hero-search-container">
+        <div class="search-tabs-header" role="tablist" aria-label="Tipo de plan a buscar">
+          <span class="search-tab-item active" role="tab" aria-selected="true" tabindex="0" data-tipo="paquete"><i class="bi bi-luggage-fill" aria-hidden="true"></i> Vuelos + Hotel Todo Incluido</span>
+          <span class="search-tab-item" role="tab" aria-selected="false" tabindex="0" data-tipo="hotel"><i class="bi bi-building" aria-hidden="true"></i> Solo Hoteles 2x1</span>
+          <span class="search-tab-item" role="tab" aria-selected="false" tabindex="0" data-tipo="pasadia"><i class="bi bi-geo-fill" aria-hidden="true"></i> Pasadías y Tours</span>
+        </div>
+
+        <div class="hero-search-grid" role="search" aria-label="Buscador de tiquetes y paquetes turísticos">
+
+          <div class="search-field-group">
+            <label for="sel-origen"><i class="bi bi-geo-alt-fill text-primary"></i> Origen</label>
+            <select id="sel-origen" aria-required="true">
+              <option value="">¿Desde dónde viajas?</option>
+              <option>Bogotá (BOG)</option>
+              <option>Medellín (MDE)</option>
+              <option>Cali (CLO)</option>
+              <option>Barranquilla (BAQ)</option>
+              <option>Pereira (PEI)</option>
+              <option>Bucaramanga (BGA)</option>
+            </select>
+          </div>
+
+          <div class="search-field-group">
+            <label for="sel-destino"><i class="bi bi-pin-map-fill text-primary"></i> Destino</label>
+            <select id="sel-destino" aria-required="true">
+              <option value="">¿A dónde quieres ir?</option>
+              <option>San Andrés Isla</option>
+              <option>Cartagena de Indias</option>
+              <option>Santa Marta & Tayrona</option>
+              <option>La Guajira (Cabo de la Vela)</option>
+              <option>Amazonas (Leticia)</option>
+              <option>Cancún (México)</option>
+            </select>
+          </div>
+
+          <div class="search-field-group">
+            <label for="inp-fecha"><i class="bi bi-calendar-event-fill text-primary"></i> Fecha de Viaje</label>
+            <input type="date" id="inp-fecha" aria-required="true">
+          </div>
+
+          <div class="search-field-group">
+            <label for="inp-pasajeros"><i class="bi bi-people-fill text-primary"></i> Pasajeros</label>
+            <input type="number" id="inp-pasajeros" min="1" max="10" value="2">
+          </div>
+
+          <button class="btn-search-hero" id="btn-buscar">
+            <i class="bi bi-search"></i> Buscar Plan
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECCIÓN DESTINOS DESTACADOS -->
+    <section class="seccion-destinos" aria-labelledby="destinos-titulo">
+      <div class="seccion-titulo">
+        <h2 id="destinos-titulo">Destinos Imperdibles AleLeo Tours</h2>
+        <p>Aprovecha nuestras mejores promociones con tiquetes, alojamiento, comidas y bebidas ilimitadas.</p>
+      </div>
+
+      <div class="destinos-grid">
+
+        <!-- Destino 0: Plan de Prueba -->
+        <article class="destino-card border border-warning">
+          <div class="destino-img-wrapper">
+            <span class="badge-card-promo bg-warning text-dark font-monospace">TEST SACE</span>
+            <img src="img/Cartagena.jpg" alt="Plan de Prueba SACE" loading="lazy">
+            <span class="badge-card-tag bg-danger text-white">PRUEBAS $1.000</span>
+          </div>
+          <div class="destino-card-body">
+            <h3>Plan de Prueba SACE</h3>
+            <p>Plan especial de pruebas para validar reservas y comprobantes PDF con la llave Bre-B @VXM301 por solo $1.000 COP.</p>
+            <div class="destino-price-box">
+              <div>
+                <div class="price-label">Desde por persona</div>
+                <div class="price-value text-warning fw-bold">$1.000</div>
+              </div>
+              <span class="badge bg-warning-subtle text-dark border border-warning fw-bold px-2 py-1">Prueba $1.000 COP</span>
+            </div>
+            <button class="btn-reservar-card" onclick="window.location.href='destinos.html'">
+              <i class="bi bi-calendar-check-fill me-1"></i> Reservar por $1.000
+            </button>
+          </div>
+        </article>
+
+        <!-- Destino 1: San Andrés -->
+        <article class="destino-card">
+          <div class="destino-img-wrapper">
+            <span class="badge-card-promo">HOTEL 2X1</span>
+            <img src="img/San%20Andres.jpg" alt="Mar de siete colores en San Andrés" loading="lazy">
+            <span class="badge-card-tag">TODO INCLUIDO</span>
+          </div>
+          <div class="destino-card-body">
+            <h3>San Andrés Isla</h3>
+            <p>Disfruta del mar de los siete colores, snorkel en Johnny Cay y barra libre en nuestros hoteles propios.</p>
+            <div class="destino-price-box">
+              <div>
+                <div class="price-label">Desde por persona</div>
+                <div class="price-value">$1.399.000</div>
+              </div>
+              <span class="badge bg-success-subtle text-success border border-success fw-bold px-2 py-1">Vuelos Incluidos</span>
+            </div>
+            <button class="btn-reservar-card" onclick="window.location.href='destinos.html'">
+              <i class="bi bi-calendar-check-fill me-1"></i> Reservar Plan
+            </button>
+          </div>
+        </article>
+
+        <!-- Destino 2: Cartagena -->
+        <article class="destino-card">
+          <div class="destino-img-wrapper">
+            <span class="badge-card-promo">OFERTA ESPECIAL</span>
+            <img src="img/Cartagena.jpg" alt="Ciudad amurallada en Cartagena" loading="lazy">
+            <span class="badge-card-tag">PLAYA Y CULTURA</span>
+          </div>
+          <div class="destino-card-body">
+            <h3>Cartagena de Indias</h3>
+            <p>Historia colonial, atardeceres mágicos en la muralla y hospedaje de lujo frente al mar Caribe.</p>
+            <div class="destino-price-box">
+              <div>
+                <div class="price-label">Desde por persona</div>
+                <div class="price-value">$1.299.000</div>
+              </div>
+              <span class="badge bg-success-subtle text-success border border-success fw-bold px-2 py-1">Vuelos Incluidos</span>
+            </div>
+            <button class="btn-reservar-card" onclick="window.location.href='destinos.html'">
+              <i class="bi bi-calendar-check-fill me-1"></i> Reservar Plan
+            </button>
+          </div>
+        </article>
+
+        <!-- Destino 3: Santa Marta -->
+        <article class="destino-card">
+          <div class="destino-img-wrapper">
+            <span class="badge-card-promo">TAYRONA EXPEDITION</span>
+            <img src="img/Santa%20Marta.jpg" alt="Playas del Parque Tayrona en Santa Marta" loading="lazy">
+            <span class="badge-card-tag">NATURALEZA Y PLAYA</span>
+          </div>
+          <div class="destino-card-body">
+            <h3>Santa Marta & Tayrona</h3>
+            <p>Combina la magia de la Sierra Nevada con las playas vírgenes más espectaculares de la región.</p>
+            <div class="destino-price-box">
+              <div>
+                <div class="price-label">Desde por persona</div>
+                <div class="price-value">$1.349.000</div>
+              </div>
+              <span class="badge bg-success-subtle text-success border border-success fw-bold px-2 py-1">Vuelos Incluidos</span>
+            </div>
+            <button class="btn-reservar-card" onclick="window.location.href='destinos.html'">
+              <i class="bi bi-calendar-check-fill me-1"></i> Reservar Plan
+            </button>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- SECCIÓN BENEFICIOS TODO INCLUIDO -->
+    <section class="seccion-beneficios" aria-labelledby="beneficios-titulo">
+      <div class="beneficios-container">
+        <div class="text-center">
+          <span class="badge bg-warning text-dark fw-bold uppercase px-3 py-2 rounded-pill mb-2">LA EXPERIENCIA AleLeo Tours</span>
+          <h2 id="beneficios-titulo" style="font-family:var(--font-heading); font-size:38px; font-weight:800; color:#fff;">
+            ¿Qué incluye tu plan turístico?
+          </h2>
+          <p style="color:#cbd5e1; max-width:640px; margin:8px auto 0 auto;">Viaja sin preocupaciones financieras. En AleLeo Tours todo está cubierto desde que abordas el avión.</p>
+        </div>
+
+        <div class="beneficios-grid">
+          <div class="beneficio-card">
+            <span class="beneficio-icon"><i class="bi bi-airplane-fill" aria-hidden="true"></i></span>
+            <h4>Tiquetes Aéreos</h4>
+            <p>Vuelos ida y vuelta con equipaje de mano y bodega incluido sin costos ocultos.</p>
+          </div>
+
+          <div class="beneficio-card">
+            <span class="beneficio-icon"><i class="bi bi-building-fill" aria-hidden="true"></i></span>
+            <h4>Hoteles Propios</h4>
+            <p>Habitaciones confortables frente al mar o inmersos en reservas naturales exclusivas.</p>
+          </div>
+
+          <div class="beneficio-card">
+            <span class="beneficio-icon"><i class="bi bi-cup-straw" aria-hidden="true"></i></span>
+            <h4>Comidas & Bebidas</h4>
+            <p>Desayunos, almuerzos, cenas buffet, snacks y bar libre de bebidas ilimitadas.</p>
+          </div>
+
+          <div class="beneficio-card">
+            <span class="beneficio-icon"><i class="bi bi-shield-fill-check" aria-hidden="true"></i></span>
+            <h4>Asistencia Médica</h4>
+            <p>Cobertura médica total para ti y tu familia durante toda la estadía.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER OFICIAL -->
+  <footer class="footer-oficial">
+    <div class="footer-container">
+      <div class="footer-col">
+        <h5><i class="bi bi-airplane-engines-fill" aria-hidden="true"></i> AleLeo Tours</h5>
+        <p style="font-size:14px; color:#94a3b8;">Líderes en turismo todo incluido en Colombia haciendo realidad las vacaciones de millones de familias.</p>
+      </div>
+
+      <div class="footer-col">
+        <h5>Destinos Top</h5>
+        <ul>
+          <li><a href="destinos.html">San Andrés Isla</a></li>
+          <li><a href="destinos.html">Cartagena de Indias</a></li>
+          <li><a href="destinos.html">Santa Marta & Tayrona</a></li>
+          <li><a href="destinos.html">La Guajira</a></li>
+          <li><a href="destinos.html">Amazonas</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h5>Atención al Cliente</h5>
+        <ul>
+          <li><a href="mis-solicitudes.html">Consultar mis Reservas</a></li>
+          <li><a href="#">Centro de Ayuda FAQ</a></li>
+          <li><a href="#">Términos y Condiciones</a></li>
+          <li><a href="#">Políticas de Equipaje</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h5>Contacto & Reservas</h5>
+        <p style="font-size:14px; color:#94a3b8;"><i class="bi bi-telephone-fill text-warning"></i> Línea de Atención: +57 312 214 9645</p>
+        <p style="font-size:14px; color:#94a3b8;"><i class="bi bi-whatsapp text-success"></i> WhatsApp: +57 312 214 9645</p>
+        <p style="font-size:14px; color:#94a3b8;"><i class="bi bi-envelope-fill text-primary"></i> cesarleonardo.rm2301@gmail.com</p>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>© 2026 ALELEO TOURS S.A.S. — Sistema de Atención y Solicitudes SACE. Todos los derechos reservados.</p>
+    </div>
+  </footer>
+
+  <!-- Toast Container -->
+  <div id="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- Bootstrap & App JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/core/app.js"></script>
+  <script src="js/components/chatbot.js"></script>
+</body>
+</html>
