@@ -63,6 +63,37 @@ Abrir **http://localhost:8090**. El frontend asume el backend en `localhost:8082
 - Reportes y KPIs restringidos a administradores.
 - Autorización por propiedad (403) en pagos, cancelaciones, mensajes y reportes.
 
+## Documentación del proyecto (evidencias académicas)
+
+Los documentos de entrega están en [`docs/`](docs/) (versiones `.md`) y sus
+versiones `.docx` están listas en la carpeta local de evidencias:
+
+| Documento | Contenido |
+|---|---|
+| [`docs/01-Analisis-y-Requerimientos-SACE.md`](docs/01-Analisis-y-Requerimientos-SACE.md) | Contexto, problema, objetivos, alcance, usuarios/roles, RF y RNF |
+| [`docs/02-Backlog-y-Gestion-del-Proyecto-SACE.md`](docs/02-Backlog-y-Gestion-del-Proyecto-SACE.md) | Backlog, sprints, seguimiento y distribución del equipo |
+| [`docs/03-Plan-de-Pruebas-SACE.md`](docs/03-Plan-de-Pruebas-SACE.md) | Estrategia, casos de prueba, datos y reporte de ejecución (62 PASS/0 FAIL) |
+| [`docs/04-Plan-de-Despliegue-SACE.md`](docs/04-Plan-de-Despliegue-SACE.md) | Dependencias, variables de entorno y procedimiento de despliegue |
+
+Además: `Historias_de_usuario.docx` (HU-01…HU-11), `Historia_necesidad.docx`,
+diagramas UML (casos de uso, clases, MER, modelo relacional), diccionario de
+datos e `Informe-01-Backend` e `Informe-02-Frontend`.
+
+## Equipo y distribución del trabajo
+
+| Integrante | Aporte principal |
+|---|---|
+| Cesar Leonardo Ramírez Montejo | Backend y seguridad: API REST, token, interceptor, pagos/comprobante PDF, pruebas E2E |
+| Yerson Alexei Torres Garcia | Base de datos: modelo ER, modelo relacional, diccionario de datos y consultas |
+| Felipe Gonzales Quitero | Frontend: páginas, componentes (chatbot) e integración con la API |
+
+## Flujo de trabajo en Git (evidencia de control de versiones)
+
+- Rama principal `main` con commits descriptivos y `merge --no-ff` de ramas de
+  funcionalidad (p. ej. `feature/documentacion`).
+- `.gitignore` para excluir artefactos de build e IDE.
+- Identidad: [Siks2301](https://github.com/Siks2301) — `cesarleonardo.rm2301@gmail.com`.
+
 ## Estructura
 
 ```
@@ -70,9 +101,10 @@ Projecto_SACE/
 ├── backend-SACE/            # API Spring Boot
 │   ├── pom.xml
 │   └── src/main/java/com/mycompany/sacejpa/
-└── frontend-aleleo-tours/   # Sitio estático
-    ├── *.html
-    ├── css/
-    ├── js/
-    └── img/
+├── frontend-aleleo-tours/   # Sitio estático
+│   ├── *.html
+│   ├── css/
+│   ├── js/
+│   └── img/
+└── docs/                    # Evidencias académicas (markdown)
 ```
