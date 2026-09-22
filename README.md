@@ -79,6 +79,14 @@ Además: `Historias_de_usuario.docx` (HU-01…HU-11), `Historia_necesidad.docx`,
 diagramas UML (casos de uso, clases, MER, modelo relacional), diccionario de
 datos e `Informe-01-Backend` e `Informe-02-Frontend`.
 
+### Evidencias visuales y base de datos
+
+| Recurso | Contenido |
+|---|---|
+| [`docs/diagramas/`](docs/diagramas/) | Diagramas UML en PNG: casos de uso, clases, modelo entidad-relación y modelo relacional |
+| [`docs/capturas/`](docs/capturas/) | 12 capturas de pantalla de la interfaz (login, home, paneles admin/empleado/cliente, destinos, solicitudes, registro) |
+| [`docs/SACE_db_ddl.sql`](docs/SACE_db_ddl.sql) | DDL del esquema completo de `SACE_db` (solo estructura, sin datos) generado con `pg_dump --schema-only` |
+
 ## Equipo y distribución del trabajo
 
 | Integrante | Aporte principal |
