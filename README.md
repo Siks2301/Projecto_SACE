@@ -79,6 +79,7 @@ la rúbrica de 9 puntos con su evidencia.
 | [`docs/05-Manual-de-Usuario-SACE.md`](docs/05-Manual-de-Usuario-SACE.md) | Manual de uso por perfil: cliente, empleado y administrador |
 | [`docs/06-Comprobante-de-Despliegue-SACE.md`](docs/06-Comprobante-de-Despliegue-SACE.md) | Verificación real del despliegue (servicios, salud HTTP, capturas) |
 | [`docs/07-Modelo-de-Datos-y-Normalizacion-SACE.md`](docs/07-Modelo-de-Datos-y-Normalizacion-SACE.md) | Modelo de datos, relaciones, integridad y normalización 1FN/2FN/3FN |
+| [`docs/08-Guion-de-Presentacion-Final-SACE.md`](docs/08-Guion-de-Presentacion-Final-SACE.md) | Guion de sustentación: orden, reparto por integrante, demo en vivo y Q&A |
 | [`docs/API-Endpoints-SACE.md`](docs/API-Endpoints-SACE.md) | Catálogo de endpoints de la API REST |
 | [`docs/INDICE-CAPTURAS.md`](docs/INDICE-CAPTURAS.md) | Índice de las 15 capturas (interfaz + despliegue) |
 

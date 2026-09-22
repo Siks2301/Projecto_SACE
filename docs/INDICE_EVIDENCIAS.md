@@ -29,6 +29,7 @@ las versiones `.md`, los diagramas, las capturas y el DDL del esquema.
 - `docs/SACE_db_ddl.sql` — esquema completo de la base de datos (sin datos).
 - [`docs/07-Modelo-de-Datos-y-Normalizacion-SACE.md`](07-Modelo-de-Datos-y-Normalizacion-SACE.md) — modelo, integridad y normalización.
 - [`docs/API-Endpoints-SACE.md`](API-Endpoints-SACE.md) — catálogo de endpoints del backend.
+- [`docs/08-Guion-de-Presentacion-Final-SACE.md`](08-Guion-de-Presentacion-Final-SACE.md) — guion de sustentación: orden de exposición, reparto por integrante, demo en vivo y preguntas preparadas.
 
 ## Credenciales de demostración
 
