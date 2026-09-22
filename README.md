@@ -66,7 +66,9 @@ Abrir **http://localhost:8090**. El frontend asume el backend en `localhost:8082
 ## Documentación del proyecto (evidencias académicas)
 
 Los documentos de entrega están en [`docs/`](docs/) (versiones `.md`) y sus
-versiones `.docx` están listas en la carpeta local de evidencias:
+versiones `.docx` están listas en la carpeta local de evidencias.
+El [`INDICE_EVIDENCIAS.md`](docs/INDICE_EVIDENCIAS.md) mapea cada criterio de
+la rúbrica de 9 puntos con su evidencia.
 
 | Documento | Contenido |
 |---|---|
@@ -74,6 +76,8 @@ versiones `.docx` están listas en la carpeta local de evidencias:
 | [`docs/02-Backlog-y-Gestion-del-Proyecto-SACE.md`](docs/02-Backlog-y-Gestion-del-Proyecto-SACE.md) | Backlog, sprints, seguimiento y distribución del equipo |
 | [`docs/03-Plan-de-Pruebas-SACE.md`](docs/03-Plan-de-Pruebas-SACE.md) | Estrategia, casos de prueba, datos y reporte de ejecución (62 PASS/0 FAIL) |
 | [`docs/04-Plan-de-Despliegue-SACE.md`](docs/04-Plan-de-Despliegue-SACE.md) | Dependencias, variables de entorno y procedimiento de despliegue |
+| [`docs/05-Manual-de-Usuario-SACE.md`](docs/05-Manual-de-Usuario-SACE.md) | Manual de uso por perfil: cliente, empleado y administrador |
+| [`docs/06-Comprobante-de-Despliegue-SACE.md`](docs/06-Comprobante-de-Despliegue-SACE.md) | Verificación real del despliegue (servicios, salud HTTP, capturas) |
 
 Además: `Historias_de_usuario.docx` (HU-01…HU-11), `Historia_necesidad.docx`,
 diagramas UML (casos de uso, clases, MER, modelo relacional), diccionario de
