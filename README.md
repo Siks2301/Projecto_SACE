@@ -78,6 +78,9 @@ la rúbrica de 9 puntos con su evidencia.
 | [`docs/04-Plan-de-Despliegue-SACE.md`](docs/04-Plan-de-Despliegue-SACE.md) | Dependencias, variables de entorno y procedimiento de despliegue |
 | [`docs/05-Manual-de-Usuario-SACE.md`](docs/05-Manual-de-Usuario-SACE.md) | Manual de uso por perfil: cliente, empleado y administrador |
 | [`docs/06-Comprobante-de-Despliegue-SACE.md`](docs/06-Comprobante-de-Despliegue-SACE.md) | Verificación real del despliegue (servicios, salud HTTP, capturas) |
+| [`docs/07-Modelo-de-Datos-y-Normalizacion-SACE.md`](docs/07-Modelo-de-Datos-y-Normalizacion-SACE.md) | Modelo de datos, relaciones, integridad y normalización 1FN/2FN/3FN |
+| [`docs/API-Endpoints-SACE.md`](docs/API-Endpoints-SACE.md) | Catálogo de endpoints de la API REST |
+| [`docs/INDICE-CAPTURAS.md`](docs/INDICE-CAPTURAS.md) | Índice de las 15 capturas (interfaz + despliegue) |
 
 Además: `Historias_de_usuario.docx` (HU-01…HU-11), `Historia_necesidad.docx`,
 diagramas UML (casos de uso, clases, MER, modelo relacional), diccionario de
@@ -87,24 +90,30 @@ datos e `Informe-01-Backend` e `Informe-02-Frontend`.
 
 | Recurso | Contenido |
 |---|---|
-| [`docs/diagramas/`](docs/diagramas/) | Diagramas UML en PNG: casos de uso, clases, modelo entidad-relación y modelo relacional |
-| [`docs/capturas/`](docs/capturas/) | 12 capturas de pantalla de la interfaz (login, home, paneles admin/empleado/cliente, destinos, solicitudes, registro) |
+| [`docs/diagramas/`](docs/diagramas/) | Diagramas en PNG: casos de uso, clases, **arquitectura del sistema**, modelo entidad-relación y modelo relacional |
+| [`docs/capturas/`](docs/capturas/) | 15 capturas de pantalla (12 interfaz + 3 despliegue) detalladas en [`INDICE-CAPTURAS.md`](docs/INDICE-CAPTURAS.md) |
 | [`docs/SACE_db_ddl.sql`](docs/SACE_db_ddl.sql) | DDL del esquema completo de `SACE_db` (solo estructura, sin datos) generado con `pg_dump --schema-only` |
 
 ## Equipo y distribución del trabajo
 
 | Integrante | Aporte principal |
 |---|---|
-| Cesar Leonardo Ramírez Montejo | Backend y seguridad: API REST, token, interceptor, pagos/comprobante PDF, pruebas E2E |
-| Yerson Alexei Torres Garcia | Base de datos: modelo ER, modelo relacional, diccionario de datos y consultas |
+| Cesar Leonardo Ramírez Montejo | Backend y seguridad: API REST, token, interceptor, pagos/comprobante PDF, pruebas E2E y despliegue |
+| Yerson Alexei Torres Garcia | Base de datos: modelo ER, modelo relacional, diccionario de datos, normalización y consultas |
 | Felipe Gonzales Quitero | Frontend: páginas, componentes (chatbot) e integración con la API |
+
+Cada integrante tiene **commits con su autoría** sobre su módulo (evidencia de
+participación en el repositorio): Cesar (backend/API/despliegue), Yerson
+(modelo de datos y normalización, DDL) y Felipe (interfaces y capturas).
 
 ## Flujo de trabajo en Git (evidencia de control de versiones)
 
 - Rama principal `main` con commits descriptivos y `merge --no-ff` de ramas de
   funcionalidad (p. ej. `feature/documentacion`).
+- Commits por integrante sobre su módulo (evidencia de participación).
 - `.gitignore` para excluir artefactos de build e IDE.
-- Identidad: [Siks2301](https://github.com/Siks2301) — `cesarleonardo.rm2301@gmail.com`.
+- Identidad principal: [Siks2301](https://github.com/Siks2301) —
+  `cesarleonardo.rm2301@gmail.com`.
 
 ## Estructura
 

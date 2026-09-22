@@ -8,17 +8,27 @@ soportan. Las evidencias `.docx` (Norma APA 7) están en la carpeta local
 `SACE_Entrega_Final/2_Evidencias_Documentales/`; en este repositorio se publican
 las versiones `.md`, los diagramas, las capturas y el DDL del esquema.
 
-| # | Criterio (peso) | Evidencias |
-|---|---|---|
-| 1 | Análisis (15 %) | [`01-Analisis-y-Requerimientos-SACE.md`](01-Analisis-y-Requerimientos-SACE.md) · Historias de usuario HU-01…HU-11 · Historia de necesidad |
-| 2 | Diseño (15 %) | Diagramas UML en [`diagramas/`](diagramas/) (casos de uso, clases, MER, modelo relacional) · 12 capturas de interfaz en [`capturas/`](capturas/) |
-| 3 | Desarrollo (25 %) | Código backend [`backend-SACE/`](../backend-SACE) y frontend [`frontend-aleleo-tours/`](../frontend-aleleo-tours) · Informes de backend y frontend (docx local) |
-| 4 | Base de datos (10 %) | [`SACE_db_ddl.sql`](SACE_db_ddl.sql) (esquema completo, sin datos) · Diccionario de datos (xlsx local) · semillas `DataInitializer` |
-| 5 | Control de versiones (10 %) | Repositorio público GitHub (Siks2301/Projecto_SACE) · rama `main` con commits y `merge --no-ff` · `.gitignore` |
-| 6 | Gestión (10 %) | [`02-Backlog-y-Gestion-del-Proyecto-SACE.md`](02-Backlog-y-Gestion-del-Proyecto-SACE.md) · sprints · distribución del equipo |
-| 7 | Documentación (5 %) | README.md · docs/*.md · manual de usuario [`05-Manual-de-Usuario-SACE.md`](05-Manual-de-Usuario-SACE.md) |
-| 8 | Pruebas (5 %) | [`03-Plan-de-Pruebas-SACE.md`](03-Plan-de-Pruebas-SACE.md) · CP-01…CP-14 · **62 PASS / 0 FAIL** |
-| 9 | Despliegue (5 %) | [`04-Plan-de-Despliegue-SACE.md`](04-Plan-de-Despliegue-SACE.md) · [`06-Comprobante-de-Despliegue-SACE.md`](06-Comprobante-de-Despliegue-SACE.md) con verificación real |
+## Autoevaluación contra la rúbrica
+
+| # | Criterio (peso) | Evidencias | Nivel |
+|---|---|---|---|
+| 1 | Análisis y requerimientos (15 %) | [`01-Analisis-y-Requerimientos-SACE.md`](01-Analisis-y-Requerimientos-SACE.md): problema, objetivos, alcance, usuarios/roles, RF-01…15 y RNF-01…08 · Historias de usuario HU-01…HU-11 · Historia de necesidad | Completo (5) |
+| 2 | Diseño del sistema (15 %) | Diagramas de casos de uso y de clases · **diagrama de arquitectura** · MER y modelo relacional ([`diagramas/`](diagramas/)) · 12 capturas de interfaz + índice ([`INDICE-CAPTURAS.md`](INDICE-CAPTURAS.md)) | Completo (5) |
+| 3 | Desarrollo y funcionalidad (25 %) | Código backend [`backend-SACE/`](../backend-SACE) y frontend [`frontend-aleleo-tours/`](../frontend-aleleo-tours) · [`API-Endpoints-SACE.md`](API-Endpoints-SACE.md) · manejo de errores 400/401/403/404/409 · informes de backend y frontend | Completo (5) |
+| 4 | Base de datos (10 %) | [`SACE_db_ddl.sql`](SACE_db_ddl.sql) (esquema completo, sin datos) · [`07-Modelo-de-Datos-y-Normalizacion-SACE.md`](07-Modelo-de-Datos-y-Normalizacion-SACE.md): relaciones, integridad y normalización 1FN/2FN/3FN · Diccionario de datos (xlsx local) | Completo (5) |
+| 5 | Control de versiones y colaboración (10 %) | Repositorio público GitHub (Siks2301/Projecto_SACE) · rama `main` con commits y `merge --no-ff` · **commits por integrante** (Cesar/backend, Yerson/BD, Felipe/frontend) · `.gitignore` | Completo (5) |
+| 6 | Gestión del proyecto (10 %) | [`02-Backlog-y-Gestion-del-Proyecto-SACE.md`](02-Backlog-y-Gestion-del-Proyecto-SACE.md) · backlog · 11 historias de usuario · tareas T1…T8 · sprints S1…S5 · seguimiento y cumplimiento | Completo (5) |
+| 7 | Documentación (5 %) | README.md (requisitos, instalación, tecnologías, configuración y evidencias) · docs/*.md · [`05-Manual-de-Usuario-SACE.md`](05-Manual-de-Usuario-SACE.md) · INDICE_EVIDENCIAS.md | Completo (5) |
+| 8 | Preparación para pruebas (5 %) | [`03-Plan-de-Pruebas-SACE.md`](03-Plan-de-Pruebas-SACE.md) · casos CP-01…CP-14 · datos de prueba · criterios de aceptación · **62 PASS / 0 FAIL** | Completo (5) |
+| 9 | Preparación para el despliegue (5 %) | [`04-Plan-de-Despliegue-SACE.md`](04-Plan-de-Despliegue-SACE.md) · [`06-Comprobante-de-Despliegue-SACE.md`](06-Comprobante-de-Despliegue-SACE.md) con verificación real (servicios, salud HTTP, capturas) | Completo (5) |
+
+## Recursos del repositorio
+
+- `docs/diagramas/` — casos de uso, clases, **arquitectura**, modelo entidad-relación y modelo relacional (PNG).
+- `docs/capturas/` — 15 capturas (12 de interfaz + 3 del despliegue) detalladas en [`INDICE-CAPTURAS.md`](INDICE-CAPTURAS.md).
+- `docs/SACE_db_ddl.sql` — esquema completo de la base de datos (sin datos).
+- [`docs/07-Modelo-de-Datos-y-Normalizacion-SACE.md`](07-Modelo-de-Datos-y-Normalizacion-SACE.md) — modelo, integridad y normalización.
+- [`docs/API-Endpoints-SACE.md`](API-Endpoints-SACE.md) — catálogo de endpoints del backend.
 
 ## Credenciales de demostración
 
