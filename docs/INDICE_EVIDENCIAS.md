@@ -12,7 +12,7 @@ las versiones `.md`, los diagramas, las capturas y el DDL del esquema.
 
 | # | Criterio (peso) | Evidencias | Nivel |
 |---|---|---|---|
-| 1 | Análisis y requerimientos (15 %) | [`01-Analisis-y-Requerimientos-SACE.md`](01-Analisis-y-Requerimientos-SACE.md): problema, objetivos, alcance, usuarios/roles, RF-01…15 y RNF-01…08 · Historias de usuario HU-01…HU-11 · Historia de necesidad | Completo (5) |
+| 1 | Análisis y requerimientos (15 %) | [`01-Analisis-y-Requerimientos-SACE.md`](01-Analisis-y-Requerimientos-SACE.md): problema, objetivos, alcance, usuarios/roles, RF-01…14 y RNF-01…08 · Historias de usuario HU-01…HU-11 · Historia de necesidad | Completo (5) |
 | 2 | Diseño del sistema (15 %) | Diagramas de casos de uso y de clases · **diagrama de arquitectura** · MER y modelo relacional ([`diagramas/`](diagramas/)) · 12 capturas de interfaz + índice ([`INDICE-CAPTURAS.md`](INDICE-CAPTURAS.md)) | Completo (5) |
 | 3 | Desarrollo y funcionalidad (25 %) | Código backend [`backend-SACE/`](../backend-SACE) y frontend [`frontend-aleleo-tours/`](../frontend-aleleo-tours) · [`API-Endpoints-SACE.md`](API-Endpoints-SACE.md) · manejo de errores 400/401/403/404/409 · informes de backend y frontend | Completo (5) |
 | 4 | Base de datos (10 %) | [`SACE_db_ddl.sql`](SACE_db_ddl.sql) (esquema completo, sin datos) · [`07-Modelo-de-Datos-y-Normalizacion-SACE.md`](07-Modelo-de-Datos-y-Normalizacion-SACE.md): relaciones, integridad y normalización 1FN/2FN/3FN · Diccionario de datos (xlsx local) | Completo (5) |

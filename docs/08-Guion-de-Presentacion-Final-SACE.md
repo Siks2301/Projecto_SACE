@@ -29,12 +29,12 @@ Duración total recomendada: de 15 a 20 minutos, más ronda de preguntas. Si el 
 #### Apertura — Cesar (1 min)
 - Saludo: «Somos Cesar, Yerson y Felipe, aprendices de Análisis y Desarrollo de Software, ficha 3171149-B».
 - Presentar la empresa de contexto: AleLeo Tours (On Vacation), agencia de viajes.
-- Plantear el problema en una frase: «las solicitudes de los clientes llegan por WhatsApp, chat y correo, sin trazabilidad ni control», y proponer SACE como la solución.
+- Plantear el problema en una frase: «las solicitudes de los clientes llegan por canales dispersos — chat del sitio, correo y teléfono —, sin trazabilidad ni control», y proponer SACE como la solución.
 - Proyectar el diagrama de arquitectura como mapa de lo que van a ver.
 #### 1. Análisis y requerimientos — Yerson (2 min) — criterio 1 (15 %)
 - Proyectar 01-Análisis: problema, objetivos general y específicos, y alcance (qué hace y qué no hace el sistema).
 - Definir los usuarios/roles: cliente, empleado (asesor de soporte) y administrador.
-- Nombrar los requerimientos funcionales RF-01…RF-15 (registro, login, destinos, solicitudes, chat, chatbot, pagos, reportes) y los no funcionales RNF-01…RNF-08 (seguridad, rendimiento, usabilidad, disponibilidad).
+- Nombrar los requerimientos funcionales RF-01…RF-14 (registro, login, destinos, solicitudes, chat, chatbot, pagos, reportes) y los no funcionales RNF-01…RNF-08 (seguridad, rendimiento, usabilidad, disponibilidad).
 - Cerrar con: «el análisis deriva 11 historias de usuario (HU-01…HU-11) que planificamos en sprints» (enlaza con el criterio 6).
 #### 2. Diseño del sistema — Felipe (2.5 min) — criterio 2 (15 %)
 - Proyectar en este orden: diagrama de casos de uso (qué puede hacer cada rol) → diagrama de clases (estructura del sistema) → diagrama de arquitectura (cómo se conectan frontend, backend y base de datos) → MER y modelo relacional (los datos).

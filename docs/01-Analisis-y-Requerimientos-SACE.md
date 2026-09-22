@@ -53,7 +53,6 @@ No incluye: pasarela de pago real o facturación fiscal (DIAN), aplicación móv
 | RF-12 | Comprobante PDF del pago: sello SHA-256 de folio|llave|monto, desglose con IVA (base exacta /1.19) y descarga exclusiva del propietario. | Alta |
 | RF-13 | Reportes y KPIs (ventas consolidadas, conteos por categoría/estado) restringidos a administradores, con exportación PDF. | Media |
 | RF-14 | Notificación por correo con tope de fallo (fail-safe): si el SMTP no está disponible, el flujo continúa sin romperse. | Baja |
-| RF-15 | Widget flotante de WhatsApp en el sitio. | Baja |
 
 ### 1.7 Requerimientos no funcionales
 | ID | Requerimiento | Criterio |

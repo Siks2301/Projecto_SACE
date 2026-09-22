@@ -1576,7 +1576,7 @@
         { id: 'VUELOS', claves: ['vuelo', 'vuelos', 'avion', 'tiquete', 'tiquetes', 'aereo', 'aerea', 'aeropuerto'] },
         { id: 'DURACION', claves: ['duracion', 'dura', 'dias', 'dia', 'noches', 'noche', 'tiempo'] },
         { id: 'HORARIO', claves: ['horario', 'hora', 'atencion', 'abierto', 'atienden', 'disponible'] },
-        { id: 'CONTACTO', claves: ['contacto', 'telefono', 'celular', 'correo', 'email', 'whatsapp', 'direccion'] },
+        { id: 'CONTACTO', claves: ['contacto', 'telefono', 'celular', 'correo', 'email', 'direccion'] },
         { id: 'PROMOCIONES', claves: ['promocion', 'promociones', 'oferta', 'ofertas', 'descuento', 'descuentos', 'rebaja'] },
         { id: 'NINOS', claves: ['nino', 'ninos', 'niño', 'niños', 'bebe', 'bebes', 'menor', 'menores', 'infante'] },
         { id: 'MASCOTAS', claves: ['mascota', 'mascotas', 'perro', 'gato', 'animal'] },

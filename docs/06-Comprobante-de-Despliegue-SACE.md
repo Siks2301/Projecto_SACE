@@ -30,18 +30,44 @@ Salida capturada el 21 de septiembre de 2026:
 
 ```
 == VERIFICACION DE DESPLIEGUE SACE - 21 de septiembre de 2026 ==
+```
+```
 Equipo/host: SIKS2301
+```
+```
 SO: Microsoft Windows 11 Home Single Language
+```
+```
 PostgreSQL (5432): OK - PostgreSQL 18.4 on x86_64-windows, compiled by msvc-19.44.35226, 64-bit
+```
+```
 Base SACE_db existe: SI
+```
+```
 Tablas en SACE_db: 11
+```
+```
 Backend GET /api/servicios - HTTP 200
-  catalogo de servicios: 7 destinos
+```
+```
+catalogo de servicios: 7 destinos
+```
+```
 Backend POST /api/auth/login - OK (rol: ADMINISTRADOR, token 158 chars)
+```
+```
 Frontend GET /login.html - HTTP 200 (8065 bytes)
+```
+```
 Frontend GET /index.html - HTTP 200 (17049 bytes)
+```
+```
 Frontend GET /destinos.html - HTTP 200 (13160 bytes)
+```
+```
 Frontend GET /registro.html - HTTP 200 (9006 bytes)
+```
+```
 Puertos escuchando (backend/frontend): 8082, 8091
 ```
 ### 6.5 Base de datos
@@ -58,11 +84,11 @@ La base SACE_db existe con 11 tablas en el esquema public (usuarios, solicitudes
 ### 6.7 Evidencia visual del sistema en ejecución
 Se incluyen tres capturas del entorno desplegado (colaborador externo autenticado o vista pública), disponibles además en 7_Despliegue/Capturas_Despliegue/ y en docs/capturas/ del repositorio:
 
-![Figura 6.1. Pantalla de inicio de sesión del sistema en ejecución.](capturas/01_Despliegue_Login.png)
+![Captura](01_Despliegue_Login.png)
 
-![Figura 6.2. Página de inicio (home) del sitio AleLeo Tours desplegado.](capturas/02_Despliegue_Home.png)
+![Captura](02_Despliegue_Home.png)
 
-![Figura 6.3. Catálogo de destinos consultado desde el despliegue.](capturas/03_Despliegue_Destinos.png)
+![Captura](03_Despliegue_Destinos.png)
 
 ### 6.8 Notas y recomendaciones
 - En la verificación local el frontend se sirvió en el puerto 8091 porque el 8090 estaba ocupado temporalmente por un proceso externo; el valor por defecto documentado sigue siendo 8090.

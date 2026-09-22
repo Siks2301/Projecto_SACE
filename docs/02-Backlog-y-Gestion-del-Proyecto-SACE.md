@@ -37,7 +37,7 @@ El backlog se deriva de las 11 historias de usuario documentadas en 'Historias_d
 | Sprints planificados | 5 |
 | Sprints completados | 5 (100 %) |
 | Historias de usuario documentadas | 11 (HU-01 … HU-11) |
-| Requerimientos funcionales identificados | 15 (RF-01 … RF-15) |
+| Requerimientos funcionales identificados | 14 (RF-01 … RF-14) |
 | Requerimientos no funcionales | 8 (RNF-01 … RNF-08) |
 | Casos de prueba ejecutados | 62 PASS / 0 FAIL (21/09/2026) |
 | Pruebas de regresión del backend | 37 |

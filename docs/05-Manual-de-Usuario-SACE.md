@@ -57,4 +57,4 @@ El pago usa la llave de verificación 'Bre-B @VXM301' del flujo académico (no h
 - No veo una solicitud: solo se muestran las solicitudes del cliente autenticado (protección de propiedad).
 - El pago falla: confirmar que la solicitud sea del cliente, esté en estado que permita pagar y no haya sido pagada antes.
 - El comprobante no se visualiza: descargarlo desde la solicitud RESUELTA con el botón 'Comprobante PDF' (solo propietario).
-- ¿Cómo contacto soporte?: usar el chat de la solicitud (asesor) o el formulario de consulta; el widget de WhatsApp está disponible en el sitio.
+- ¿Cómo contacto soporte?: usar el chat de la solicitud con el asesor o el formulario de consulta del sitio.
