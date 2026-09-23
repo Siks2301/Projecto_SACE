@@ -469,6 +469,35 @@ function mapearTipoServicio(tipo) {
   }
 }
 
+// Normaliza texto de busqueda: minusculas y sin acentos, para que
+// "medellin" / "Medellín" o "naturaleza" coincidan igual.
+function normalizarBusqueda(texto) {
+  return String(texto || '')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .trim();
+}
+
+// Un destino coincide si el texto buscado aparece en su nombre o titulo
+// (normalizados), o si el nombre del destino aparece dentro de la busqueda
+// (ej. "Parque Tayrona" -> coincide con el plan "Tayrona").
+function destinoCoincide(destino, buscado) {
+  if (!buscado) return false;
+  const nombre = normalizarBusqueda(destino.nombre);
+  const titulo = normalizarBusqueda(destino.titulo);
+  const haystack = `${nombre} ${titulo}`.trim();
+
+  // Coincidencia directa (busqueda completa dentro del plan, o al reves).
+  if (haystack.includes(buscado) || (nombre && buscado.includes(nombre))) return true;
+
+  // Coincidencia por palabras: TODAS las palabras significativas de la
+  // busqueda deben aparecer en el plan (ej. "cartagena de indias" -> Cartagena).
+  const palabras = buscado.split(/\s+/).filter(w => w.length > 3);
+  if (palabras.length === 0) return false;
+  return palabras.every(p => haystack.includes(p));
+}
+
 function leerParametrosBusqueda() {
   const params    = new URLSearchParams(window.location.search);
   const origen    = params.get('origen');
@@ -477,18 +506,8 @@ function leerParametrosBusqueda() {
   const pasajeros = params.get('pasajeros');
   const tipo      = params.get('tipo');
 
-  let listaBase = DESTINOS;
-  const tiposServicio = mapearTipoServicio(tipo);
-  if (tiposServicio) {
-    const filtradaPorTipo = DESTINOS.filter(d => tiposServicio.includes(d.tipoServicio));
-    listaBase = filtradaPorTipo.length > 0 ? filtradaPorTipo : DESTINOS;
-    if (typeof Toast !== 'undefined') {
-      const etiquetas = { hotel: 'Solo Hoteles 2x1', pasadia: 'Pasad\u00edas y Tours', paquete: 'Vuelos + Hotel Todo Incluido' };
-      Toast.mostrar(`Mostrando planes de: ${etiquetas[tipo] || 'Todos los planes'}`, 'info');
-    }
-  }
-
-  if (origen || destino) {
+  const mostrarBanner = () => {
+    if (!(origen || destino)) return;
     const banner = document.getElementById('banner-busqueda');
     if (banner) {
       banner.classList.remove('oculto');
@@ -508,20 +527,48 @@ function leerParametrosBusqueda() {
         bPasajeros.textContent = (pasajeros || 1) + (Number(pasajeros) === 1 ? ' pasajero' : ' pasajeros');
       }
     }
+  };
 
-    if (destino) {
-      const match = listaBase.filter(d =>
-        d.nombre.toLowerCase().includes(destino.toLowerCase()) ||
-        (d.titulo && d.titulo.toLowerCase().includes(destino.toLowerCase()))
-      );
-      if (match.length > 0) {
-        renderizarDestinos(match);
-        return;
-      }
+  let listaBase = DESTINOS;
+  const tiposServicio = mapearTipoServicio(tipo);
+  if (tiposServicio) {
+    const filtradaPorTipo = DESTINOS.filter(d => tiposServicio.includes(d.tipoServicio));
+    listaBase = filtradaPorTipo.length > 0 ? filtradaPorTipo : DESTINOS;
+    if (typeof Toast !== 'undefined') {
+      const etiquetas = { hotel: 'Solo Hoteles 2x1', pasadia: 'Pasad\u00edas y Tours', paquete: 'Vuelos + Hotel Todo Incluido' };
+      Toast.mostrar(`Mostrando planes de: ${etiquetas[tipo] || 'Todos los planes'}`, 'info');
     }
   }
 
-  renderizarDestinos(listaBase);
+  if (!destino) {
+    mostrarBanner();
+    renderizarDestinos(listaBase);
+    return;
+  }
+
+  mostrarBanner();
+
+  const buscado = normalizarBusqueda(destino);
+  // 1) Filtra primero contra TODOS los destinos, para que un destino valido
+  //    no se pierda aunque su tipo de servicio no coincida con la pestana.
+  let resultado = DESTINOS.filter(d => destinoCoincide(d, buscado));
+
+  // 2) Si ademas hay pestana de tipo y el destino existe en ella, respeta el
+  //    tipo; si no, conserva solo el destino (nunca muestra todo sin filtrar).
+  if (resultado.length > 0 && tiposServicio) {
+    const porTipo = resultado.filter(d => tiposServicio.includes(d.tipoServicio));
+    if (porTipo.length > 0) resultado = porTipo;
+  }
+
+  if (resultado.length === 0) {
+    if (typeof Toast !== 'undefined') {
+      Toast.mostrar(`No encontramos planes para "${destino}". Prueba con otro destino.`, 'error');
+    }
+    renderizarDestinos(resultado);
+    return;
+  }
+
+  renderizarDestinos(resultado);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
