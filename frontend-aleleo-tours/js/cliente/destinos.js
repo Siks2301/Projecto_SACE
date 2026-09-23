@@ -21,16 +21,16 @@ function leerPasajeros() {
 
 const DESTINOS_DEFAULT = [
   {
-    id: 99,
-    nombre: 'Plan de Prueba SACE',
-    titulo: 'Destino de Prueba (Test $1.000)',
+    id: 7,
+    nombre: 'Salento',
+    titulo: 'Tour Cafetero Salento y Valle de Cocora',
     pais: 'Colombia',
-    descripcion: 'Plan especial de prueba para validar reservación y pagos Bre-B @VXM301 por solo $1.000 pesos.',
-    precio: 1000,
-    duracion: '1 día / 1 noche',
-    tipoServicio: 'PASADIA',
-    img: 'img/Cartagena.jpg',
-    categorias: ['playa', 'ciudad']
+    descripcion: 'Recorrido por las palmas de cera más altas del mundo y una finca cafetera tradicional en el Quindío.',
+    precio: 230000,
+    duracion: '2 días / 1 noche',
+    tipoServicio: 'TOUR_EXCURSION',
+    img: 'img/Tayrona.jpg',
+    categorias: ['naturaleza', 'ciudad']
   },
   {
     id: 1,
@@ -118,6 +118,7 @@ function resolverImagen(destino, nombre) {
   if (texto.includes('medellin')) return 'img/Medellin.jpg';
   if (texto.includes('tayrona')) return 'img/Tayrona.jpg';
   if (texto.includes('providencia')) return 'img/Providencia.jpg';
+  if (texto.includes('salento') || texto.includes('cocora') || texto.includes('quindio')) return 'img/Tayrona.jpg';
   return 'img/Cartagena.jpg';
 }
 
@@ -130,7 +131,7 @@ function resolverCategorias(destino, nombre, tipoServicio) {
   if (texto.includes('ciudad') || texto.includes('medellin') || texto.includes('bogota') || texto.includes('cali')) {
     cats.push('ciudad');
   }
-  if (texto.includes('naturaleza') || texto.includes('tayrona') || texto.includes('selva') || texto.includes('ecoturismo') || texto.includes('amazonas')) {
+  if (texto.includes('naturaleza') || texto.includes('tayrona') || texto.includes('selva') || texto.includes('ecoturismo') || texto.includes('amazonas') || texto.includes('salento') || texto.includes('cocora') || texto.includes('quindio')) {
     cats.push('naturaleza');
   }
   if (texto.includes('isla') || texto.includes('san andres') || texto.includes('providencia')) {
@@ -165,7 +166,7 @@ async function cargarDestinosDesdeBackend() {
           img: resolverImagen(s.destino, s.nombre),
           categorias: resolverCategorias(s.destino, s.nombre, s.tipoServicio)
         }));
-        DESTINOS = [DESTINOS_DEFAULT[0], ...backendMapped];
+        DESTINOS = backendMapped;
       } else {
         DESTINOS = [...DESTINOS_DEFAULT];
       }

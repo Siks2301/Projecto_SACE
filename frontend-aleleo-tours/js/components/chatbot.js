@@ -429,9 +429,9 @@
     var DESTINOS_RESPALDO = [
 
         {
-            nombre: 'Plan de Prueba SACE',
-            precio: 1000,
-            duracion: '1 día / 1 noche'
+            nombre: 'Salento',
+            precio: 230000,
+            duracion: '2 días / 1 noche'
         },
 
         {
