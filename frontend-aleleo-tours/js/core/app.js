@@ -517,10 +517,17 @@ function inicializarBuscador() {
     const fecha     = document.getElementById('inp-fecha').value;
     const pasajeros = document.getElementById('inp-pasajeros').value;
 
-    if (!origen)    { Toast.mostrar('Selecciona la ciudad de origen.', 'error'); return; }
-    if (!destino)   { Toast.mostrar('Selecciona el destino.', 'error'); return; }
-    if (origen === destino) { Toast.mostrar('El origen y destino no pueden ser iguales.', 'error'); return; }
-    if (!fecha)     { Toast.mostrar('Selecciona una fecha de viaje.', 'error'); return; }
+    // Búsqueda flexible: basta con seleccionar el destino para listar los
+    // planes (destinos.html filtra solo por destino). Origen y fecha son
+    // opcionales y se muestran con "–" en el banner de resultados.
+    if (!destino) {
+      Toast.mostrar('Selecciona al menos un destino para buscar planes.', 'error');
+      return;
+    }
+    if (origen && origen === destino) {
+      Toast.mostrar('El origen y destino no pueden ser iguales.', 'error');
+      return;
+    }
 
     const params = new URLSearchParams({ origen, destino, fecha, pasajeros, tipo: tipoPlanSeleccionado });
     window.location.href = 'destinos.html?' + params.toString();

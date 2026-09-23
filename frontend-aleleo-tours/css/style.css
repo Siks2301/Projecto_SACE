@@ -84,6 +84,74 @@
   --grad-bg:       linear-gradient(180deg, #f0fdfa 0%, #f8fafc 100%);
 }
 
+/* ── Mensajes (feedback visible de formularios) ── */
+.mensaje {
+  padding: var(--sp-sm) var(--sp-md);
+  border-radius: var(--radius-sm);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  display: none;
+  margin-top: var(--sp-sm);
+}
+
+.mensaje-error {
+  background: var(--msg-err-bg);
+  color: var(--msg-err-text);
+  border: 1px solid var(--msg-err-border);
+}
+
+.mensaje-ok {
+  background: var(--msg-ok-bg);
+  color: var(--msg-ok-text);
+  border: 1px solid var(--msg-ok-border);
+}
+
+/* ── Toast (notificaciones breves) ── */
+#toast-container {
+  position: fixed;
+  top: 22px;
+  right: 22px;
+  z-index: 10010;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: min(380px, calc(100vw - 44px));
+  pointer-events: none;
+}
+
+#toast-container .toast {
+  display: block;
+  pointer-events: auto;
+  padding: 13px 18px;
+  border-radius: var(--radius-md);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--color-white);
+  box-shadow: var(--shadow-lg);
+  border-left: 5px solid rgba(255, 255, 255, 0.85);
+  animation: toast-in 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+  word-break: break-word;
+}
+
+.toast-error { background: var(--color-danger); }
+.toast-ok    { background: var(--color-success); }
+.toast-info  { background: var(--color-primary-dark); }
+
+@keyframes toast-in {
+  from { opacity: 0; transform: translateX(24px) scale(0.96); }
+  to   { opacity: 1; transform: translateX(0) scale(1); }
+}
+
+@media (max-width: 576px) {
+  #toast-container {
+    top: 14px;
+    right: 14px;
+    left: 14px;
+    max-width: none;
+  }
+}
+
 /* ── 2. RESET Y BASE ── */
 *,
 *::before,
