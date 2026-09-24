@@ -110,13 +110,3 @@ Duración total recomendada: de 15 a 20 minutos, más ronda de preguntas. Si el 
 | ¿Cuáles son los roles y cómo se controlan? | Cliente, empleado y administrador; el tipo de usuario viaja en el token firmado HMAC-SHA256 (24 h) y las contraseñas se almacenan cifradas (BCrypt). |
 | ¿Quién hizo qué? (trabajo colaborativo) | Trabajo por módulos: Cesar (backend, seguridad, pagos/PDF, pruebas y despliegue), Yerson (base de datos y modelos), Felipe (frontend e interfaces), con commits de autoría por integrante en el repositorio. |
 | ¿Qué pasa si falla el envío del correo de notificación? | Es fail-safe: el proceso no se bloquea; la notificación se reintenta y el estado del pago/solicitud queda registrado en la base de datos. |
-
-### 8.7 Consejos para una presentación perfecta
-- Ensayar la demo completa al menos dos veces con las credenciales reales y cronometrando; nadie lee diapositivas.
-- Hablar en primera persona del plural («nosotros diseñamos…») y con confianza: cada integrante expone su módulo.
-- Usar frases de enlace entre bloques: «Ahora Yerson les mostrará cómo está diseñada la base de datos que soporta todo esto».
-- Proyectar en pantalla completa (F11); las tablas con letra pequeña se explican ampliándolas, no se leen.
-- Explicar lo técnico con una analogía cuando haga falta (el interceptor es «el portero que revisa la identificación en cada puerta»).
-- Ser honestos en el alcance: el pago es un flujo académico simulado (no hay pasarela real ni DIAN); la BD no se entrega porque se autogenera.
-- Cada integrante responde las preguntas de su módulo; si no saben, derivar sin inventar («eso lo maneja X, lo desarrolló…»); tener a mano los documentos para mostrar la evidencia.
-- Cerrar con el resumen de los 9 criterios cumplidos y agradecer al jurado por su tiempo.
