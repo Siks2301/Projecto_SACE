@@ -8,7 +8,7 @@ _21 de septiembre de 2026_
 
 ### 8.1 Propósito del documento
 
-Este documento es la guía oficial de la sustentación final del proyecto SACE ante el jurado. La sustentación está pensada para hacerse **navegando el repositorio público en GitHub en vivo**: casi todas las evidencias del proyecto están versionadas ahí — el código completo del backend y del frontend, la documentación, los diagramas, las capturas, el DDL de la base de datos y los índices de evidencias —, de modo que la exposición recorre el repositorio explicando cada criterio con la evidencia abierta en pantalla. El guion define el orden de exposición, el reparto por integrante, qué proyectar en GitHub en cada punto de la rúbrica, el detalle de la demostración en vivo y las respuestas preparadas a las preguntas más probables del jurado. Su objetivo es que la sustentación sea fluida, demostrativa, y que cubra de manera explícita los nueve criterios de evaluación en el tiempo asignado.
+Este documento es la guía oficial de la sustentación final del proyecto SACE ante el jurado. La sustentación se hace **mostrando el proyecto real en las herramientas de desarrollo donde se construyó**: el **backend desde IntelliJ IDEA**, el **frontend desde Visual Studio Code** y la **base de datos desde pgAdmin**, con la aplicación funcionando en vivo. El repositorio público en GitHub complementa y respalda la exposición — documentación, diagramas, capturas, DDL y el historial de commits del control de versiones —. El guion define el orden de exposición, el reparto por integrante, qué abrir en cada herramienta en cada punto de la rúbrica, el detalle de la demostración en vivo y las respuestas preparadas a las preguntas más probables del jurado. Su objetivo es que la sustentación sea fluida, demostrativa, y que cubra de manera explícita los nueve criterios de evaluación en el tiempo asignado.
 
 **Repositorio público:** <https://github.com/Siks2301/Projecto_SACE>
 
@@ -18,29 +18,29 @@ Este documento es la guía oficial de la sustentación final del proyecto SACE a
 
 La duración total recomendada es de 15 a 20 minutos, más la ronda de preguntas del jurado. Cada bloque tiene un responsable y un tiempo definido en la tabla siguiente; si el tiempo asignado por el instructor fuera menor, se recomienda compactar la sección 8.4 (desarrollo y funcionalidad) a 3 minutos y la etapa de diseño a 2 minutos.
 
-| # | Bloque de la sustentación | Quién presenta | Tiempo | Qué se abre en GitHub |
+| # | Bloque de la sustentación | Quién presenta | Tiempo | Qué se abre / herramienta |
 |---|---|---|---|---|
-| 1 | Apertura: equipo, empresa y problema | Cesar | 1 min | Raíz del repo (README) |
-| 2 | Análisis y requerimientos (criterio 1) | Yerson | 2 min | `docs/01-Analisis…` |
-| 3 | Diseño del sistema (criterio 2) | Felipe | 2.5 min | `docs/diagramas/` + `docs/capturas/` |
-| 4 | Desarrollo y funcionalidad + demostración (criterio 3) | Cesar y Felipe | 4 min | `backend-SACE/…` + `frontend-aleleo-tours/` + `API-Endpoints` |
-| 5 | Base de datos y normalización (criterio 4) | Yerson | 1.5 min | `docs/SACE_db_ddl.sql` + `docs/07-…` |
-| 6 | Control de versiones y colaboración (criterio 5) | Felipe | 1 min | Pestaña *Commits* y *Ramas* del repo |
-| 7 | Gestión del proyecto (criterio 6) | Yerson | 1.5 min | `docs/02-Backlog…` |
-| 8 | Documentación (criterio 7) | Felipe | 1 min | README + `docs/05-…` + `docs/INDICE_EVIDENCIAS.md` |
-| 9 | Preparación para pruebas (criterio 8) | Cesar | 1 min | `docs/03-Plan-de-Pruebas…` |
-| 10 | Preparación para el despliegue (criterio 9) | Cesar | 1.5 min | `docs/04-…` + `docs/06-…` |
-| 11 | Cierre y preguntas del jurado | Todos | 2 min | `docs/INDICE_EVIDENCIAS.md` |
+| 1 | Apertura: equipo, empresa y problema | Cesar | 1 min | GitHub: raíz del repo (README) |
+| 2 | Análisis y requerimientos (criterio 1) | Yerson | 2 min | GitHub: `docs/01-Analisis…` |
+| 3 | Diseño del sistema (criterio 2) | Felipe | 2.5 min | GitHub: `docs/diagramas/` + `docs/capturas/` |
+| 4 | Desarrollo y funcionalidad + demostración (criterio 3) | Cesar y Felipe | 4 min | **IntelliJ**: `backend-SACE/…` + **VS Code**: `frontend-aleleo-tours/` + demo en vivo |
+| 5 | Base de datos y normalización (criterio 4) | Yerson | 1.5 min | **pgAdmin**: BD `SACE_db` + GitHub: `docs/07-…` |
+| 6 | Control de versiones y colaboración (criterio 5) | Felipe | 1 min | GitHub: pestaña *Commits* y *Ramas* del repo |
+| 7 | Gestión del proyecto (criterio 6) | Yerson | 1.5 min | GitHub: `docs/02-Backlog…` |
+| 8 | Documentación (criterio 7) | Felipe | 1 min | GitHub: README + `docs/05-…` + `docs/INDICE_EVIDENCIAS.md` |
+| 9 | Preparación para pruebas (criterio 8) | Cesar | 1 min | GitHub: `docs/03-Plan-de-Pruebas…` |
+| 10 | Preparación para el despliegue (criterio 9) | Cesar | 1.5 min | GitHub: `docs/04-…` + `docs/06-…` + verificación en vivo |
+| 11 | Cierre y preguntas del jurado | Todos | 2 min | GitHub: `docs/INDICE_EVIDENCIAS.md` |
 
 ---
 
-### 8.3 Orden de exposición: qué enseñar en cada punto (todo en GitHub)
+### 8.3 Orden de exposición: qué enseñar en cada punto (backend en IntelliJ, frontend en VS Code, BD en pgAdmin, evidencias en GitHub)
 
 #### Apertura — Cesar (1 min)
 
 Para abrir la sustentación, Cesar saluda al jurado: «Somos Cesar, Yerson y Felipe, aprendices de Análisis y Desarrollo de Software, ficha 3171149-B». A continuación presenta la empresa de contexto: **AleLeo Tours**, una agencia de viajes inspirada en On Vacation, para la cual se desarrolló el sistema. Luego plantea el problema en una sola frase: «las solicitudes de los clientes llegan por canales dispersos — el chat del sitio, el correo y el teléfono —, sin trazabilidad ni control», y presenta **SACE** como la solución de atención y gestión de esas solicitudes.
 
-**En GitHub:** abrir la raíz del repositorio `Siks2301/Projecto_SACE` y proyectar la pantalla del README. El README hace las veces de portada: muestra las tres grandes carpetas del proyecto (`backend-SACE`, `frontend-aleleo-tours` y `docs`). Cesar cierra la apertura diciendo: «esto es lo que les vamos a mostrar: la API, el sitio web y toda la evidencia del proyecto, todo alojado aquí en GitHub».
+**En GitHub:** abrir la raíz del repositorio `Siks2301/Projecto_SACE` y proyectar la pantalla del README. El README hace las veces de portada: muestra las tres grandes carpetas del proyecto (`backend-SACE`, `frontend-aleleo-tours` y `docs`). Cesar cierra la apertura presentando las herramientas: «vamos a enseñarles el sistema funcionando y el código en las mismas herramientas donde lo desarrollamos: el backend en IntelliJ, el frontend en Visual Studio Code y la base de datos en pgAdmin». Esta aclaración da coherencia a todo lo que viene después: cuando cada bloque diga *«en IntelliJ»*, *«en VS Code»* o *«en pgAdmin»*, Cesar, Yerson o Felipe alternan la ventana correspondiente.
 
 ---
 
@@ -66,23 +66,23 @@ Felipe explica el diseño de la base de datos apoyándose en el modelo relaciona
 
 Este es el bloque más extenso y el que muestra la aplicación de verdad. Se divide en tres momentos: el backend, el frontend y el mapa de funciones para la demostración.
 
-**Backend (Cesar).** Abre en GitHub la ruta `backend-SACE/src/main/java/com/mycompany/sacejpa/` y explica la arquitectura del backend: Java 17 con Spring Boot 3.2, organizado en capas de `Controladores/` → `Servicios/` → `Repositorios/`. Abre un controlador y un servicio representativos, por ejemplo `SolicitudController.java` y `SolicitudServicio.java`, para mostrar cómo se atiende una petición. Después abre `docs/API-Endpoints-SACE.md`, el catálogo de endpoints que documenta toda la API REST. Luego muestra la parte de seguridad: la carpeta `Config/` con el interceptor del token, el manejo de errores en `Exceptions/GlobalExceptionHandler.java` (que responde 400, 401, 403, 404 y 409 con mensajes claros) y la utilidad de firma HMAC-SHA256 y cifrado BCrypt; explica ahí la autorización por propiedad, que devuelve 403 ante accesos a recursos ajenos (protección contra IDOR). Por último muestra los pagos: `PagoServicio.java` y `src/main/resources/schema_pagos.sql`, explicando que el monto se toma de la base de datos, que se usa la llave Bre-B @VXM301 y que se genera un comprobante PDF con sello de integridad SHA-256 e IVA 19 %, además del anti-doble-cobro.
+**Backend (Cesar).** Tiene abierto el proyecto `backend-SACE` en **IntelliJ IDEA**. Muestra el árbol de proyecto (`src/main/java/com/mycompany/sacejpa/`) y explica la arquitectura del backend: Java 17 con Spring Boot 3.2, organizado en capas de `Controladores/` → `Servicios/` → `Repositorios/`. En IntelliJ es muy natural recorrer esa estructura en el árbol del proyecto y saltar entre capas con «Ir a implementación» / Ctrl+clic. Abre un controlador y un servicio representativos, por ejemplo `SolicitudController.java` y `SolicitudServicio.java`, para mostrar cómo se atiende una petición. Después abre `docs/API-Endpoints-SACE.md`, el catálogo de endpoints que documenta toda la API REST. Luego muestra la parte de seguridad: la carpeta `Config/` con el interceptor del token, el manejo de errores en `Exceptions/GlobalExceptionHandler.java` (que responde 400, 401, 403, 404 y 409 con mensajes claros) y la utilidad de firma HMAC-SHA256 y cifrado BCrypt; explica ahí la autorización por propiedad, que devuelve 403 ante accesos a recursos ajenos (protección contra IDOR). Por último muestra los pagos: `PagoServicio.java` y `src/main/resources/schema_pagos.sql`, explicando que el monto se toma de la base de datos, que se usa la llave Bre-B @VXM301 y que se genera un comprobante PDF con sello de integridad SHA-256 e IVA 19 %, además del anti-doble-cobro. Se aprovecha la pestaña **Run** de IntelliJ (o la consola) para mostrar el backend en ejecución: «Started … on port 8082».
 
-**Frontend (Felipe).** Abre en GitHub la carpeta `frontend-aleleo-tours/` y explica que el sitio está hecho con HTML, CSS y JavaScript puro con Bootstrap 5.3.3, sin frameworks. Recorre los archivos `.html` por rol: para el cliente están `index`, `destinos` y `mis-solicitudes`; para el empleado y el administrador están `panel-empleado`, `gestion-clientes`, `gestion-empleados`, `gestion-servicios`, `gestion-solicitudes` y `reportes`. Después abre `js/core/app.js`, que centraliza la navegación, inyecta el token en cada petición y cierra la sesión cuando el servidor responde 401, y `js/components/chatbot.js`, que implementa el chat del widget.
+**Frontend (Felipe).** Tiene abierta la carpeta `frontend-aleleo-tours/` en **Visual Studio Code** y explica que el sitio está hecho con HTML, CSS y JavaScript puro con Bootstrap 5.3.3, sin frameworks. Recorre los archivos `.html` por rol: para el cliente están `index`, `destinos` y `mis-solicitudes`; para el empleado y el administrador están `panel-empleado`, `gestion-clientes`, `gestion-empleados`, `gestion-servicios`, `gestion-solicitudes` y `reportes`. Después abre `js/core/app.js`, que centraliza la navegación, inyecta el token en cada petición y cierra la sesión cuando el servidor responde 401, y `js/components/chatbot.js`, que implementa el chat del widget. En VS Code puede apoyarse en la barra lateral del explorador y en el modo *Go to File* (Ctrl+P) para saltar entre archivos con fluidez.
 
-**Cómo mostrar las funciones de la aplicación.** La siguiente tabla es el mapa que guía la demostración: para cada función indica cómo se muestra en vivo en la aplicación y dónde está su código en GitHub.
+**Cómo mostrar las funciones de la aplicación.** La siguiente tabla es el mapa que guía la demostración: para cada función indica cómo se muestra en vivo en la aplicación y dónde está su código en IntelliJ o en VS Code.
 
-| Función | Cómo se muestra en la aplicación (demo en vivo) | Dónde está en GitHub (código) |
+| Función | Cómo se muestra en la aplicación (demo en vivo) | Dónde está el código (IntelliJ / VS Code) |
 |---|---|---|
-| Registro / login de cliente | `registro.html` (crear cuenta) y `login.html` (entrar con `carlos.captura@ejemplo.com`) | `AuthController.java`, `ClienteController.java`, `js/core/app.js` (`inicializarLogin`/`inicializarRegistro`) |
-| Catálogo de destinos y búsqueda | En `index.html` seleccionar un destino → clic en **Buscar Plan** → `destinos.html` lista los planes filtrados | `ServicioController.java` (`GET /api/servicios`), `js/cliente/destinos.js` (`leerParametrosBusqueda`) |
-| Crear y consultar solicitudes (PQR/reserva) | Login cliente → **Mis solicitudes** → nueva solicitud → aparece listada | `SolicitudController.java`, `SolicitudServicio.java`, `mis-solicitudes.html`, `js/cliente/mis-solicitudes.js` |
-| Chat del hilo de la solicitud | Abrir una solicitud → escribir un mensaje en el hilo | `MensajeController.java`, `js/cliente/mis-solicitudes.js` |
-| Chatbot AleLeoBot | Botón flotante → pregunta frecuente o consulta del catálogo | `ChatbotController.java`, `PreguntaFrecuenteController.java`, `js/components/chatbot.js` |
-| Pago Bre-B + comprobante PDF | En la solicitud → **Pagar** → descargar el PDF (sello SHA-256 + IVA 19 %) | `PagoController.java`, `PagoServicio.java`, `src/main/resources/schema_pagos.sql` |
-| Panel administrador (estados de solicitudes) | Login admin → **Gestión de solicitudes** → cambiar estado a EN_PROCESO/RESUELTA | `EmpleadoController.java`, `SolicitudController.java`, `js/admin/gestion-solicitudes.js` |
-| Reportes y KPIs (solo admin) | Login admin → **Reportes** → KPIs y exportar el reporte PDF | `ReporteController.java`, `ReporteServicio.java`, `js/admin/reportes.js` |
-| Seguridad: 401 y 403 | Probar con un token vencido (401) o abrir una solicitud ajena (403) | interceptor de token + `Exceptions/GlobalExceptionHandler.java` |
+| Registro / login de cliente | `registro.html` (crear cuenta) y `login.html` (entrar con `carlos.captura@ejemplo.com`) | IntelliJ: `AuthController.java`, `ClienteController.java`; VS Code: `js/core/app.js` (`inicializarLogin`/`inicializarRegistro`) |
+| Catálogo de destinos y búsqueda | En `index.html` seleccionar un destino → clic en **Buscar Plan** → `destinos.html` lista los planes filtrados | IntelliJ: `ServicioController.java` (`GET /api/servicios`); VS Code: `js/cliente/destinos.js` (`leerParametrosBusqueda`) |
+| Crear y consultar solicitudes (PQR/reserva) | Login cliente → **Mis solicitudes** → nueva solicitud → aparece listada | IntelliJ: `SolicitudController.java`, `SolicitudServicio.java`; VS Code: `mis-solicitudes.html`, `js/cliente/mis-solicitudes.js` |
+| Chat del hilo de la solicitud | Abrir una solicitud → escribir un mensaje en el hilo | IntelliJ: `MensajeController.java`; VS Code: `js/cliente/mis-solicitudes.js` |
+| Chatbot AleLeoBot | Botón flotante → pregunta frecuente o consulta del catálogo | IntelliJ: `ChatbotController.java`, `PreguntaFrecuenteController.java`; VS Code: `js/components/chatbot.js` |
+| Pago Bre-B + comprobante PDF | En la solicitud → **Pagar** → descargar el PDF (sello SHA-256 + IVA 19 %) | IntelliJ: `PagoController.java`, `PagoServicio.java`, `src/main/resources/schema_pagos.sql` |
+| Panel administrador (estados de solicitudes) | Login admin → **Gestión de solicitudes** → cambiar estado a EN_PROCESO/RESUELTA | IntelliJ: `EmpleadoController.java`, `SolicitudController.java`; VS Code: `js/admin/gestion-solicitudes.js` |
+| Reportes y KPIs (solo admin) | Login admin → **Reportes** → KPIs y exportar el reporte PDF | IntelliJ: `ReporteController.java`, `ReporteServicio.java`; VS Code: `js/admin/reportes.js` |
+| Seguridad: 401 y 403 | Probar con un token vencido (401) o abrir una solicitud ajena (403) | IntelliJ: interceptor de token + `Exceptions/GlobalExceptionHandler.java` |
 
 Después de este mapa se pasa a la demostración en vivo, cuyo guion paso a paso está en la sección 8.5.
 
@@ -90,9 +90,9 @@ Después de este mapa se pasa a la demostración en vivo, cuyo guion paso a paso
 
 #### 4. Base de datos — Yerson (1.5 min) — criterio 4 (10 %)
 
-**En GitHub:** Yerson abre, en este orden, el modelo entidad relación, el modelo relacional, el archivo `docs/SACE_db_ddl.sql` (la estructura completa de la base de datos, generada con `pg_dump --schema-only`, sin datos) y el documento `docs/07-Modelo-de-Datos-y-Normalizacion-SACE.md`.
+**En pgAdmin:** Yerson abre la base de datos en **pgAdmin**, conectada a `SACE_db` (localhost:5432). Muestra el árbol de objetos: `Databases → SACE_db → Schemas → public → Tables` y recorre las tablas del sistema, señalando las principales: `cliente`, `empleado`, `solicitud`, `mensaje`, `servicio`, `pago`, `chatbot` y `pregunta_frecuente`. Hace clic en una tabla representativa (por ejemplo `solicitud` o `pago`) y muestra sus **columnas** (tipos, `numeric(12,2)` para el dinero), su **llave primaria** y sus **llaves foráneas** en la pestaña *Constraints*. Adicionalmente, abre `docs/SACE_db_ddl.sql` (la estructura completa, generada con `pg_dump --schema-only`, sin datos) en el explorador o en IntelliJ, y el documento `docs/07-Modelo-de-Datos-y-Normalizacion-SACE.md`.
 
-Con el DDL en pantalla, explica la integridad de los datos: claves primarias por identidad, claves foráneas que mantienen las relaciones, restricciones CHECK para los estados, prioridades y tipos, y tipos numéricos precisos para el dinero (`numeric(12,2)`). Luego explica la normalización: la base de datos está normalizada hasta 3FN — en 1FN los atributos son atómicos y existen tablas puente para las relaciones muchos a muchos; en 2FN no hay dependencias parciales; y en 3FN los catálogos están separados en tablas propias, como `servicio`, `pregunta_frecuente` y `chatbot`, que se referencian por llave foránea. Cierra aclarando la correspondencia entre los requerimientos y las tablas (por ejemplo, lo relacionado con pagos, RF-11/RF-12, vive en la tabla `pago`, y el chatbot, RF-08, usa `chatbot` y `pregunta_frecuente`), y que la base de datos se crea sola con la configuración `ddl-auto=update` más el `DataInitializer`, que referencia en `backend-SACE/src/main/java/com/mycompany/sacejpa/Config/DataInitializer.java`.
+Con las tablas y sus constraints en pantalla (pgAdmin), explica la integridad de los datos: claves primarias por identidad, claves foráneas que mantienen las relaciones, restricciones CHECK para los estados, prioridades y tipos, y tipos numéricos precisos para el dinero (`numeric(12,2)`). Luego explica la normalización: la base de datos está normalizada hasta 3FN — en 1FN los atributos son atómicos y existen tablas puente para las relaciones muchos a muchos; en 2FN no hay dependencias parciales; y en 3FN los catálogos están separados en tablas propias, como `servicio`, `pregunta_frecuente` y `chatbot`, que se referencian por llave foránea. Cierra aclarando la correspondencia entre los requerimientos y las tablas (por ejemplo, lo relacionado con pagos, RF-11/RF-12, vive en la tabla `pago`, y el chatbot, RF-08, usa `chatbot` y `pregunta_frecuente`), y que la base de datos se crea sola con la configuración `ddl-auto=update` más el `DataInitializer`, que referencia en IntelliJ en `backend-SACE/src/main/java/com/mycompany/sacejpa/Config/DataInitializer.java`. Como toque extra, puede ejecutar una consulta simple en el *Query Tool* de pgAdmin (por ejemplo `SELECT * FROM pago;`) para mostrar los datos reales del sistema en ejecución.
 
 ---
 
@@ -134,13 +134,13 @@ Con el DDL en pantalla, explica la integridad de los datos: claves primarias por
 
 ### 8.4 Reparto de responsabilidades por integrante
 
-La siguiente tabla resume quién domina cada módulo, en qué bloques habla, qué entrega muestra en GitHub y qué tipo de preguntas responde. Esta distribución también es evidencia del trabajo colaborativo.
+La siguiente tabla resume quién domina cada módulo, en qué bloques habla, con qué herramienta lo muestra y qué tipo de preguntas responde. Esta distribución también es evidencia del trabajo colaborativo.
 
-| Integrante | Módulo que domina | Habla en | Entrega de GitHub que muestra | Responde preguntas de |
+| Integrante | Módulo que domina | Habla en | Entrega / herramienta que muestra | Responde preguntas de |
 |---|---|---|---|---|
-| Cesar Leonardo Ramírez Montejo | Backend, seguridad, pagos/PDF, pruebas y despliegue | Apertura, desarrollo (1.ª parte), pruebas, despliegue, cierre | `backend-SACE/…`, `API-Endpoints`, `03-Plan-de-Pruebas`, `04/06-Despliegue` | Token/seguridad, pagos Bre-B, comprobante, 62/62 pruebas, despliegue |
-| Yerson Alexei Torres Garcia | Base de datos y modelos | Análisis, base de datos, gestión | `01-Analisis…`, `SACE_db_ddl.sql`, `07-Modelo de Datos…`, `02-Backlog…` | Problema/alcance/requerimientos, MER/relacional/DDL, normalización, backlog y sprints |
-| Felipe Gonzales Quitero | Frontend e interfaces | Diseño, desarrollo (demo), control de versiones, documentación | `frontend-aleleo-tours/`, `docs/diagramas/`, `docs/capturas/`, Commits/Ramas, README | Interfaz/capturas, chatbot, GitHub/commits, README/manual |
+| Cesar Leonardo Ramírez Montejo | Backend, seguridad, pagos/PDF, pruebas y despliegue | Apertura, desarrollo (1.ª parte), pruebas, despliegue, cierre | IntelliJ: `backend-SACE/…`, `API-Endpoints`; GitHub: `03-Plan-de-Pruebas`, `04/06-Despliegue` | Token/seguridad, pagos Bre-B, comprobante, 62/62 pruebas, despliegue |
+| Yerson Alexei Torres Garcia | Base de datos y modelos | Análisis, base de datos, gestión | pgAdmin: BD `SACE_db`; GitHub: `01-Analisis…`, `SACE_db_ddl.sql`, `07-Modelo de Datos…`, `02-Backlog…` | Problema/alcance/requerimientos, MER/relacional/DDL, normalización, backlog y sprints |
+| Felipe Gonzales Quitero | Frontend e interfaces | Diseño, desarrollo (demo), control de versiones, documentación | VS Code: `frontend-aleleo-tours/`; GitHub: `docs/diagramas/`, `docs/capturas/`, Commits/Ramas, README | Interfaz/capturas, chatbot, GitHub/commits, README/manual |
 
 ---
 
@@ -148,7 +148,7 @@ La siguiente tabla resume quién domina cada módulo, en qué bloques habla, qu�
 
 #### Antes de empezar
 
-Antes de iniciar la sustentación hay que dejar el ambiente listo para no perder tiempo en el momento del demo. Conviene tener abierta en otra pestaña el repositorio `https://github.com/Siks2301/Projecto_SACE`, por si hace falta proyectar algo adicional de último minuto (además se usa como plan B). El backend debe estar encendido (Java 17 + Maven) y se espera en el log el mensaje «Started … on port 8082», que confirma que la base de datos se creó sola. El frontend se sirve en el puerto 8091 y se abre `http://localhost:8091` en una ventana de incógnito, para que la sesión empiece limpia. También se tienen a la mano las credenciales de demostración — `admin@aleleotours.com` / `admin123` y `carlos.captura@ejemplo.com` / `DemoClave2026!a` — y la llave Bre-B @VXM301.
+Antes de iniciar la sustentación hay que dejar el ambiente listo para no perder tiempo en el momento del demo. La pantalla debe tener preparadas las tres herramientas con el proyecto abierto: **IntelliJ IDEA** con el proyecto `backend-SACE` (y el backend en ejecución en la pestaña *Run*, donde se espera el mensaje «Started … on port 8082», que confirma que la base de datos se creó sola), **Visual Studio Code** con la carpeta `frontend-aleleo-tours` abierta y **pgAdmin** conectado a la base `SACE_db`. El frontend se sirve en el puerto 8091 y se abre `http://localhost:8091` en una ventana de incógnito, para que la sesión empiece limpia. Conviene tener abierta en otra pestaña el repositorio `https://github.com/Siks2301/Projecto_SACE`, por si hace falta proyectar algo adicional de último minuto (además se usa como plan B). También se tienen a la mano las credenciales de demostración — `admin@aleleotours.com` / `admin123` y `carlos.captura@ejemplo.com` / `DemoClave2026!a` — y la llave Bre-B @VXM301.
 
 #### Secuencia
 
@@ -165,13 +165,13 @@ La secuencia de la demostración sigue el mapa «Cómo mostrar las funciones» d
 
 #### Plan B si falla la conexión, el demo o el internet
 
-Si la demostración local fallara, las capturas ya tomadas en el propio repositorio permiten avanzar igual: se proyectan desde `docs/capturas/` (12 de interfaz y 3 del despliegue), que están indexadas en `docs/INDICE-CAPTURAS.md`. Si el problema es el internet y GitHub no carga, se usan las **copias locales** de las evidencias: los `.md` de la carpeta `docs/` y las imágenes de `docs/diagramas/` y `docs/capturas/` se abren directamente desde el explorador de archivos, y son las mismas evidencias que están versionadas en el repositorio.
+Si la demostración local fallara, las capturas ya tomadas en el propio repositorio permiten avanzar igual: se proyectan desde `docs/capturas/` (12 de interfaz y 3 del despliegue), que están indexadas en `docs/INDICE-CAPTURAS.md`. Si el problema es el internet y GitHub no carga, se usan las **copias locales** de las evidencias: los `.md` de la carpeta `docs/` (se abren en IntelliJ o VS Code con vista previa Markdown, o en el explorador de archivos) y las imágenes de `docs/diagramas/` y `docs/capturas/`, que son las mismas evidencias que están versionadas en el repositorio. En cualquier caso, el código siempre se puede mostrar desde las herramientas locales (IntelliJ y VS Code) sin depender de internet.
 
 ---
 
 ### 8.6 Preguntas probables del jurado y respuestas preparadas
 
-La siguiente tabla agrupa las preguntas que con más frecuencia hace el jurado, junto con la respuesta sugerida para cada una. Las respuestas son breves, técnicas y siempre apuntan a la evidencia que se puede mostrar en GitHub.
+La siguiente tabla agrupa las preguntas que con más frecuencia hace el jurado, junto con la respuesta sugerida para cada una. Las respuestas son breves, técnicas y siempre apuntan a la evidencia, mostrándola en la herramienta correspondiente (IntelliJ, VS Code, pgAdmin) o en GitHub.
 
 | Pregunta | Respuesta sugerida |
 |---|---|
@@ -185,18 +185,18 @@ La siguiente tabla agrupa las preguntas que con más frecuencia hace el jurado, 
 | ¿Cuáles son los roles y cómo se controlan? | Cliente, empleado y administrador. El tipo de usuario viaja en el token firmado con HMAC-SHA256 (vigencia de 24 horas) y las contraseñas se almacenan cifradas con BCrypt. |
 | ¿Quién hizo qué? (trabajo colaborativo) | Trabajamos por módulos: Cesar en backend, seguridad, pagos/PDF, pruebas y despliegue; Yerson en base de datos y modelos; Felipe en frontend e interfaces. Cada aporte está respaldado por commits con autoría en el repositorio. |
 | ¿Qué pasa si falla el envío del correo de notificación? | Es fail-safe: el proceso no se bloquea, la notificación se reintenta y el estado del pago o de la solicitud queda registrado en la base de datos de todos modos. |
-| ¿Todo lo que muestran está en GitHub? | Sí: el código completo (backend-SACE y frontend-aleleo-tours), la documentación (docs/01…08), los diagramas, las capturas, el DDL y los índices están versionados en el repositorio público. Solamente quedan fuera, por decisión, la base de datos (porque se autogenera) y los archivos `.docx` finales, que están en la carpeta de entrega. |
+| ¿Todo lo que muestran está en GitHub? | Sí: el código completo (backend-SACE y frontend-aleleo-tours), la documentación (docs/01…08), los diagramas, las capturas, el DDL y los índices están versionados en el repositorio público. En la sustentación ese mismo código se muestra desde las herramientas de desarrollo — el backend en IntelliJ IDEA, el frontend en Visual Studio Code y la base de datos en pgAdmin —, y GitHub queda como respaldo y para el control de versiones. Solamente quedan fuera, por decisión, la base de datos (porque se autogenera) y los archivos `.docx` finales, que están en la carpeta de entrega. |
 
 ---
 
 ### 8.7 Consejos para una presentación perfecta
 
-- **Navegar GitHub como presentación:** ensayar la ruta completa de clics (raíz → docs/ → diagramas/ → capturas/ → código → Commits) al menos dos veces, hasta saber exactamente dónde hace clic cada integrante y en qué orden.
-- Verificar que el repositorio sea **público** y que cargue rápido; abrirlo en modo incógnito para evitar sesiones o caché que cambien lo que se proyecta. Si el salón no tiene internet, tener listas las copias locales (plan B).
+- **Ensayar la ruta completa en las tres herramientas:** practicar al menos dos veces la secuencia de clics en IntelliJ (árbol de proyecto, pestaña Run), en VS Code (explorador de archivos, Ctrl+P) y en pgAdmin (árbol de objetos, Query Tool), además de la ruta en GitHub (raíz → docs/ → diagramas/ → capturas/ → Commits), hasta saber exactamente qué abre cada integrante y en qué orden.
+- Verificar que el repositorio sea **público** y que cargue rápido; abrirlo en modo incógnito para evitar sesiones o caché que cambien lo que se proyecta. Si el salón no tiene internet, tener listas las copias locales (plan B) y las herramientas ya abiertas.
 - Ensayar la demo completa al menos dos veces con las credenciales reales y cronometrando; en la sustentación nadie debe leer las diapositivas ni los documentos, sino mostrar y explicar.
 - Hablar en primera persona del plural («nosotros diseñamos…») y con seguridad: cada integrante expone su módulo y no interrumpe al compañero.
-- Usar frases de enlace entre bloques para que la presentación fluya, por ejemplo: «Ahora Yerson les mostrará cómo está diseñada la base de datos que soporta todo esto» (y restar protagonismo a la pantalla del repo abriendo `docs/SACE_db_ddl.sql`).
-- Proyectar en pantalla completa (F11); en GitHub, ampliar las imágenes de diagramas y capturas haciendo clic sobre ellas, en lugar de acercar la cámara o agrandar la letra.
+- Usar frases de enlace entre bloques para que la presentación fluya, por ejemplo: «Ahora Yerson les mostrará cómo está diseñada la base de datos que soporta todo esto» (y restar protagonismo a la pantalla abriendo pgAdmin sobre la base `SACE_db`).
+- Proyectar en pantalla completa (F11); en las herramientas, agrandar la letra del código cuando haga falta (en VS Code *Ctrl + +* y en IntelliJ *Ctrl +.*; en pgAdmin ampliar el panel de columnas o usar el Query Tool). En GitHub, ampliar las imágenes de diagramas y capturas haciendo clic sobre ellas, en lugar de acercar la cámara o agrandar la letra.
 - Explicar lo técnico con una analogía cuando haga falta: el interceptor del token es «el portero que revisa la identificación en cada puerta»; la normalización es «organizar un closet para que cada cosa tenga su lugar».
 - Ser honestos en el alcance: el pago es un flujo académico simulado (no hay pasarela real ni DIAN) y la base de datos no se entrega porque se autogenera.
 - Cada integrante responde las preguntas de su módulo; si no sabe algo, deriva sin inventar: «eso lo maneja X, que lo desarrolló», y se apoya en el repositorio para mostrar la evidencia.
