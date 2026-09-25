@@ -1,10 +1,11 @@
 # Índice de capturas de interfaz — SACE (AleLeo Tours)
 
 Evidencia visual del **diseño de interfaces** (criterio 2 de la rúbrica) y del
-**despliegue en ejecución** (criterio 9). Capturas tomadas el 21 de septiembre de
-2026 sobre el sistema ejecutándose con datos reales del backend.
+**despliegue en ejecución** (criterio 9). Capturas tomadas el 25 de septiembre de
+2026 sobre el sistema ejecutándose con datos reales del backend (frontend en
+`http://localhost:8091`, rediseño AleLeo Tours, captura de página completa a 1440 px).
 
-## Interfaz (12 capturas, 1440×2200 px)
+## Interfaz (12 capturas, 1440 px de ancho, página completa)
 
 | # | Archivo | Pantalla |
 |---|---|---|
