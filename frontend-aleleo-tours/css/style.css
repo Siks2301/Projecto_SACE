@@ -1,112 +1,1676 @@
-/* ══════════════════════════════════════════════
-   AleLeo Tours — style.css
-   Diseño Oficial Inspirado en OnVacation.com/co
-   ══════════════════════════════════════════════ */
+/* ══════════════════════════════════════════════════════════════════════════
+   AleLeo Tours — style.css   ·   v3  ·  "Océano & Atardecer"
 
-@import url('https://fonts.googleapis.com/css2?family=Dosis:wght@400;600;700;800&family=Outfit:wght@300;400;500;600;700;800&display=swap');
+   Dirección visual tomada de las tres referencias:
+     · On Vacation  → acento coral vibrante, tarjetas redondeadas, CTA en píldora
+     · Disney World → azul océano profundo, degradados suaves, jerarquía editorial
+     · trivago      → sombras muy bajas, mucho aire, controles tipo píldora, limpio
 
-/* ── 1. VARIABLES CSS (Design Tokens Corporativos) ── */
+   IMPORTANTE: este archivo SOLO cambia la estética. No se renombra ni se elimina
+   ninguna clase, id ni variable que use el HTML o el JavaScript. Toda la
+   funcionalidad permanece idéntica.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+
+/* ───────────────────────────  1. TOKENS  ─────────────────────────── */
 :root {
-  /* Paleta Oficial AleLeo Tours */
-  --color-primary:      #00a896; /* Turquesa Caribeño */
-  --color-primary-dark: #0077b6; /* Azul Océano */
-  --color-primary-deep: #004e64; /* Azul Profundo */
-  --color-accent:       #ffb703; /* Amarillo Sol / Dorado Promo */
-  --color-accent-dark:  #fb8500; /* Naranja Veraniego */
-  --color-promo:        #e11d48; /* Coral / Rojo Aniversario */
+  /* Azul océano profundo — estructura, superficies oscuras, footer */
+  --ds-navy-950: #04101F;
+  --ds-navy-900: #071B33;
+  --ds-navy-800: #0C2A4D;
+  --ds-navy-700: #123A66;
+  --ds-navy-600: #1A4C80;
 
-  /* Neutros Elevados */
-  --color-dark:    #0a192f; /* Navy Oscuro Premium */
-  --color-mid:     #1e293b;
-  --color-body:    #1e293b;
-  --color-muted:   #64748b;
-  --color-subtle:  #94a3b8;
-  --color-border:  #e2e8f0;
-  --color-surface: #f8fafc;
-  --color-white:   #ffffff;
+  /* Celeste — acentos fríos, enlaces, estados informativos */
+  --ds-blue-700: #0A6FA8;
+  --ds-blue-600: #0C86C4;
+  --ds-blue-500: #1994D7;
+  --ds-blue-400: #4FB3E6;
+  --ds-blue-300: #93D0EF;
+  --ds-blue-100: #E9F4FC;
 
-  /* Semánticos */
-  --color-success:      #10b981;
-  --color-success-dark: #059669;
-  --color-danger:       #ef4444;
-  --color-danger-dark:  #dc2626;
+  /* Coral atardecer — CTA principal, precio y acento de marca */
+  --ds-coral-800: #A02F0F;
+  --ds-coral-700: #C43A16;
+  --ds-coral-600: #E2471F;
+  --ds-coral-500: #FF5A3C;
+  --ds-coral-400: #FF8168;
+  --ds-coral-100: #FFEDE8;
+
+  /* Turquesa — acento secundario y confirmaciones */
+  --ds-teal-800: #02504E;
+  --ds-teal-700: #036966;
+  --ds-teal-600: #04857F;
+  --ds-teal-500: #0EA5A0;
+  --ds-teal-400: #2FC4BC;
+  --ds-teal-100: #E0F6F4;
+
+  /* Ámbar — promociones e insignias "Todo Incluido" */
+  --ds-amber-700: #9A5F08;
+  --ds-amber-600: #D8890A;
+  --ds-amber-500: #F5A524;
+  --ds-amber-400: #FFB84D;
+  --ds-amber-100: #FFF4E0;
+
+  /* Naranja (compatibilidad con badges históricos) */
+  --ds-orange-600: #D14A10;
+  --ds-orange-500: #F2620E;
+  --ds-orange-100: #FFEDE2;
+
+  /* Rojo */
+  --ds-red-600: #B02119;
+  --ds-red-500:  #D93025;
+  --ds-red-100:  #FDE9E7;
+
+  /* Verde */
+  --ds-green-700: #086341;
+  --ds-green-600: #0A7D53;
+  --ds-green-500: #12A06B;
+  --ds-green-100: #E2F6EC;
+
+  /* Neutros cálidos (escala trivago) */
+  --ds-gray-950: #0B0B0C;
+  --ds-gray-900: #171717;
+  --ds-gray-800: #2A2A2A;
+  --ds-gray-700: #3F3F3F;
+  --ds-gray-600: #555553;
+  --ds-gray-500: #6C6C6B;
+  --ds-gray-400: #8D8D8B;
+  --ds-gray-300: #B5B5B3;
+  --ds-gray-200: #DEDEDE;
+  --ds-gray-150: #EAEAE9;
+  --ds-gray-100: #F2F2F1;
+  --ds-gray-50:  #F8F8F7;
+  --ds-white:    #FFFFFF;
+
+  /* ── Alias semánticos: los que el HTML y el JS usan en estilos inline ── */
+  --color-primary:      var(--ds-coral-500);
+  --color-primary-dark: var(--ds-coral-600);
+  --color-primary-deep: var(--ds-coral-700);
+  --color-accent:       var(--ds-amber-500);
+  --color-accent-dark:  var(--ds-amber-600);
+  --color-promo:        var(--ds-red-500);
+
+  --color-dark:    var(--ds-navy-900);
+  --color-mid:     var(--ds-navy-800);
+  --color-body:    var(--ds-gray-800);
+  --color-muted:   var(--ds-gray-500);
+  --color-subtle:  var(--ds-gray-400);
+  --color-border:  var(--ds-gray-200);
+  --color-surface: var(--ds-gray-100);
+  --color-white:   var(--ds-white);
+  --color-text-light: var(--ds-gray-500);
+
+  /* ── Color de estado, con dos tonos: claro y oscuro ──
+     Estas cuatro variables son las que leen .text-info / .text-warning /
+     .text-success / .text-primary. En una superficie clara toman el tono
+     oscuro (legible sobre blanco); dentro de una superficie oscura las
+     sobreescribe el bloque 12b con el tono claro. Asi el mismo nombre de
+     clase se lee bien en los dos fondos, sin tener que duplicar el HTML. */
+  --aleleo-primary: var(--ds-coral-700);
+  --aleleo-info:    var(--ds-blue-700);
+  --aleleo-warning: var(--ds-amber-700);
+  --aleleo-success: var(--ds-green-600);
+  --aleleo-danger:  var(--ds-red-500);
+
+  --color-success:      var(--ds-green-500);
+  --color-success-dark: var(--ds-green-600);
+  --color-danger:       var(--ds-red-500);
+  --color-danger-dark:  #B02119;
 
   /* Mensajes */
-  --msg-ok-bg:     #d1fae5;
-  --msg-ok-text:   #065f46;
-  --msg-ok-border: #a7f3d0;
-  --msg-err-bg:    #ffe4e6;
-  --msg-err-text:  #9f1239;
-  --msg-err-border:#fecdd3;
+  --msg-ok-bg:     var(--ds-green-100);
+  --msg-ok-text:   #065F3E;
+  --msg-ok-border: #A9E5C8;
+  --msg-err-bg:    var(--ds-red-100);
+  --msg-err-text:  #A11E14;
+  --msg-err-border:#F5BFB9;
 
-  /* Tipografía */
-  --font-base: 'Outfit', 'Dosis', system-ui, -apple-system, sans-serif;
-  --font-heading: 'Dosis', 'Outfit', sans-serif;
-  --fs-xs:   12px;
-  --fs-sm:   14px;
+  /* Tipografía — Outfit unificada; jerarquía por peso y tracking */
+  --font-base:    'Outfit', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-heading: 'Outfit', system-ui, -apple-system, sans-serif;
+  --fs-xs:   11px;
+  --fs-sm:   13px;
   --fs-base: 15px;
   --fs-md:   16px;
   --fs-lg:   20px;
-  --fs-xl:   28px;
-  --fs-2xl:  34px;
-  --fs-3xl:  46px;
-  --fs-hero: 54px;
+  --fs-xl:   26px;
+  --fs-2xl:  32px;
+  --fs-3xl:  42px;
+  --fs-hero: 60px;
 
-  /* Espaciado */
+  /* Espaciado — más aire */
   --sp-xs:  8px;
   --sp-sm:  12px;
   --sp-md:  20px;
-  --sp-lg:  30px;
-  --sp-xl:  40px;
-  --sp-2xl: 60px;
+  --sp-lg:  32px;
+  --sp-xl:  48px;
+  --sp-2xl: 80px;
 
-  /* Radios */
-  --radius-sm: 8px;
-  --radius-md: 14px;
-  --radius-lg: 22px;
-  --radius-xl: 28px;
-  --radius-pill: 50px;
+  /* Radios — generosos (On Vacation / Disney) */
+  --radius-xs:   6px;
+  --radius-sm:   8px;
+  --radius-md:   12px;
+  --radius-lg:   16px;
+  --radius-xl:   22px;
+  --radius-2xl:  28px;
+  --radius-pill: 999px;
 
-  /* Sombras */
-  --shadow-sm: 0 4px 12px rgba(10, 25, 47, 0.06);
-  --shadow-md: 0 8px 24px rgba(10, 25, 47, 0.10);
-  --shadow-lg: 0 16px 36px rgba(10, 25, 47, 0.14);
-  --shadow-xl: 0 24px 50px rgba(10, 25, 47, 0.22);
+  /* Sombras — muy bajas y suaves (trivago) */
+  --shadow-xs: 0 1px 2px rgba(7,27,51,.06);
+  --shadow-sm: 0 2px 6px rgba(7,27,51,.07);
+  --shadow-md: 0 4px 14px rgba(7,27,51,.09);
+  --shadow-lg: 0 10px 28px rgba(7,27,51,.12);
+  --shadow-xl: 0 18px 48px rgba(7,27,51,.16);
+  --shadow-brand: 0 6px 20px rgba(255,90,60,.28);
 
-  /* Transiciones */
-  --transition: 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition: 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 
-  /* Gradientes corporativos */
-  --grad-primary:  linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
-  --grad-promo:    linear-gradient(135deg, #e11d48 0%, #fb8500 100%);
-  --grad-gold:     linear-gradient(135deg, #ffb703 0%, #fb8500 100%);
-  --grad-dark:     linear-gradient(135deg, #0a192f 0%, #004e64 100%);
-  --grad-bg:       linear-gradient(180deg, #f0fdfa 0%, #f8fafc 100%);
+  /* Degradados. Solo se declaran los que estan en uso: tener gradientes
+     definidos que nada referencian hace que cambiar la paleta sea mas
+     dificil, porque uno edita un token y no ve ningun efecto. */
+  --grad-primary: linear-gradient(135deg, var(--ds-coral-500) 0%, var(--ds-coral-600) 100%);
+  --grad-promo:   linear-gradient(135deg, var(--ds-coral-500) 0%, var(--ds-amber-500) 100%);
+  --grad-dark:    linear-gradient(150deg, var(--ds-navy-900) 0%, var(--ds-navy-800) 55%, var(--ds-navy-700) 100%);
+  --grad-hero:    linear-gradient(180deg, rgba(4,16,31,.62) 0%, rgba(7,27,51,.42) 55%, rgba(7,27,51,.68) 100%);
+  --grad-bg:      linear-gradient(180deg, #F7FAFD 0%, var(--ds-gray-50) 100%);
+
+  /* Anillos de foco. Estaban repetidos como box-shadow literal en varios
+     sitios, y al haber dos copias era facil que se desincronizaran. */
+  --ring-focus: 0 0 0 4px rgba(25,148,215,.14);
+  --ring-brand: 0 0 0 3px rgba(255,90,60,.12);
 }
 
-/* ── Mensajes (feedback visible de formularios) ── */
+
+/* ───────────────────────────  2. BASE  ─────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+
+body {
+  font-family: var(--font-base);
+  background: var(--grad-bg);
+  color: var(--color-body);
+  line-height: 1.65;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* El body es un contenedor flex de columna (ver arriba), asi que cada hijo
+   directo -header, main, footer- es un item flex cuyo min-width es "auto":
+   no baja del ancho minimo de su contenido. Con la tabla de administracion
+   dentro, eso estiraba la pagina entera a 1035px en un movil de 390px y
+   aparecia un scroll horizontal que hacia que el sitio se viera roto.
+   min-width: 0 les deja encogerse y el desplazamiento se queda dentro de la
+   tabla, que es donde corresponde. */
+body > * { min-width: 0; }
+
+main { flex: 1; }
+img  { max-width: 100%; display: block; }
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  letter-spacing: -.02em;
+  color: var(--ds-navy-900);
+}
+
+a { color: var(--ds-coral-600); text-decoration: none; transition: color var(--transition); }
+a:hover { color: var(--ds-coral-700); }
+
+.skip-link {
+  position: absolute;
+  top: -120%;
+  left: var(--sp-md);
+  background: var(--ds-navy-900);
+  color: var(--ds-white);
+  padding: var(--sp-xs) var(--sp-md);
+  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  z-index: 9999;
+  transition: top .2s;
+}
+.skip-link:focus { top: 0; }
+
+:focus-visible {
+  outline: 3px solid var(--ds-blue-500);
+  outline-offset: 2px;
+  border-radius: var(--radius-xs);
+}
+
+/* Utilidades propias del proyecto */
+.oculto  { display: none !important; }
+.hidden  { display: none !important; }
+.bg-surface { background: var(--ds-gray-100) !important; }
+.rounded-lg { border-radius: var(--radius-lg) !important; }
+.cursor-pointer { cursor: pointer; }
+[onclick] { cursor: pointer; }
+.transition-all { transition: all .2s ease; }
+
+/* Filtro de período activo en reportes (lo alterna reportes.js) */
+.active-filter {
+  background: var(--ds-amber-500) !important;
+  border-color: var(--ds-amber-500) !important;
+  color: var(--ds-navy-900) !important;
+  font-weight: 700;
+}
+
+
+/* ───────────────────  3. BARRA DE PROMOCIÓN SUPERIOR  ─────────────────── */
+.top-bar-promo {
+  background: var(--grad-promo);
+  /* Texto azul marino en vez de blanco: el extremo ambar del degradado
+     dejaba el blanco en 2.0 de contraste. En azul marino el mismo degradado
+     da entre 5.6 y 8.5, y se conserva el color vivo de la barra. */
+  color: var(--ds-navy-900);
+  font-size: 12.5px;
+  font-weight: 600;
+  padding: 10px var(--sp-md);
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  letter-spacing: .2px;
+  position: relative;
+  z-index: 201;
+  text-decoration: none;
+  cursor: pointer;
+  flex-wrap: wrap;
+  transition: filter .2s;
+}
+.top-bar-promo:hover { filter: brightness(1.06); color: #fff; }
+.top-bar-promo span.badge-top {
+  background: #fff;
+  color: var(--ds-coral-600);
+  padding: 3px 9px;
+  border-radius: var(--radius-pill);
+  font-size: 10.5px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+}
+
+
+/* ───────────────────  4. HEADER Y NAVEGACIÓN  ─────────────────── */
+.franja {
+  background: rgba(255,255,255,.94);
+  backdrop-filter: saturate(180%) blur(14px);
+  -webkit-backdrop-filter: saturate(180%) blur(14px);
+  padding: 0 var(--sp-xl);
+  height: 72px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--sp-md);
+  box-shadow: 0 1px 0 rgba(7,27,51,.07), 0 4px 18px rgba(7,27,51,.05);
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  border-bottom: 1px solid var(--ds-gray-200);
+  transition: transform .3s var(--transition), box-shadow .3s;
+  will-change: transform;
+}
+.franja::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; bottom: -1px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--ds-coral-500) 0%, var(--ds-amber-500) 35%, var(--ds-teal-500) 70%, var(--ds-blue-500) 100%);
+  opacity: .9;
+}
+.franja.nav-oculta { transform: translateY(-110%); box-shadow: none; }
+
+.logo {
+  font-family: var(--font-heading);
+  font-size: 21px;
+  font-weight: 800;
+  color: var(--ds-navy-900);
+  letter-spacing: .5px;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+.logo-img {
+  height: 40px;
+  width: auto;
+  object-fit: contain;
+  border-radius: var(--radius-sm);
+}
+/* El coral 500 sobre blanco daba 2.91, por debajo del 3 que exige el texto
+   grande en negrita. El 600 llega a 4.07 sin cambiar el tono de la marca. */
+.logo span { color: var(--ds-coral-600); }
+.logo-icon { font-size: 26px; color: var(--ds-coral-500); }
+
+.nav-toggle {
+  display: none;
+  background: var(--ds-gray-100);
+  border: 1px solid var(--ds-gray-200);
+  color: var(--ds-navy-900);
+  border-radius: var(--radius-sm);
+  padding: 7px 13px;
+  font-size: 20px;
+  cursor: pointer;
+  transition: background var(--transition);
+}
+.nav-toggle:hover { background: var(--ds-gray-200); }
+
+.tabs { display: flex; gap: 4px; align-items: center; flex-wrap: wrap; }
+
+.tabs button,
+.tabs .nav-btn-dropdown {
+  background: transparent;
+  color: var(--ds-gray-700);
+  border: 1.5px solid transparent;
+  padding: 9px 15px;
+  border-radius: var(--radius-pill);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition);
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  letter-spacing: .1px;
+  white-space: nowrap;
+  font-family: var(--font-base);
+  text-decoration: none;
+}
+.tabs button:hover,
+.tabs .nav-btn-dropdown:hover,
+.tabs .nav-btn-dropdown:focus {
+  background: var(--ds-blue-100);
+  border-color: transparent;
+  color: var(--ds-navy-800);
+}
+.tabs button[aria-current="page"] { background: var(--ds-navy-900); color: #fff; }
+
+.tabs button#nav-panel-empleado { background: var(--ds-gray-100); color: var(--ds-navy-800); }
+.tabs button#nav-panel-empleado:hover { background: var(--ds-navy-900); color: #fff; }
+
+.tabs button#nav-sesion {
+  background: transparent;
+  border-color: var(--ds-gray-300);
+  color: var(--ds-gray-700);
+  box-shadow: none;
+}
+.tabs button#nav-sesion:hover {
+  background: var(--ds-gray-100);
+  border-color: var(--ds-gray-400);
+  color: var(--ds-navy-900);
+  transform: none;
+  box-shadow: none;
+}
+
+.tabs button#nav-registro {
+  background: var(--ds-navy-900);
+  border-color: transparent;
+  color: #fff;
+  font-weight: 700;
+  box-shadow: 0 2px 10px rgba(7,27,51,.2);
+}
+.tabs button#nav-registro:hover {
+  background: var(--ds-coral-700);
+  border-color: transparent;
+  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-brand);
+}
+
+.nav-nombre {
+  color: var(--ds-navy-800);
+  font-weight: 600;
+  padding: 8px 15px;
+  background: var(--ds-blue-100);
+  border-radius: var(--radius-pill);
+  font-size: 13.5px;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* El rojo 500 daba 4.49 sobre el gris claro de la barra, justo por debajo
+   del 4.5 que exige la norma. Con el 600 sube a 6.4 sin cambiar de tono. */
+.tabs #nav-salir { color: var(--ds-red-600); padding: 9px 13px; }
+.tabs #nav-salir:hover {
+  background: var(--ds-red-100) !important;
+  border-color: transparent;
+  color: var(--ds-red-600) !important;
+}
+
+.tabs .dropdown-menu {
+  border: 1px solid var(--ds-gray-200);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  padding: 6px;
+  margin-top: 8px !important;
+  min-width: 230px;
+}
+.tabs .dropdown-menu-dark { background: var(--ds-navy-900); border-color: var(--ds-navy-800); }
+.tabs .dropdown-menu-dark .dropdown-item {
+  color: rgba(255,255,255,.82);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 500;
+  padding: 9px 12px;
+}
+.tabs .dropdown-menu-dark .dropdown-item:hover,
+.tabs .dropdown-menu-dark .dropdown-item.active {
+  background: rgba(255,255,255,.1);
+  color: #fff;
+}
+.tabs .dropdown-menu-dark .dropdown-divider { border-color: rgba(255,255,255,.12); }
+
+
+/* ───────────────────  5. HERO  ─────────────────── */
+.hero {
+  position: relative;
+  background:
+    var(--grad-hero),
+    url('https://images.unsplash.com/photo-1559827291-72ee739d0d9a?auto=format&fit=crop&w=1920&q=80')
+    center 45% / cover no-repeat;
+  color: #fff;
+  text-align: center;
+  padding: 108px 20px 130px;
+  overflow: hidden;
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 120px;
+  background: linear-gradient(180deg, transparent 0%, rgba(247,250,253,.9) 100%);
+  pointer-events: none;
+}
+
+.hero-content { position: relative; z-index: 2; max-width: 860px; margin: 0 auto; }
+/* Solo se separa del texto cuando sí hay buscador debajo (portada) */
+.hero-content + .hero-search-container { margin-top: 44px; }
+
+.hero-badge {
+  display: inline-block;
+  background: rgba(255,255,255,.16);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,.3);
+  color: #fff;
+  padding: 7px 18px;
+  border-radius: var(--radius-pill);
+  font-size: 11.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.4px;
+  margin-bottom: 22px;
+}
+
+.hero h1 {
+  font-family: var(--font-heading);
+  font-size: clamp(38px, 6.2vw, var(--fs-hero));
+  font-weight: 800;
+  margin-bottom: 18px;
+  line-height: 1.04;
+  letter-spacing: -.035em;
+  color: #fff;
+  text-shadow: 0 2px 20px rgba(4,16,31,.35);
+}
+.hero h1 span { color: var(--ds-amber-400); }
+
+.hero p {
+  font-size: clamp(16px, 2.2vw, 19px);
+  color: rgba(255,255,255,.9);
+  max-width: 660px;
+  margin: 0 auto 40px;
+  font-weight: 400;
+  line-height: 1.65;
+  text-shadow: 0 1px 10px rgba(4,16,31,.4);
+}
+
+/* Widget de búsqueda flotante */
+.hero-search-container {
+  position: relative;
+  z-index: 3;
+  max-width: 1080px;
+  margin: 0 auto;
+  background: #fff;
+  border-radius: var(--radius-xl);
+  padding: 22px 26px 26px;
+  box-shadow: var(--shadow-xl);
+  color: var(--color-body);
+  text-align: left;
+}
+
+.search-tabs-header { display: flex; gap: 6px; margin-bottom: 18px; padding-bottom: 6px; flex-wrap: wrap; }
+.search-tab-item {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--ds-gray-500);
+  cursor: pointer;
+  padding: 9px 18px;
+  border-radius: var(--radius-pill);
+  transition: all var(--transition);
+  user-select: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+.search-tab-item:hover { background: var(--ds-gray-100); color: var(--ds-navy-800); }
+.search-tab-item.active { background: var(--ds-navy-900); color: #fff; font-weight: 600; }
+
+.hero-search-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(175px, 1fr)) 165px;
+  gap: 12px;
+  align-items: end;
+  padding-top: 16px;
+  border-top: 1px solid var(--ds-gray-150);
+}
+.search-field-group { display: flex; flex-direction: column; gap: 6px; }
+.search-field-group label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ds-gray-500);
+  text-transform: uppercase;
+  letter-spacing: .8px;
+}
+.search-field-group input,
+.search-field-group select {
+  height: 50px;
+  border: 1.5px solid var(--ds-gray-200);
+  border-radius: var(--radius-md);
+  padding: 0 15px;
+  font-size: 14.5px;
+  font-family: var(--font-base);
+  background: var(--ds-gray-50);
+  color: var(--color-body);
+  font-weight: 500;
+  transition: all var(--transition);
+  appearance: none;
+  -webkit-appearance: none;
+}
+.search-field-group select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='%236C6C6B' d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 15px center;
+  background-size: 12px;
+  padding-right: 38px;
+  cursor: pointer;
+}
+.search-field-group input:focus,
+.search-field-group select:focus {
+  border-color: var(--ds-blue-500);
+  background: #fff;
+  box-shadow: var(--ring-focus);
+  outline: none;
+}
+
+/* El boton principal iba con el degradado coral -> coral y texto blanco. El
+   extremo claro daba 3.10 de contraste, por debajo del 4.5 del texto normal.
+   El coral 700 llega a 5.27 y sigue siendo el color de la marca; sobre una
+   foto de fondo, ademas, un tono mas oscuro se lee mejor. */
+.btn-search-hero {
+  height: 50px;
+  background: var(--ds-coral-700);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--transition);
+  box-shadow: var(--shadow-brand);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  letter-spacing: .2px;
+  font-family: var(--font-base);
+}
+.btn-search-hero:hover { transform: translateY(-2px); box-shadow: 0 10px 26px rgba(255,90,60,.36); }
+.btn-search-hero:active { transform: translateY(0); }
+
+
+/* ───────────────────  6. DESTINOS  ─────────────────── */
+.seccion-destinos {
+  padding: var(--sp-2xl) var(--sp-xl);
+  max-width: 1300px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.seccion-titulo { text-align: center; margin-bottom: var(--sp-xl); }
+.seccion-titulo h2 {
+  font-family: var(--font-heading);
+  font-size: clamp(30px, 4.2vw, var(--fs-3xl));
+  font-weight: 800;
+  color: var(--ds-navy-900);
+  letter-spacing: -.03em;
+}
+.seccion-titulo h2 span { color: var(--ds-coral-500); }
+.seccion-titulo p { font-size: 17px; color: var(--color-muted); max-width: 600px; margin: 12px auto 0; }
+
+.filtros-bar { display: flex; justify-content: center; gap: 10px; margin-bottom: 36px; flex-wrap: wrap; }
+.btn-filtro {
+  background: #fff;
+  border: 1.5px solid var(--ds-gray-200);
+  color: var(--ds-gray-600);
+  padding: 10px 24px;
+  border-radius: var(--radius-pill);
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all var(--transition);
+  font-family: var(--font-base);
+  box-shadow: var(--shadow-xs);
+}
+.btn-filtro:hover,
+.btn-filtro.activo {
+  background: var(--ds-navy-900);
+  border-color: var(--ds-navy-900);
+  color: #fff;
+  box-shadow: var(--shadow-md);
+}
+
+@media (min-width: 992px) {
+  .border-end-lg { border-right: 1px solid var(--color-border) !important; }
+}
+
+.destinos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+  gap: 28px;
+}
+
+.destino-card {
+  background: #fff;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--ds-gray-150);
+  transition: all var(--transition);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+.destino-card:hover {
+  transform: translateY(-7px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--ds-gray-200);
+}
+
+.destino-img-wrapper { position: relative; height: 224px; overflow: hidden; background: var(--ds-gray-150); }
+.destino-img-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .6s cubic-bezier(0.16,1,0.3,1);
+}
+.destino-card:hover .destino-img-wrapper img { transform: scale(1.07); }
+.destino-img-wrapper::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(4,16,31,.32) 0%, transparent 35%, transparent 65%, rgba(4,16,31,.38) 100%);
+  pointer-events: none;
+}
+
+/* La insignia iba con el degradado coral -> ambar y texto blanco. El extremo
+   ambar es demasiado claro: el blanco sobre el quedaba en 2.04 de contraste,
+   es decir, ilegible. Ahora es una pastilla azul marino solida, que además
+   deja de parecer un adorno brillante. */
+.badge-card-promo {
+  position: absolute;
+  z-index: 2;
+  top: 14px;
+  left: 14px;
+  background: var(--ds-navy-900);
+  color: #fff;
+  padding: 6px 13px;
+  border-radius: var(--radius-pill);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .6px;
+  box-shadow: 0 3px 12px rgba(4,16,31,.24);
+  text-transform: uppercase;
+}
+.badge-card-tag {
+  position: absolute;
+  z-index: 2;
+  bottom: 14px;
+  right: 14px;
+  background: rgba(255,255,255,.94);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: var(--ds-navy-800);
+  padding: 6px 12px;
+  border-radius: var(--radius-pill);
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+}
+
+.destino-card-body {
+  padding: 22px 24px 24px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.destino-card-body h3 {
+  font-family: var(--font-heading);
+  font-size: 23px;
+  font-weight: 700;
+  color: var(--ds-navy-900);
+  margin-bottom: 0;
+  letter-spacing: -.02em;
+}
+.destino-card-body p { color: var(--ds-gray-500); font-size: 14px; line-height: 1.6; margin-bottom: 0; flex: 1; }
+.destino-card-categorias {
+  color: var(--ds-gray-600) !important;
+  font-size: 11.5px !important;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .6px;
+  flex: none !important;
+}
+
+.destino-price-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding-top: 16px;
+  border-top: 1px solid var(--ds-gray-150);
+  margin-top: auto;
+}
+.price-label {
+  font-size: 10.5px;
+  color: var(--ds-gray-500);
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: .7px;
+}
+.price-value {
+  font-size: 25px;
+  font-weight: 800;
+  color: var(--ds-coral-600);
+  font-family: var(--font-heading);
+  line-height: 1.1;
+  letter-spacing: -.02em;
+}
+
+/* Sello que acompana al precio. Solo aparece si el servicio incluye tiquete
+   aereo, asi que no puede ser el mismo para todos los planes. */
+.badge-card-incluye {
+  flex: none;
+  display: inline-block;
+  background: rgba(25,148,215,.10);
+  border: 1px solid rgba(25,148,215,.32);
+  color: var(--ds-blue-700);
+  border-radius: var(--radius-pill);
+  padding: 5px 11px;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: .4px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.btn-reservar-card {
+  width: 100%;
+  padding: 13px;
+  background: var(--ds-navy-900);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all var(--transition);
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  font-family: var(--font-base);
+}
+.btn-reservar-card:hover {
+  background: var(--ds-coral-700);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-brand);
+}
+
+/* País que acompaña al nombre en el título de la tarjeta */
+.destino-card-pais {
+  font-weight: 400;
+  font-size: 16px;
+  color: var(--ds-gray-500);
+}
+
+/* Subtítulo del plan (icono de etiqueta) */
+.destino-card-titulo {
+  font-weight: 700;
+  color: var(--ds-coral-600);
+  font-size: 14px;
+  margin-bottom: 6px;
+}
+
+/* Estado vacío o de carga de la galería */
+.galeria-estado,
+.galeria-carga {
+  grid-column: 1 / -1;
+}
+.galeria-estado {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--ds-gray-500);
+}
+.galeria-estado-icono {
+  font-size: 3rem;
+  color: var(--ds-coral-500);
+  opacity: .6;
+}
+.galeria-estado-texto { font-size: 1.1rem; margin-top: .5rem; }
+
+/* Banner de resultado de búsqueda */
+.banner-busqueda {
+  background: #fff;
+  border: 1px solid var(--ds-gray-150) !important;
+  border-radius: var(--radius-lg) !important;
+  box-shadow: var(--shadow-md);
+  padding: 22px 12px !important;
+}
+.banner-busqueda .row > div { padding: 8px 10px; }
+.banner-busqueda .small { text-transform: uppercase; letter-spacing: .8px; font-size: 10.5px; }
+.banner-busqueda .text-primary { color: var(--ds-coral-600) !important; }
+
+
+/* ───────────────────  7. BENEFICIOS  ─────────────────── */
+.seccion-beneficios {
+  background: radial-gradient(120% 100% at 50% 0%, var(--ds-navy-800) 0%, var(--ds-navy-900) 55%, var(--ds-navy-950) 100%);
+  color: #fff;
+  padding: var(--sp-2xl) var(--sp-xl);
+}
+/* El h2 vivia con un style="color:#fff" pegado en el HTML. Se quito al
+   limpiar los estilos inline, pero no habia ninguna regla que lo sustituyera:
+   el navegador lo pintaba en negro sobre el azul marino y quedaba invisible
+   (contraste 1.0). Esta regla es la que realmente lo sostenia. */
+.seccion-beneficios h2 {
+  font-family: var(--font-heading);
+  font-size: 38px;
+  font-weight: 800;
+  color: #fff;
+  margin: 0;
+  letter-spacing: -.02em;
+}
+.beneficios-container { max-width: 1200px; margin: 0 auto; }
+.beneficios-lead {
+  color: var(--ds-gray-300);
+  max-width: 640px;
+  margin: 8px auto 0;
+}
+.beneficios-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 22px;
+  margin-top: 48px;
+}
+.beneficio-card {
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: var(--radius-lg);
+  padding: 32px 24px;
+  text-align: center;
+  transition: all var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+.beneficio-card:hover {
+  background: rgba(255,255,255,.09);
+  transform: translateY(-5px);
+  border-color: rgba(245,165,36,.5);
+}
+.beneficio-icon { font-size: 38px; margin-bottom: 16px; display: inline-block; color: var(--ds-amber-400); }
+.beneficio-card h3 {
+  font-family: var(--font-heading);
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 8px;
+  letter-spacing: -.01em;
+}
+.beneficio-card p { font-size: 14px; color: rgba(255,255,255,.68); line-height: 1.6; margin: 0; }
+
+
+/* Catálogo de destinos: misma foto que el hero de portada, pero más compacto
+   porque enseguida debajo va la rejilla de resultados. */
+.hero-destinos { padding: 60px 20px 80px; }
+
+
+/* ───────────────────  8. HEROES DE PANELES INTERNOS  ─────────────────── */
+.hero-reportes,
+.hero-panel-empleado,
+.hero-reservas {
+  background: var(--grad-dark);
+  color: #fff;
+  padding: 2.4rem 2.2rem;
+  border-radius: var(--radius-xl);
+  margin-bottom: 1.8rem;
+  box-shadow: var(--shadow-lg);
+  position: relative;
+  overflow: hidden;
+}
+.hero-reportes::before,
+.hero-panel-empleado::before,
+.hero-reservas::before {
+  content: '';
+  position: absolute;
+  top: -60%; right: -10%;
+  width: 460px;
+  height: 460px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(25,148,215,.3) 0%, transparent 68%);
+  pointer-events: none;
+  z-index: 0;
+}
+/* El brillo es un hermano posicionado, y en el orden de pintado de CSS lo
+   posicionado va por encima de los hijos que NO tienen position. Por eso el
+   boton "Nueva Solicitud" se veia apagado: era estatico, la mancha azul le
+   caia encima y su lado derecho salia rgb(179,153,80) en vez del ambar real
+   rgb(225,155,39), una diferencia de 46/255. Medido por pixeles, no a ojo.
+
+   Se sube el contenido con una sola regla sobre el hijo directo en vez de
+   añadir position:relative pieza por pieza: asi el h1, el parrafo, la insignia,
+   el boton y lo que se meta despues quedan todos por encima, sin depender de
+   acordarse de cada uno. El h1 y el p ya lo traian; el boton se quedaba fuera. */
+.hero-reportes > *,
+.hero-panel-empleado > *,
+.hero-reservas > * { position: relative; z-index: 1; }
+.hero-reportes h1,
+.hero-panel-empleado h1,
+.hero-reservas h1 {
+  position: relative;
+  color: #fff;
+  font-weight: 800;
+  letter-spacing: -.025em;
+}
+.hero-reportes p,
+.hero-panel-empleado p,
+.hero-reservas p { position: relative; color: rgba(255,255,255,.78); }
+
+
+/* ───────────────────  9. TARJETAS INTERACTIVAS  ─────────────────── */
+.metric-card,
+.kpi-card,
+.chart-card,
+.card-solicitud,
+.card-solicitud-empleado,
+.card-select-metodo {
+  background: #fff;
+  border: 1px solid var(--ds-gray-150);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition);
+}
+.metric-card { padding: 22px 18px; text-align: center; }
+.kpi-card   { padding: 22px 20px; }
+.chart-card { padding: 24px; height: 100%; }
+.card-solicitud { padding: 1.6rem; margin-bottom: 1.25rem; }
+.card-solicitud-empleado { padding: 1.5rem; margin-bottom: 18px; }
+
+.metric-card:hover,
+.kpi-card:hover,
+.chart-card:hover,
+.card-solicitud:hover,
+.card-solicitud-empleado:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--ds-gray-200);
+}
+.metric-card i,
+.metric-card .fs-1 { color: var(--ds-blue-500); }
+.metric-card .fs-1 { font-weight: 800; letter-spacing: -.03em; }
+
+.kpi-card .kpi-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  margin-bottom: 12px;
+}
+.kpi-card .kpi-val {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--ds-navy-900);
+  line-height: 1.1;
+  letter-spacing: -.03em;
+}
+.kpi-card .kpi-lbl {
+  font-size: .74rem;
+  font-weight: 600;
+  color: var(--ds-gray-500);
+  text-transform: uppercase;
+  letter-spacing: .7px;
+}
+
+.card-solicitud h3,
+.card-solicitud-empleado h3 { letter-spacing: -.015em; }
+
+/* Insignias de estado de solicitud */
+.badge-estado {
+  display: inline-block;
+  padding: 5px 13px;
+  border-radius: var(--radius-pill);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  line-height: 1.5;
+}
+.badge-estado.badge-PENDIENTE  { background: var(--ds-amber-100); color: var(--ds-amber-600); }
+.badge-estado.badge-EN_PROCESO { background: var(--ds-blue-100);  color: var(--ds-blue-700); }
+.badge-estado.badge-RESUELTA,
+.badge-estado.badge-ATENDIDA  { background: var(--ds-green-100); color: var(--ds-green-600); }
+.badge-estado.badge-CANCELADA,
+.badge-estado.badge-CANCELADO,
+.badge-estado.badge-RECHAZADA { background: var(--ds-red-100); color: #A11E14; }
+
+/* Caja de descripción dentro de la tarjeta */
+.detalles-box {
+  background: var(--ds-gray-50);
+  border-left: 3px solid var(--ds-blue-400);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  padding: 14px 16px;
+  font-size: 14px;
+  color: var(--ds-gray-600);
+  line-height: 1.6;
+  margin-top: .5rem;
+}
+
+/* Píldoras de disponibilidad del asesor */
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: .2px;
+  line-height: 1.5;
+}
+.status-DISPONIBLE    { background: var(--ds-green-100); color: var(--ds-green-600); border: 1px solid #A9E5C8; }
+.status-OCUPADO        { background: var(--ds-amber-100); color: var(--ds-amber-600); border: 1px solid #F7DCA8; }
+.status-EN_PAUSA       { background: var(--ds-blue-100);  color: var(--ds-blue-700);  border: 1px solid #BFE2F5; }
+.status-FUERA_DE_TURNO { background: var(--ds-red-100);   color: #A11E14;          border: 1px solid #F5BFB9; }
+
+/* Tarjetas de método de pago seleccionables */
+.card-select-metodo {
+  cursor: pointer;
+  border-radius: var(--radius-md) !important;
+  border-color: var(--ds-gray-200) !important;
+}
+.card-select-metodo:hover {
+  border-color: var(--ds-blue-400) !important;
+  background: var(--ds-blue-100) !important;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+.card-select-metodo .form-check-input { width: 1.25em; height: 1.25em; cursor: pointer; }
+.card-select-metodo:has(.form-check-input:checked) {
+  border-color: var(--ds-coral-500) !important;
+  background: var(--ds-coral-100) !important;
+  box-shadow: var(--ring-brand);
+}
+
+/* Filtros en píldora (panel asesor / mis reservas) */
+.filtro-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 1.5rem; align-items: center; }
+.filtro-pill {
+  background: #fff;
+  border: 1.5px solid var(--ds-gray-200);
+  color: var(--ds-gray-700);
+  padding: 9px 18px;
+  border-radius: var(--radius-pill);
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all var(--transition);
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  box-shadow: var(--shadow-xs);
+  font-family: var(--font-base);
+}
+.filtro-pill:hover {
+  border-color: var(--ds-blue-400);
+  color: var(--ds-navy-800);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+.filtro-pill.activo {
+  background: var(--ds-navy-900);
+  border-color: var(--ds-navy-900);
+  color: #fff;
+  box-shadow: var(--shadow-md);
+}
+.filtro-pill.activo span,
+.filtro-pill.activo i { color: #fff !important; }
+
+
+/* ───────────────────  10. GRÁFICOS Y EXPORTACIÓN  ─────────────────── */
+.chart-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+  border-bottom: 1px solid var(--ds-gray-150);
+  padding-bottom: 12px;
+}
+.chart-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--ds-navy-900);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  letter-spacing: -.01em;
+}
+.chart-container { position: relative; min-height: 250px; max-height: 300px; }
+
+.btn-export {
+  background: var(--ds-navy-900);
+  color: #fff;
+  border: none;
+  padding: 11px 22px;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all var(--transition);
+  font-family: var(--font-base);
+  font-size: 15px;
+}
+.btn-export:hover {
+  color: #fff;
+  background: var(--grad-primary);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-brand);
+}
+
+
+/* ───────────────────  11. FORMULARIOS  ─────────────────── */
+.form-container-card {
+  max-width: 480px;
+  margin: 56px auto;
+  background: #fff;
+  border-radius: var(--radius-xl);
+  padding: 40px 38px;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--ds-gray-150);
+}
+.form-header-title { text-align: center; margin-bottom: 28px; }
+.form-header-title h2 {
+  font-family: var(--font-heading);
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--ds-navy-900);
+  letter-spacing: -.03em;
+}
+.form-header-title p { color: var(--color-muted); font-size: 14.5px; margin-top: 6px; }
+
+.campo-form { margin-bottom: 18px; display: flex; flex-direction: column; gap: 7px; }
+.campo-form label { font-size: 13.5px; font-weight: 600; color: var(--ds-gray-700); }
+.campo-form input,
+.campo-form select,
+.campo-form textarea {
+  width: 100%;
+  padding: 13px 16px;
+  border: 1.5px solid var(--ds-gray-200);
+  border-radius: var(--radius-md);
+  font-size: 15px;
+  font-family: var(--font-base);
+  background: var(--ds-gray-50);
+  color: var(--color-body);
+  transition: all var(--transition);
+}
+.campo-form input:focus,
+.campo-form select:focus,
+.campo-form textarea:focus {
+  border-color: var(--ds-blue-500);
+  background: #fff;
+  outline: none;
+  box-shadow: var(--ring-focus);
+}
+
 .mensaje {
   padding: var(--sp-sm) var(--sp-md);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-md);
   font-size: var(--fs-sm);
   font-weight: 600;
   display: none;
   margin-top: var(--sp-sm);
+  line-height: 1.55;
+}
+.mensaje-error { background: var(--msg-err-bg); color: var(--msg-err-text); border: 1px solid var(--msg-err-border); }
+.mensaje-ok    { background: var(--msg-ok-bg);  color: var(--msg-ok-text);  border: 1px solid var(--msg-ok-border); }
+
+.btn-full-primary {
+  width: 100%;
+  padding: 15px;
+  background: var(--ds-navy-900);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 15.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition);
+  box-shadow: 0 4px 16px rgba(7,27,51,.18);
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: var(--font-base);
+}
+.btn-full-primary:hover {
+  background: var(--ds-coral-700);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-brand);
 }
 
-.mensaje-error {
-  background: var(--msg-err-bg);
-  color: var(--msg-err-text);
-  border: 1px solid var(--msg-err-border);
+#password-requisitos {
+  background: var(--ds-gray-50) !important;
+  border: 1px solid var(--ds-gray-200) !important;
+  border-radius: var(--radius-md) !important;
 }
 
-.mensaje-ok {
-  background: var(--msg-ok-bg);
-  color: var(--msg-ok-text);
-  border: 1px solid var(--msg-ok-border);
+.form-control, .form-select {
+  border-radius: var(--radius-md) !important;
+  border: 1.5px solid var(--ds-gray-200);
+  font-family: var(--font-base);
+  font-size: 14.5px;
+  padding: .55rem .9rem;
+  color: var(--color-body);
+}
+.form-control:focus, .form-select:focus {
+  border-color: var(--ds-blue-500) !important;
+  box-shadow: var(--ring-focus) !important;
+}
+.input-group-text {
+  background: #fff;
+  border: 1.5px solid var(--ds-gray-200);
+  color: var(--ds-gray-500);
+  border-radius: var(--radius-md) !important;
+}
+.form-label { font-size: 14px; }
+
+/* Boton de mostrar/ocultar contrasena. Estaba armado con style.cssText desde
+   app.js, con el color puesto a mano y el hover cambiando style.color en cada
+   evento. Eso dejaba el color fuera del design system y hacia que la regla no
+   se pudiera auditar. Aqui el color vive en el token y el hover es CSS. */
+.campo-con-wrap { position: relative; }
+/* El boton se superpone al campo, asi que el texto necesita sitio: sin esto el
+   input solo tiene .9rem de padding derecho y el icono se monta encima. */
+.campo-con-wrap .form-control { padding-right: 2.75rem; }
+.toggle-password {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px 6px;
+  line-height: 1;
+  font-size: 16px;
+  color: var(--ds-gray-400);
+  transition: color .2s;
+}
+.toggle-password:hover { color: var(--ds-blue-600); }
+.toggle-password:focus-visible { outline: 2px solid var(--ds-blue-500); outline-offset: 1px; border-radius: 4px; }
+
+.alert { border-radius: var(--radius-md) !important; border-width: 1px; font-size: 14px; }
+.alert-info    { background: var(--ds-blue-100)  !important; border-color: #BFE2F5 !important; color: var(--ds-navy-800) !important; }
+.alert-warning { background: var(--ds-amber-100) !important; border-color: #F7DCA8 !important; color: #7A4A05 !important; }
+.alert-success { background: var(--ds-green-100) !important; border-color: #A9E5C8 !important; color: var(--ds-green-600) !important; }
+.alert-danger  { background: var(--ds-red-100)   !important; border-color: #F5BFB9 !important; color: #A11E14 !important; }
+
+
+/* ───────────────────  12. BOTONES BOOTSTRAP ARMONIZADOS  ─────────────────── */
+/* Los paneles de administrador y de empleados usaban las clases de color de
+   Bootstrap tal cual (cian, verde, ambar de la libreria). Medido en el
+   navegador: btn-success daba 3.35, btn-info 2.04 y las insignias bg-info 1.96
+   de contraste, es decir, texto ilegible. Ademas .btn-primary era azul
+   mientras .text-primary y .bg-primary eran coral: un mismo nombre de clase
+   valia por dos colores distintos, segun donde se usara.
+
+   Aqui se fija una sola regla: el color del nombre ES el color. El coral es
+   el principal (es el CTA de todo el sitio), y cada estado elige el tono
+   suficientemente oscuro para que el texto blanco pase 4.5:1. */
+.btn { border-radius: var(--radius-md); font-family: var(--font-base); font-weight: 600; transition: all var(--transition); }
+
+.btn-primary   { background: var(--ds-coral-700)  !important; border-color: var(--ds-coral-700)  !important; color: #fff !important; }
+.btn-primary:hover { background: var(--ds-coral-800) !important; border-color: var(--ds-coral-800) !important; }
+.btn-success   { background: var(--ds-green-600)  !important; border-color: var(--ds-green-600)  !important; color: #fff !important; }
+.btn-success:hover { background: var(--ds-green-700) !important; }
+.btn-info      { background: var(--ds-teal-600)   !important; border-color: var(--ds-teal-600)   !important; color: #fff !important; }
+.btn-info:hover { background: var(--ds-teal-700) !important; }
+/* El boton de aviso usaba amber-600 mientras que .bg-warning usa amber-500: el
+   mismo token en dos valores. En los banners hijos el problema se veia de
+   frente, con la insignia al lado en un ambar mas claro que el boton, y el CTA
+   (lo que hay que pulsar) quedaba como el tono mas apagado del bloque, con solo
+   5.16 de contraste. Con amber-500 el boton queda en 7.08 y coincide con la
+   insignia; el hover baja a amber-600, el efecto de presion esperado. */
+.btn-warning   { background: var(--ds-amber-500)  !important; border-color: var(--ds-amber-500)  !important; color: var(--ds-navy-900) !important; }
+.btn-warning:hover { background: var(--ds-amber-600) !important; border-color: var(--ds-amber-600) !important; }
+.btn-danger    { background: var(--ds-red-500)    !important; border-color: var(--ds-red-500)    !important; color: #fff !important; }
+.btn-danger:hover { background: var(--ds-red-600) !important; }
+.btn-secondary { background: var(--ds-gray-600)   !important; border-color: var(--ds-gray-600)   !important; color: #fff !important; }
+.btn-light     { background: var(--ds-gray-100)   !important; border-color: var(--ds-gray-200)   !important; color: var(--ds-navy-800) !important; }
+
+.btn-outline-primary { color: var(--ds-coral-700) !important; border-color: var(--ds-coral-700) !important; }
+.btn-outline-primary:hover { background: var(--ds-coral-700) !important; color: #fff !important; }
+.btn-outline-info { color: var(--ds-blue-700) !important; border-color: var(--ds-blue-700) !important; }
+.btn-outline-info:hover { background: var(--ds-blue-700) !important; color: #fff !important; }
+.btn-outline-success { color: var(--ds-green-600) !important; border-color: var(--ds-green-600) !important; }
+.btn-outline-success:hover { background: var(--ds-green-600) !important; color: #fff !important; }
+.btn-outline-danger { color: var(--ds-red-500) !important; border-color: var(--ds-red-500) !important; }
+.btn-outline-danger:hover { background: var(--ds-red-500) !important; color: #fff !important; }
+.btn-outline-warning { color: var(--ds-amber-700) !important; border-color: var(--ds-amber-700) !important; }
+/* Bootstrap pinta el btn-outline-secondary con su gris (#6c757d), que sobre
+   el gris claro del pie de modal daba 4.41. */
+.btn-outline-secondary { color: var(--ds-gray-600) !important; border-color: var(--ds-gray-400) !important; }
+.btn-outline-secondary:hover { background: var(--ds-gray-600) !important; color: #fff !important; }
+.btn-outline-light:hover { background: #fff; color: var(--ds-navy-900); }
+
+/* Leen las variables --aleleo-*, que el bloque 12b vuelve a definir con el
+   tono claro dentro de las superficies oscuras. Por eso estas reglas no
+   llevan un color fijo: dependen del fondo donde caen. */
+.text-primary   { color: var(--aleleo-primary) !important; }
+.text-info      { color: var(--aleleo-info)    !important; }
+.text-warning   { color: var(--aleleo-warning) !important; }
+.text-success   { color: var(--aleleo-success) !important; }
+.text-danger    { color: var(--aleleo-danger)  !important; }
+.text-secondary { color: var(--ds-gray-600)    !important; }
+.text-muted     { color: var(--ds-gray-500)    !important; }
+.text-light     { color: #fff !important; }
+.text-dark      { color: var(--ds-navy-800) !important; }
+
+/* Fondos. bg-info venia con el cian de la libreria (#0dcaf0), que con texto
+   blanco daba 1.96. Las insignias de estado usan el fondo oscuro de su
+   propio color para que la etiqueta se lea. */
+.bg-primary     { background-color: var(--ds-coral-700) !important; color: #fff !important; }
+.bg-info        { background-color: var(--ds-blue-700)  !important; color: #fff !important; }
+.bg-success     { background-color: var(--ds-green-600) !important; color: #fff !important; }
+.bg-warning     { background-color: var(--ds-amber-500) !important; color: var(--ds-navy-900) !important; }
+.bg-danger      { background-color: var(--ds-red-500)   !important; color: #fff !important; }
+.bg-light       { background-color: var(--ds-gray-50)   !important; color: var(--ds-navy-800) !important; }
+.bg-dark        { background-color: var(--ds-navy-900)  !important; color: #fff !important; }
+
+/* Las variantes "-subtle" son fondo clarito con texto medio. El gris que
+   traiaBootstrap daba 3.65. */
+.bg-primary-subtle   { background-color: var(--ds-coral-100) !important; color: var(--ds-coral-700) !important; }
+.bg-info-subtle      { background-color: var(--ds-blue-100)  !important; color: var(--ds-blue-700)  !important; }
+.bg-success-subtle   { background-color: var(--ds-green-100) !important; color: var(--ds-green-600) !important; }
+.bg-warning-subtle   { background-color: var(--ds-amber-100) !important; color: var(--ds-amber-700) !important; }
+.bg-danger-subtle    { background-color: var(--ds-red-100)   !important; color: var(--ds-red-600)   !important; }
+.bg-secondary-subtle { background-color: var(--ds-gray-200)  !important; color: var(--ds-gray-700)  !important; }
+
+.spinner-border { color: var(--ds-blue-500); }
+
+
+/* ────────────  12b. TEXTO DE COLOR SOBRE SUPERFICIE OSCURA  ──────────── */
+/* Medido en el navegador: el saludo del panel de asesor y los indicadores de
+   reportes usan .text-warning / .text-info / .text-success encima de un fondo
+   azul marino. Con el tono oscuro daba 2.1, 2.2 y 3.2 de contraste, o sea
+   texto invisible. Un color que se lee sobre blanco no se lee sobre azul.
+
+   Aqui se sobreescriben las cuatro variables de estado con el extremo claro
+   de cada rampa SOLO dentro de las superficies oscuras. Con los tonos claros
+   medidos: 6.7 (ambar), 6.9 (celeste), 5.4 (turquesa) y 4.7 (coral), todos
+   por encima del 4.5 que pide la norma. El HTML no cambia: sigue usando
+   .text-info, .text-warning, etc. */
+.hero-reportes,
+.hero-panel-empleado,
+.hero-reservas,
+.admin-header,
+.modal-header,
+.tarjeta-oscura,
+.superficie-oscura {
+  --aleleo-primary: var(--ds-coral-400);
+  --aleleo-info:    var(--ds-blue-300);
+  --aleleo-warning: var(--ds-amber-400);
+  --aleleo-success: var(--ds-teal-400);
+  --aleleo-danger:  var(--ds-coral-400);
 }
 
-/* ── Toast (notificaciones breves) ── */
+/* Las insignias "-subtle" sobre fondo oscuro: el fondo claro se apaga y el
+   texto tambien, asi que alli se usa el relleno solido. */
+.hero-reportes .bg-info-subtle,
+.superficie-oscura .bg-info-subtle,
+.tarjeta-oscura .bg-info-subtle,
+.hero-reportes .bg-success-subtle,
+.superficie-oscura .bg-success-subtle,
+.tarjeta-oscura .bg-success-subtle,
+.hero-panel-empleado .bg-success-subtle,
+.hero-reservas .bg-success-subtle,
+.admin-header .bg-success-subtle {
+  background-color: transparent !important;
+  border-color: currentColor !important;
+  color: var(--aleleo-success) !important;
+}
+
+/* El nombre del usuario en la barra superior va en coral sobre la superficie
+   oscura de la pestana. */
+.nav-nombre { color: var(--aleleo-warning); }
+
+
+/* ───────────────────  13. PANELES ADMIN Y TABLAS  ─────────────────── */
+/* width: 100% no es cosmetico aqui. El body es un contenedor flex de
+   columna, y en flex un margin horizontal "auto" hace que el item se
+   dimensione con fit-content, cuyo piso es el ancho minimo de su contenido.
+   Con la tabla de 7 columnas dentro, eso daba 1038px de ancho en un movil de
+   390px y la pagina se desbordaba. Con width: 100% el ancho es el de la
+   pantalla y el desplazamiento horizontal se queda dentro de .tabla-wrapper. */
+.admin-container { width: 100%; max-width: 1300px; margin: 40px auto; padding: 0 20px; }
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-bottom: 24px;
+  background: #fff;
+  padding: 24px 26px;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--ds-gray-150);
+}
+.admin-header h1 {
+  font-family: var(--font-heading);
+  font-size: 27px;
+  font-weight: 800;
+  color: var(--ds-navy-900);
+  letter-spacing: -.025em;
+}
+
+.tabla-wrapper {
+  background: #fff;
+  border-radius: var(--radius-lg);
+  /* Antes era overflow: hidden, y solo por debajo de 640px se cambiaba a
+     auto. Entre 641 y 1035px de ancho la tabla se cortaba sin ninguna forma
+     de llegar a las columnas de la derecha. Ahora la tabla se desplaza
+     dentro de su propia caja siempre que no quepa, que es lo unico
+     razonable con 7 columnas. */
+  overflow-x: auto;
+  overflow-y: hidden;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--ds-gray-150);
+}
+/* Ancho minimo de la tabla. Con 7 columnas su ancho natural es de unos
+   1035px; sin un minimo las columnas se aplastan y los correos se parten en
+   tres lineas. El desplazamiento horizontal lo resuelve .tabla-wrapper. */
+.tabla-admin { width: 100%; min-width: 880px; border-collapse: collapse; text-align: left; font-size: 14px; }
+.tabla-admin th {
+  background: var(--ds-navy-900);
+  color: #fff;
+  font-weight: 600;
+  padding: 15px 18px;
+  font-family: var(--font-heading);
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: .6px;
+  white-space: nowrap;
+}
+.tabla-admin td { padding: 14px 18px; border-bottom: 1px solid var(--ds-gray-150); color: var(--ds-gray-700); vertical-align: middle; }
+.tabla-admin tr:last-child td { border-bottom: none; }
+.tabla-admin tbody tr:hover td,
+.tabla-admin tr:hover,
+.tabla-admin tr:hover td { background: var(--ds-gray-50); }
+
+.badge-status {
+  display: inline-block;
+  padding: 5px 13px;
+  border-radius: var(--radius-pill);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+}
+.badge-status.pendiente  { background: var(--ds-amber-100); color: var(--ds-amber-600); }
+.badge-status.en_proceso { background: var(--ds-blue-100);  color: var(--ds-blue-700); }
+.badge-status.atendida   { background: var(--ds-green-100); color: var(--ds-green-600); }
+.badge-status.cancelada  { background: var(--ds-red-100);   color: #A11E14; }
+
+.btn-sm-admin {
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 12.5px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+.btn-sm-admin.btn-success { background: var(--ds-green-500); color: #fff; }
+.btn-sm-admin.btn-success:hover { background: var(--ds-green-600); transform: translateY(-1px); }
+.btn-sm-admin.btn-danger { background: var(--ds-red-500); color: #fff; }
+.btn-sm-admin.btn-danger:hover { background: var(--ds-red-600); transform: translateY(-1px); }
+/* El boton de Chat de la tabla de solicitudes es la excepcion: venia con la
+   base de Bootstrap (btn btn-sm) al lado de sus dos vecinos, que usan esta
+   clase. Se veian distintos en la misma fila: 31px contra 33px de alto, radio
+   12px contra 8px, y este con borde de 1px y los otros sin borde. Con esta
+   variante los tres comparten medidas.
+   Usa teal-700 y no teal-600 porque con el 600 el blanco quedaba en 4.50
+   justo, sin margen: un texto de 12.5px no cuenta como grande y necesita 4.5
+   enteros. Con el 700 sube a 6.5.
+   Lleva !important porque la armonizacion de la seccion 12 pone
+   .btn-info { background: ... !important }, y sin esto ganaba aquella regla y
+   el boton se seguia viendo en teal-600. */
+.btn-sm-admin.btn-info { background: var(--ds-teal-700) !important; border-color: var(--ds-teal-700) !important; color: #fff !important; }
+.btn-sm-admin.btn-info:hover { background: var(--ds-teal-800) !important; border-color: var(--ds-teal-800) !important; transform: translateY(-1px); }
+
+
+/* ───────────────────  14. MODALES  ─────────────────── */
+.modal-overlay,
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(4,16,31,.62);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all var(--transition);
+}
+.modal-overlay.activo,
+.modal-overlay.abierto,
+.overlay.activo,
+.overlay.abierto,
+#overlay-reserva.activo,
+#overlay-reserva.abierto { opacity: 1; visibility: visible; }
+
+.modal-overlay .modal,
+.modal-overlay .modal-card,
+.overlay .modal,
+.modal-card {
+  background: #fff;
+  border-radius: var(--radius-xl);
+  width: 560px;
+  max-width: calc(100vw - 32px);
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
+  padding: 32px;
+  box-shadow: var(--shadow-xl);
+  transform: scale(.94) translateY(14px);
+  transition: all var(--transition);
+  position: relative;
+}
+.modal-overlay.activo .modal,
+.modal-overlay.activo .modal-card,
+.modal-overlay.abierto .modal,
+.modal-overlay.abierto .modal-card,
+.overlay.activo .modal,
+.overlay.abierto .modal,
+#overlay-reserva.activo .modal,
+#overlay-reserva.activo .modal-card,
+#overlay-reserva.abierto .modal,
+#overlay-reserva.abierto .modal-card { transform: scale(1) translateY(0); }
+
+.modal.fade { background: rgba(4,16,31,.6) !important; }
+.modal-content {
+  border-radius: var(--radius-lg) !important;
+  border: 1px solid var(--ds-gray-150);
+  box-shadow: var(--shadow-xl);
+  overflow: hidden;
+}
+.modal-header {
+  background: var(--grad-dark) !important;
+  border-bottom: 2px solid var(--ds-amber-500) !important;
+  padding: 1rem 1.5rem !important;
+}
+/* El .modal-header lleva el degradado azul marino con !important, pero
+   .modal-title no tenia color propio: heredaba azul marino sobre azul marino
+   y el titulo de los cuatro modales quedaba con 1.00 de contraste, o sea
+   invisible. Ademas el subtitulo .text-info de los modales caia en 2.11. */
+.modal-title { font-weight: 700; letter-spacing: -.01em; color: #fff; }
+.modal-footer { background: var(--ds-gray-50); border-top: 1px solid var(--ds-gray-150); }
+.modal-body { padding: 1.5rem; }
+
+/* Bootstrap pinta <code> de rosa (#d63384), un color que no existe en la
+   paleta: sobre el fondo coral daba 3.97. */
+.modal-body code,
+.modal-footer code,
+code {
+  color: var(--ds-coral-700);
+  background: var(--ds-coral-100);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm, 6px);
+  font-weight: 600;
+}
+
+
+/* ───────────────────  15. TOASTS  ─────────────────── */
 #toast-container {
   position: fixed;
   top: 22px;
@@ -115,1120 +1679,230 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
-  max-width: min(380px, calc(100vw - 44px));
+  max-width: min(380px, calc(100vw - 40px));
   pointer-events: none;
 }
-
 #toast-container .toast {
   display: block;
   pointer-events: auto;
-  padding: 13px 18px;
+  padding: 14px 20px;
   border-radius: var(--radius-md);
   font-size: var(--fs-sm);
-  font-weight: 600;
+  font-weight: 500;
   line-height: 1.5;
-  color: var(--color-white);
+  color: #fff;
   box-shadow: var(--shadow-lg);
-  border-left: 5px solid rgba(255, 255, 255, 0.85);
-  animation: toast-in 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+  border-left: 4px solid rgba(255,255,255,.55);
+  animation: toast-in .3s cubic-bezier(0.16,1,0.3,1);
   word-break: break-word;
 }
-
-.toast-error { background: var(--color-danger); }
-.toast-ok    { background: var(--color-success); }
-.toast-info  { background: var(--color-primary-dark); }
+.toast-error { background: var(--ds-red-500); }
+.toast-ok    { background: var(--ds-green-500); }
+.toast-info  { background: var(--ds-navy-800); }
 
 @keyframes toast-in {
-  from { opacity: 0; transform: translateX(24px) scale(0.96); }
+  from { opacity: 0; transform: translateX(22px) scale(.96); }
   to   { opacity: 1; transform: translateX(0) scale(1); }
 }
 
-@media (max-width: 576px) {
-  #toast-container {
-    top: 14px;
-    right: 14px;
-    left: 14px;
-    max-width: none;
-  }
-}
 
-/* ── 2. RESET Y BASE ── */
-*,
-*::before,
-*::after {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-html {
-  scroll-behavior: smooth;
-  -webkit-text-size-adjust: 100%;
-}
-
-body {
-  font-family: var(--font-base);
-  background: var(--grad-bg);
-  color: var(--color-body);
-  line-height: 1.6;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
-main {
-  flex: 1;
-}
-
-img {
-  max-width: 100%;
-  display: block;
-}
-
-/* Utilidad de ocultado: el banner de resultados de búsqueda en destinos.html
-   nace con la clase .oculto y JS se la quita solo cuando llega con parametros
-   de busqueda (?origen=&destino=&fecha=&pasajeros=). Sin esta regla, el banner
-   se muestra siempre con sus valores en "—". */
-.oculto {
-  display: none !important;
-}
-
-a {
-  color: var(--color-primary-dark);
-  text-decoration: none;
-  transition: var(--transition);
-}
-
-a:hover {
-  color: var(--color-primary);
-}
-
-/* Skip link */
-.skip-link {
-  position: absolute;
-  top: -100%;
-  left: var(--sp-md);
-  background: var(--color-dark);
-  color: var(--color-white);
-  padding: var(--sp-xs) var(--sp-md);
-  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
-  font-size: var(--fs-sm);
-  font-weight: bold;
-  z-index: 9999;
-  transition: top 0.2s;
-}
-.skip-link:focus {
-  top: 0;
-}
-
-:focus-visible {
-  outline: 3px solid var(--color-primary);
-  outline-offset: 2px;
-}
-
-/* ── 3. BARRA SUPERIOR DE ANUNCIOS (PROMO TOP BAR) ── */
-.top-bar-promo {
-  background: var(--grad-promo);
-  color: #ffffff;
-  font-size: 13px;
-  font-weight: 700;
-  padding: 8px var(--sp-md);
-  text-align: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  letter-spacing: 0.3px;
-  box-shadow: 0 2px 8px rgba(225, 29, 72, 0.25);
-  position: relative;
-  z-index: 201;
-  text-decoration: none;
-  cursor: pointer;
-  flex-wrap: wrap;
-  transition: filter 0.2s;
-}
-
-.top-bar-promo:hover {
-  filter: brightness(1.08);
-  color: #ffffff;
-}
-
-.top-bar-promo span.badge-top {
-  background: #ffffff;
-  color: #e11d48;
-  padding: 2px 8px;
-  border-radius: 12px;
-  font-size: 11px;
-  font-weight: 800;
-  text-transform: uppercase;
-}
-
-/* ── 4. ENCABEZADO Y NAVEGACIÓN ── */
-.franja {
-  background: var(--grad-dark);
-  padding: 16px var(--sp-xl);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: var(--sp-md);
-  box-shadow: 0 4px 20px rgba(10, 25, 47, 0.3);
-  position: sticky;
-  top: 0;
-  z-index: 200;
-  border-bottom: 3px solid var(--color-accent);
-  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s;
-  will-change: transform;
-}
-
-.franja.nav-oculta {
-  transform: translateY(-105%);
-  box-shadow: none;
-}
-
-.logo {
-  font-family: var(--font-heading);
-  font-size: 26px;
-  font-weight: 800;
-  color: var(--color-white);
-  letter-spacing: -0.5px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  text-decoration: none;
-}
-
-.logo-img {
-  height: 40px;
-  width: auto;
-  object-fit: contain;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-}
-
-.logo span {
-  color: var(--color-accent);
-}
-
-.logo-icon {
-  font-size: 28px;
-  color: var(--color-accent);
-}
-
-/* Mobile Toggle */
-.nav-toggle {
-  display: none;
-  background: none;
-  border: 2px solid var(--color-primary);
-  color: var(--color-white);
-  border-radius: var(--radius-sm);
-  padding: 6px 12px;
-  font-size: 20px;
-  cursor: pointer;
-  transition: var(--transition);
-}
-.nav-toggle:hover {
-  background: rgba(0, 168, 150, 0.2);
-}
-
-.tabs {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  flex-wrap: wrap;
-}
-
-.tabs button,
-.tabs .nav-btn-dropdown {
-  background: rgba(255, 255, 255, 0.08);
-  color: var(--color-white);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  padding: 10px 18px;
-  border-radius: var(--radius-pill);
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: var(--transition);
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.tabs button:hover,
-.tabs .nav-btn-dropdown:hover,
-.tabs .nav-btn-dropdown:focus {
-  background: var(--color-primary);
-  border-color: var(--color-primary);
-  color: #ffffff;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 14px rgba(0, 168, 150, 0.35);
-}
-
-.tabs button#nav-sesion,
-.tabs button#nav-registro {
-  background: var(--grad-gold);
-  border: none;
-  color: var(--color-dark);
-  font-weight: 700;
-}
-
-.tabs button#nav-sesion:hover,
-.tabs button#nav-registro:hover {
-  background: linear-gradient(135deg, #fb8500 0%, #ffb703 100%);
-  color: var(--color-dark);
-}
-
-.nav-nombre {
-  color: var(--color-accent);
-  font-weight: 700;
-  padding: 6px 12px;
-  background: rgba(255, 183, 3, 0.1);
-  border: 1px solid rgba(255, 183, 3, 0.3);
-  border-radius: var(--radius-pill);
-  font-size: 14px;
-}
-
-/* ── 5. HERO SECTION (Buscador estilo OnVacation) ── */
-.hero {
-  position: relative;
-  background: linear-gradient(180deg, rgba(10, 25, 47, 0.7) 0%, rgba(0, 78, 100, 0.75) 100%),
-              url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
-  color: #ffffff;
-  text-align: center;
-  padding: 80px 20px 100px 20px;
-  overflow: hidden;
-}
-
-.hero-content {
-  max-width: 900px;
-  margin: 0 auto;
-}
-
-.hero-badge {
-  display: inline-block;
-  background: var(--grad-promo);
-  color: #ffffff;
-  padding: 6px 18px;
-  border-radius: var(--radius-pill);
-  font-size: 13px;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-bottom: 20px;
-  box-shadow: 0 4px 15px rgba(225, 29, 72, 0.4);
-}
-
-.hero h1 {
-  font-family: var(--font-heading);
-  font-size: var(--fs-hero);
-  font-weight: 800;
-  margin-bottom: 16px;
-  line-height: 1.1;
-  text-shadow: 0 2px 10px rgba(0,0,0,0.3);
-}
-
-.hero h1 span {
-  color: var(--color-accent);
-}
-
-.hero p {
-  font-size: 20px;
-  color: #e2e8f0;
-  max-width: 720px;
-  margin: 0 auto 36px auto;
-  font-weight: 400;
-}
-
-/* WIDGET DE BÚSQUEDA DE VIAJES */
-.hero-search-container {
-  max-width: 1000px;
-  margin: 0 auto;
-  background: #ffffff;
-  border-radius: 20px;
-  padding: 24px;
-  box-shadow: 0 20px 45px rgba(10, 25, 47, 0.35);
-  border: 2px solid rgba(255, 183, 3, 0.5);
-  color: var(--color-body);
-  text-align: left;
-}
-
-.search-tabs-header {
-  display: flex;
-  gap: 12px;
-  margin-bottom: 18px;
-  border-bottom: 1px solid #e2e8f0;
-  padding-bottom: 12px;
-}
-
-.search-tab-item {
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--color-muted);
-  cursor: pointer;
-  padding: 6px 14px;
-  border-radius: 20px;
-  transition: var(--transition);
-}
-
-.search-tab-item.active {
-  background: var(--color-primary);
-  color: #ffffff;
-}
-
-.hero-search-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) 160px;
-  gap: 14px;
-  align-items: end;
-}
-
-.search-field-group {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.search-field-group label {
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--color-dark);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.search-field-group input,
-.search-field-group select {
-  height: 48px;
-  border: 1.5px solid #cbd5e1;
-  border-radius: 12px;
-  padding: 0 14px;
-  font-size: 15px;
-  font-family: var(--font-base);
-  background: #f8fafc;
-  transition: var(--transition);
-}
-
-.search-field-group input:focus,
-.search-field-group select:focus {
-  border-color: var(--color-primary);
-  background: #ffffff;
-  box-shadow: 0 0 0 3px rgba(0, 168, 150, 0.2);
-}
-
-.btn-search-hero {
-  height: 48px;
-  background: var(--grad-promo);
-  color: #ffffff;
-  border: none;
-  border-radius: 12px;
-  font-size: 16px;
-  font-weight: 800;
-  cursor: pointer;
-  transition: var(--transition);
-  box-shadow: 0 6px 20px rgba(225, 29, 72, 0.4);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-}
-
-.btn-search-hero:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 25px rgba(225, 29, 72, 0.55);
-}
-
-/* ── 6. SECCIÓN DE DESTINOS / PAQUETES DESTACADOS ── */
-.seccion-destinos {
-  padding: var(--sp-2xl) var(--sp-xl);
-  max-width: 1280px;
-  margin: 0 auto;
-  width: 100%;
-}
-
-.seccion-titulo {
-  text-align: center;
-  margin-bottom: var(--sp-xl);
-}
-
-.seccion-titulo h2 {
-  font-family: var(--font-heading);
-  font-size: var(--fs-3xl);
-  color: var(--color-dark);
-  font-weight: 800;
-}
-
-.seccion-titulo p {
-  font-size: 18px;
-  color: var(--color-muted);
-  max-width: 600px;
-  margin: 8px auto 0 auto;
-}
-
-/* Filtros en destinos */
-.filtros-bar {
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-  margin-bottom: 30px;
-  flex-wrap: wrap;
-}
-
-.btn-filtro {
-  background: #ffffff;
-  border: 1.5px solid #cbd5e1;
-  color: var(--color-muted);
-  padding: 8px 20px;
-  border-radius: var(--radius-pill);
-  font-weight: 700;
-  font-size: 14px;
-  cursor: pointer;
-  transition: var(--transition);
-}
-
-.btn-filtro.activo,
-.btn-filtro:hover {
-  background: var(--color-primary);
-  border-color: var(--color-primary);
-  color: #ffffff;
-  box-shadow: 0 4px 12px rgba(0, 168, 150, 0.3);
-}
-
-/* Filtros en Píldoras (Panel Asesor & Mis Reservas) */
-.filtro-pills {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  align-items: center;
-}
-
-.filtro-pill {
-  background: #ffffff;
-  border: 1.5px solid var(--color-border);
-  color: var(--color-dark);
-  padding: 8px 18px;
-  border-radius: var(--radius-pill, 50px);
-  font-weight: 700;
-  font-size: 14px;
-  cursor: pointer;
-  transition: var(--transition, all 0.25s ease);
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
-}
-
-.filtro-pill:hover {
-  border-color: var(--color-primary);
-  color: var(--color-primary);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 168, 150, 0.2);
-}
-
-.filtro-pill.activo {
-  background: var(--color-primary);
-  border-color: var(--color-primary);
-  color: #ffffff;
-  box-shadow: 0 4px 14px rgba(0, 168, 150, 0.35);
-}
-
-.filtro-pill.activo i,
-.filtro-pill.activo span {
-  color: #ffffff !important;
-}
-
-@media (min-width: 992px) {
-  .border-end-lg {
-    border-right: 1px solid var(--color-border) !important;
-  }
-}
-
-/* Grilla de Destinos */
-.destinos-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 28px;
-}
-
-.destino-card {
-  background: #ffffff;
-  border-radius: 20px;
-  overflow: hidden;
-  box-shadow: var(--shadow-md);
-  border: 1px solid var(--color-border);
-  transition: var(--transition);
-  display: flex;
-  flex-direction: column;
-  position: relative;
-}
-
-.destino-card:hover {
-  transform: translateY(-8px);
-  box-shadow: var(--shadow-xl);
-  border-color: var(--color-primary);
-}
-
-.destino-img-wrapper {
-  position: relative;
-  height: 220px;
-  overflow: hidden;
-}
-
-.destino-img-wrapper img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.destino-card:hover .destino-img-wrapper img {
-  transform: scale(1.08);
-}
-
-.badge-card-promo {
-  position: absolute;
-  top: 14px;
-  left: 14px;
-  background: var(--grad-promo);
-  color: #ffffff;
-  padding: 4px 12px;
-  border-radius: 12px;
-  font-size: 12px;
-  font-weight: 800;
-  box-shadow: 0 4px 12px rgba(225, 29, 72, 0.4);
-}
-
-.badge-card-tag {
-  position: absolute;
-  bottom: 14px;
-  right: 14px;
-  background: rgba(10, 25, 47, 0.85);
-  color: var(--color-accent);
-  backdrop-filter: blur(4px);
-  padding: 4px 10px;
-  border-radius: 8px;
-  font-size: 12px;
-  font-weight: 700;
-}
-
-.destino-card-body {
-  padding: 22px;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-.destino-card-body h3 {
-  font-family: var(--font-heading);
-  font-size: 24px;
-  font-weight: 800;
-  color: var(--color-dark);
-  margin-bottom: 8px;
-}
-
-.destino-card-body p {
-  color: var(--color-muted);
-  font-size: 14px;
-  line-height: 1.5;
-  margin-bottom: 18px;
-  flex: 1;
-}
-
-.destino-price-box {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  padding-top: 14px;
-  border-top: 1px dashed var(--color-border);
-  margin-bottom: 16px;
-}
-
-.price-label {
-  font-size: 12px;
-  color: var(--color-muted);
-  text-transform: uppercase;
-  font-weight: 700;
-}
-
-.price-value {
-  font-size: 24px;
-  font-weight: 800;
-  color: var(--color-primary-dark);
-  font-family: var(--font-heading);
-}
-
-.btn-reservar-card {
-  width: 100%;
-  padding: 12px;
-  background: var(--grad-primary);
-  color: #ffffff;
-  border: none;
-  border-radius: 12px;
-  font-weight: 800;
-  font-size: 15px;
-  cursor: pointer;
-  transition: var(--transition);
-  text-align: center;
-  box-shadow: 0 4px 14px rgba(0, 168, 150, 0.3);
-}
-
-.btn-reservar-card:hover {
-  background: linear-gradient(135deg, #0077b6 0%, #004e64 100%);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 18px rgba(0, 119, 182, 0.45);
-}
-
-/* ── 7. SECCIÓN EXPERIENCIA TODO INCLUIDO ── */
-.seccion-beneficios {
-  background: var(--grad-dark);
-  color: #ffffff;
-  padding: var(--sp-2xl) var(--sp-xl);
-}
-
-.beneficios-container {
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.beneficios-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 24px;
-  margin-top: 40px;
-}
-
-.beneficio-card {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 18px;
-  padding: 26px;
-  text-align: center;
-  transition: var(--transition);
-}
-
-.beneficio-card:hover {
-  background: rgba(255, 255, 255, 0.12);
-  transform: translateY(-5px);
-  border-color: var(--color-accent);
-}
-
-.beneficio-icon {
-  font-size: 42px;
-  margin-bottom: 14px;
-  display: inline-block;
-}
-
-.beneficio-card h4 {
-  font-family: var(--font-heading);
-  font-size: 22px;
-  font-weight: 700;
-  color: var(--color-accent);
-  margin-bottom: 8px;
-}
-
-.beneficio-card p {
-  font-size: 14px;
-  color: #cbd5e1;
-}
-
-/* ── 8. FORMULARIOS (LOGIN, REGISTRO, MODALES) ── */
-.form-container-card {
-  max-width: 480px;
-  margin: 60px auto;
-  background: #ffffff;
-  border-radius: 24px;
-  padding: 36px;
-  box-shadow: var(--shadow-xl);
-  border: 1px solid var(--color-border);
-}
-
-.form-header-title {
-  text-align: center;
-  margin-bottom: 28px;
-}
-
-.form-header-title h2 {
-  font-family: var(--font-heading);
-  font-size: 32px;
-  font-weight: 800;
-  color: var(--color-dark);
-}
-
-.form-header-title p {
-  color: var(--color-muted);
-  font-size: 14px;
-  margin-top: 4px;
-}
-
-.campo-form {
-  margin-bottom: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.campo-form label {
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--color-dark);
-}
-
-.campo-form input,
-.campo-form select,
-.campo-form textarea {
-  width: 100%;
-  padding: 12px 16px;
-  border: 1.5px solid #cbd5e1;
-  border-radius: 12px;
-  font-size: 15px;
-  font-family: var(--font-base);
-  background: #f8fafc;
-  transition: var(--transition);
-}
-
-.campo-form input:focus,
-.campo-form select:focus,
-.campo-form textarea:focus {
-  border-color: var(--color-primary);
-  background: #ffffff;
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(0, 168, 150, 0.2);
-}
-
-.btn-full-primary {
-  width: 100%;
-  padding: 14px;
-  background: var(--grad-primary);
-  color: #ffffff;
-  border: none;
-  border-radius: 12px;
-  font-size: 16px;
-  font-weight: 800;
-  cursor: pointer;
-  transition: var(--transition);
-  box-shadow: 0 4px 15px rgba(0, 168, 150, 0.35);
-  margin-top: 10px;
-}
-
-.btn-full-primary:hover {
-  background: linear-gradient(135deg, #0077b6 0%, #004e64 100%);
-  transform: translateY(-2px);
-}
-
-/* ── 9. TABLAS Y PANELES DE GESTIÓN (ADMIN & MIS SOLICITUDES) ── */
-.admin-container {
-  max-width: 1280px;
-  margin: 40px auto;
-  padding: 0 20px;
-}
-
-.admin-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 16px;
-  margin-bottom: 28px;
-  background: #ffffff;
-  padding: 24px;
-  border-radius: 20px;
-  box-shadow: var(--shadow-md);
-  border: 1px solid var(--color-border);
-}
-
-.admin-header h2 {
-  font-family: var(--font-heading);
-  font-size: 28px;
-  font-weight: 800;
-  color: var(--color-dark);
-}
-
-.tabla-wrapper {
-  background: #ffffff;
-  border-radius: 20px;
-  overflow: hidden;
-  box-shadow: var(--shadow-md);
-  border: 1px solid var(--color-border);
-}
-
-.btn-sm-admin {
-  padding: 6px 12px;
-  border-radius: 8px;
-  font-size: 13px;
-  font-weight: 700;
-  border: none;
-  cursor: pointer;
-  transition: var(--transition);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-}
-.btn-sm-admin.btn-success {
-  background: #10b981;
-  color: #ffffff;
-}
-.btn-sm-admin.btn-success:hover {
-  background: #059669;
-  transform: translateY(-1px);
-}
-.btn-sm-admin.btn-danger {
-  background: #f43f5e;
-  color: #ffffff;
-}
-.btn-sm-admin.btn-danger:hover {
-  background: #e11d48;
-  transform: translateY(-1px);
-}
-
-
-.tabla-admin {
-  width: 100%;
-  border-collapse: collapse;
-  text-align: left;
-  font-size: 14px;
-}
-
-.tabla-admin th {
-  background: var(--color-dark);
-  color: #ffffff;
-  font-weight: 700;
-  padding: 16px 18px;
-  font-family: var(--font-heading);
-  font-size: 15px;
-}
-
-.tabla-admin td {
-  padding: 14px 18px;
-  border-bottom: 1px solid var(--color-border);
-}
-
-.tabla-admin tr:hover {
-  background: #f1f5f9;
-}
-
-/* Badges de Estado */
-.badge-status {
-  display: inline-block;
-  padding: 4px 12px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 800;
-  text-transform: uppercase;
-}
-
-.badge-status.pendiente {
-  background: #fef3c7;
-  color: #b45309;
-}
-
-.badge-status.en_proceso {
-  background: #e0f2fe;
-  color: #0369a1;
-}
-
-.badge-status.atendida {
-  background: #d1fae5;
-  color: #047857;
-}
-
-.badge-status.cancelada {
-  background: #ffe4e6;
-  color: #be123c;
-}
-
-/* ── 10. MODAL CUSTOM OVERLAYS (NO AFECTAR BOOTSTRAP MODALS) ── */
-.modal-overlay,
-.overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(10, 25, 47, 0.7);
-  backdrop-filter: blur(5px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 10000;
-  opacity: 0;
-  visibility: hidden;
-  transition: var(--transition);
-}
-
-.modal-overlay.activo,
-.modal-overlay.abierto,
-.overlay.activo,
-.overlay.abierto,
-#overlay-reserva.abierto,
-#overlay-reserva.activo {
-  opacity: 1;
-  visibility: visible;
-}
-
-.modal-card,
-.overlay .modal,
-.modal-overlay .modal {
-  background: #ffffff;
-  border-radius: 24px;
-  width: 560px;
-  max-width: calc(100vw - 32px);
-  max-height: calc(100vh - 40px);
-  overflow-y: auto;
-  padding: 30px;
-  box-shadow: var(--shadow-xl);
-  transform: scale(0.9);
-  transition: var(--transition);
-  position: relative;
-}
-
-.modal-overlay.activo .modal-card,
-.modal-overlay.abierto .modal-card,
-.modal-overlay.abierto .modal,
-.overlay.abierto .modal,
-#overlay-reserva.abierto .modal,
-#overlay-reserva.abierto .modal-card {
-  transform: scale(1);
-}
-
-/* RESET PARA MODALES DE BOOTSTRAP (.modal.fade) */
-.modal.fade {
-  background: rgba(10, 25, 47, 0.5) !important;
-  width: 100% !important;
-  max-width: none !important;
-  max-height: none !important;
-  padding: 0 !important;
-  border-radius: 0 !important;
-  overflow-x: hidden !important;
-  overflow-y: auto !important;
-  transform: none !important;
-  box-shadow: none !important;
-}
-
-/* ── 11. FOOTER ── */
+/* ───────────────────  16. FOOTER  ─────────────────── */
+/* --ds-gray-400 sobre el azul marino del pie daba 3.46 de contraste, por
+   debajo del 4.5 que pide el texto normal. El pie usa el gris 300, que si
+   llega, y el 400 queda solo para elementos grandes. */
 .footer-oficial {
-  background: var(--color-dark);
-  color: #cbd5e1;
-  padding: 50px 20px 24px 20px;
-  margin-top: 60px;
-  border-top: 4px solid var(--color-primary);
+  background: var(--grad-dark);
+  color: var(--ds-gray-300);
+  padding: 60px 20px 28px;
+  margin-top: 72px;
+  position: relative;
 }
-
+.footer-oficial::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--ds-coral-500) 0%, var(--ds-amber-500) 35%, var(--ds-teal-500) 70%, var(--ds-blue-500) 100%);
+}
 .footer-container {
   max-width: 1200px;
-  margin: 0 auto;
+  margin: 0 auto 40px;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
   gap: 36px;
-  margin-bottom: 36px;
 }
-
-.footer-col h5 {
+.footer-col h3 {
   font-family: var(--font-heading);
-  font-size: 20px;
-  color: #ffffff;
-  font-weight: 700;
+  font-size: 18px;
+  color: #fff;
+  font-weight: 600;
   margin-bottom: 16px;
+  letter-spacing: -.01em;
 }
-
-.footer-col ul {
-  list-style: none;
-}
-
-.footer-col ul li {
-  margin-bottom: 10px;
-}
-
+.footer-col ul { list-style: none; margin: 0; padding: 0; }
+.footer-col ul li { margin-bottom: 10px; }
 .footer-col ul li a {
-  color: #94a3b8;
+  color: var(--ds-gray-300);
   font-size: 14px;
+  transition: color var(--transition);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
+.footer-col ul li a:hover { color: #fff; }
+.footer-col p { font-size: 14px; line-height: 1.7; }
+.footer-col p i { color: var(--ds-blue-400); margin-right: 4px; }
 
-.footer-col ul li a:hover {
-  color: var(--color-accent);
+/* Linea de contacto. Antes cada una llevaba su propio style="..." en el HTML
+   con un color gris que no existia en la paleta. */
+.footer-dato {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 12px;
+  color: var(--ds-gray-300);
 }
+.footer-dato i { flex: none; margin-right: 0; }
+.footer-dato span, .footer-dato a { min-width: 0; overflow-wrap: anywhere; }
+.footer-dato a { color: var(--ds-gray-300); text-decoration: none; }
+.footer-dato a:hover { color: #fff; text-decoration: underline; }
 
 .footer-bottom {
   max-width: 1200px;
   margin: 0 auto;
   padding-top: 24px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid rgba(255,255,255,.08);
   text-align: center;
   font-size: 13px;
-  color: #64748b;
+  /* El gris 500 sobre azul marino daba 2.19: el aviso de copyright era
+     practicamente invisible. El gris 300 lo deja en 5.61.
+     OJO: aqui no va un opacity para apagarlo. El opacity del contenedor atenua
+     tambien a los hijos, y con .78 el copyright bajaba a 4.03, por debajo del
+     minimo de 4.5. El apagado va en el color, nunca en el atributo opacity. */
+  color: var(--ds-gray-300);
 }
+.footer-bottom p { margin: 0; }
 
-/* ── 12. RESPONSIVE ── */
-@media (max-width: 900px) {
-  .nav-toggle {
-    display: block;
-  }
-  .tabs {
-    display: none;
-    width: 100%;
-    flex-direction: column;
-    align-items: stretch;
-    padding-top: 12px;
-  }
-  .tabs.activo,
-  .tabs.abierto {
-    display: flex;
-  }
-  .hero-search-grid {
-    grid-template-columns: 1fr;
-  }
-}
 
-/* ── 13. ESTILOS DE PANTALLA COMPLETA & PESTAÑAS MODAL ASESOR ── */
+/* ───────────────────  17. PANEL ASESOR — MODAL DE ATENCIÓN  ─────────────────── */
 #atencionTabs .nav-link {
   background: transparent;
-  color: rgba(255, 255, 255, 0.85);
-  transition: all 0.25s ease;
+  color: rgba(255,255,255,.8);
+  border-radius: var(--radius-pill);
+  font-weight: 600;
+  font-size: 14px;
+  transition: all .22s ease;
+  border: 1px solid transparent;
 }
+#atencionTabs .nav-link:hover { background: rgba(255,255,255,.08); color: #fff; }
+#atencionTabs .nav-link.active { background: var(--ds-coral-700) !important; color: #fff !important; border-color: transparent; }
 
-#atencionTabs .nav-link.active {
-  background: var(--color-primary) !important;
-  color: #ffffff !important;
-  box-shadow: 0 4px 12px rgba(0, 168, 150, 0.4);
-}
-
-#modalAtencionEmpleado .modal-dialog {
-  max-width: 1200px;
-  width: 95vw;
-}
-
-#modalAtencionEmpleado .modal-body {
-  height: 75vh;
-  max-height: 800px;
-  overflow: hidden;
-}
-
+#modalAtencionEmpleado .modal-dialog { max-width: 1200px; width: 95vw; }
+#modalAtencionEmpleado .modal-body { height: 75vh; max-height: 800px; overflow: hidden; }
 #modalAtencionEmpleado.modal-is-fullscreen .modal-dialog,
 #modalAtencionEmpleado.modal-is-fullscreen .modal-dialog-scrollable {
-  width: 100vw !important;
-  max-width: 100vw !important;
-  height: 100vh !important;
-  max-height: 100vh !important;
-  margin: 0 !important;
-  padding: 0 !important;
+  width: 100vw !important; max-width: 100vw !important;
+  height: 100vh !important; max-height: 100vh !important;
+  margin: 0 !important; padding: 0 !important;
 }
-
 #modalAtencionEmpleado.modal-is-fullscreen .modal-content {
-  height: 100vh !important;
-  max-height: 100vh !important;
+  height: 100vh !important; max-height: 100vh !important;
   border-radius: 0 !important;
-  display: flex !important;
-  flex-direction: column !important;
+  display: flex !important; flex-direction: column !important;
 }
-
 #modalAtencionEmpleado.modal-is-fullscreen .modal-body {
   flex: 1 1 auto !important;
   height: calc(100vh - 65px) !important;
   max-height: none !important;
   overflow: hidden !important;
 }
-
 #modalAtencionEmpleado.modal-is-fullscreen #chat-empleado-mensajes {
-  flex: 1 1 auto !important;
-  height: 100% !important;
-  max-height: none !important;
+  flex: 1 1 auto !important; height: 100% !important; max-height: none !important;
+}
+
+
+/* ───────────────────  18. RESPONSIVE  ─────────────────── */
+@media (max-width: 1100px) {
+  .hero-search-grid { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+  .btn-search-hero { grid-column: 1 / -1; }
+}
+
+@media (max-width: 900px) {
+  .franja { height: auto; padding: 12px var(--sp-md); flex-wrap: wrap; align-content: flex-start; }
+  .nav-toggle { display: flex; align-items: center; justify-content: center; }
+
+  .tabs {
+    display: none;
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+    background: var(--ds-gray-50);
+    border-radius: var(--radius-md);
+    padding: 10px;
+  }
+  .tabs.abierto { display: flex; }
+  .tabs.activo   { display: flex; }
+  .tabs button,
+  .tabs .nav-btn-dropdown {
+    text-align: left;
+    border-radius: var(--radius-sm);
+    padding: 12px 16px;
+    border-color: var(--ds-gray-200);
+    background: #fff;
+  }
+  .tabs button[aria-current="page"],
+  .tabs button#nav-registro,
+  .tabs button#nav-panel-empleado { background: var(--ds-navy-900); color: #fff; }
+  .tabs .nav-nombre { width: 100%; justify-content: center; }
+
+  .hero { padding: 68px 16px 88px; }
+  .hero-search-grid { grid-template-columns: 1fr 1fr; }
+  .btn-search-hero { grid-column: 1 / -1; }
+
+  .seccion-destinos { padding: var(--sp-xl) var(--sp-md); }
+  .seccion-beneficios { padding: var(--sp-xl) var(--sp-md); }
+
+  .hero-reportes,
+  .hero-panel-empleado,
+  .hero-reservas { padding: 1.8rem 1.4rem; border-radius: var(--radius-lg); }
+
+  .form-container-card { margin: 32px 16px; padding: 30px 24px; }
+}
+
+@media (max-width: 640px) {
+  .hero-search-grid { grid-template-columns: 1fr; }
+  .destinos-grid { grid-template-columns: 1fr; }
+  .beneficios-grid { grid-template-columns: 1fr 1fr; gap: 14px; }
+  .beneficio-card { padding: 24px 16px; }
+  .beneficio-icon { font-size: 30px; }
+
+  /* .tabla-wrapper y .tabla-admin ya se encargan solas del desplazamiento
+     horizontal; antes solo se activaban por debajo de 640px, y entre 641 y
+     1035px la tabla se cortaba sin poder llegar a las columnas de la
+     derecha. */
+
+  #toast-container { top: 12px; right: 12px; left: 12px; max-width: none; }
+  .form-container-card { margin: 20px 12px; padding: 26px 18px; }
+  .footer-oficial { padding: 44px 18px 24px; margin-top: 48px; }
+  .footer-container { gap: 26px; }
+}
+
+@media (max-width: 400px) {
+  .beneficios-grid { grid-template-columns: 1fr; }
+  .destino-card-body { padding: 18px 18px 20px; }
+}
+
+/* Respeta la preferencia de menos animación */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .destino-card:hover,
+  .btn-reservar-card:hover,
+  .btn-search-hero:hover,
+  .btn-full-primary:hover { transform: none; }
 }

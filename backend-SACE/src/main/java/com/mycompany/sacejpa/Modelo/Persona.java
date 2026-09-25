@@ -38,7 +38,11 @@ public class Persona {
     @Column(name = "apellido")
     private String apellido;
 
-    @Column(name = "email")
+    // Unico y obligatorio: el login busca por correo (findByEmailIgnoreCase), de
+    // modo que dos personas con el mismo correo hacen que ese login falle siempre
+    // para las dos. Ocurrio con admin@onvacation.com, que estaba duplicado en los
+    // ids 2 y 4. Con unique = true la base lo impide en vez de dejarlo al azar.
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
 
     @Column(name = "telefono")

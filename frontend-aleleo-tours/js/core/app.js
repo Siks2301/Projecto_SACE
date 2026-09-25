@@ -51,7 +51,7 @@ function escaperHtml(texto) {
 })();
 
 const Sesion = (() => {
-  const KEY = 'onvacation_sesion';
+  const KEY = 'aleleo_sesion';
 
   function obtener() {
     try { return JSON.parse(sessionStorage.getItem(KEY)); } catch { return null; }
@@ -479,19 +479,18 @@ function agregarTogglePassword(inputId) {
   const input = document.getElementById(inputId);
   if (!input) return;
 
+  // El envoltorio y el boton llevan clases de style.css. Antes iban con
+  // style.cssText y el color del boton se cambiaba desde los eventos de hover,
+  // lo que dejaba el color fuera del design system.
   const wrapper = document.createElement('div');
-  wrapper.style.cssText = 'position:relative;';
+  wrapper.className = 'campo-con-wrap';
   input.parentNode.insertBefore(wrapper, input);
   wrapper.appendChild(input);
 
   const btn = document.createElement('button');
   btn.type = 'button';
+  btn.className = 'toggle-password';
   btn.setAttribute('aria-label', 'Mostrar contrase\u00f1a');
-  btn.style.cssText = `
-    position:absolute; right:10px; top:50%; transform:translateY(-50%);
-    background:none; border:none; cursor:pointer; padding:4px 6px;
-    color:#94a3b8; font-size:16px; transition:color 0.2s;
-  `;
   btn.innerHTML = '<i class="bi bi-eye"></i>';
   btn.addEventListener('click', () => {
     const visible = input.type === 'text';
@@ -499,8 +498,6 @@ function agregarTogglePassword(inputId) {
     btn.innerHTML = visible ? '<i class="bi bi-eye"></i>' : '<i class="bi bi-eye-slash"></i>';
     btn.setAttribute('aria-label', visible ? 'Mostrar contrase\u00f1a' : 'Ocultar contrase\u00f1a');
   });
-  btn.addEventListener('mouseenter', () => btn.style.color = '#0ea5e9');
-  btn.addEventListener('mouseleave', () => btn.style.color = '#94a3b8');
   wrapper.appendChild(btn);
 }
 

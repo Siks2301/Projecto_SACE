@@ -621,7 +621,7 @@
 
             var sesion =
                 sessionStorage.getItem(
-                    'onvacation_sesion'
+                    'aleleo_sesion'
                 );
 
             return sesion
@@ -1875,7 +1875,7 @@
 
 
             sessionStorage.setItem(
-                'onvacation_chat_solicitud_id',
+                'aleleo_chat_solicitud_id',
                 String(
                     estado.solicitudActivaId
                 )
@@ -2268,7 +2268,7 @@
 
             var ticket =
                 sessionStorage.getItem(
-                    'onvacation_chat_solicitud_id'
+                    'aleleo_chat_solicitud_id'
                 );
 
             if (

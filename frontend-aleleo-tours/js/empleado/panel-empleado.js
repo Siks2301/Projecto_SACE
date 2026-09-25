@@ -78,7 +78,7 @@ function actualizarEstadoUIEmpleado() {
 function verificarAccesoEmpleado() {
   sesionEmpleado = typeof Sesion !== 'undefined' && Sesion.obtener
     ? Sesion.obtener()
-    : JSON.parse(sessionStorage.getItem('onvacation_sesion') || 'null');
+    : JSON.parse(sessionStorage.getItem('aleleo_sesion') || 'null');
 
   if (!sesionEmpleado) {
     if (typeof Toast !== 'undefined') Toast.mostrar('Debes iniciar sesión para acceder al Panel de Asesores.', 'error');
@@ -300,7 +300,7 @@ async function cargarSolicitudesAsignadas() {
 }
 
 function cargarSolicitudesLocal() {
-  const locales = JSON.parse(localStorage.getItem('onvacation_reservas') || '[]');
+  const locales = JSON.parse(localStorage.getItem('aleleo_reservas') || '[]');
   solicitudesAsignadas = locales.map(r => ({
     id: r.id,
     fechaCreacion: r.fechaReserva || new Date().toISOString(),
@@ -351,7 +351,7 @@ function renderizarSolicitudesEmpleado() {
     contenedor.innerHTML = `
       <div class="text-center py-5 bg-white rounded-4 border shadow-sm">
         <i class="bi bi-inbox text-muted" style="font-size: 3rem;"></i>
-        <h5 class="mt-2 text-dark fw-bold">No tienes atenciones en esta categoría</h5>
+        <h2 class="mt-2 text-dark fw-bold">No tienes atenciones en esta categoría</h2>
         <p class="text-muted small">Cambia el filtro de búsqueda o el estado para visualizar otras solicitudes.</p>
       </div>
     `;
@@ -376,13 +376,13 @@ function renderizarSolicitudesEmpleado() {
     card.innerHTML = `
       <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
         <div>
-          <div class="d-flex align-items-center gap-2 mb-1">
+          <div class="d-flex flex-wrap align-items-center gap-2 mb-1">
             <span class="badge ${estadoClass} fw-bold px-3 py-1 rounded-pill">${escaperHtml(s.estado || 'PENDIENTE')}</span>
             <span class="badge bg-secondary-subtle text-secondary border fw-semibold">${escaperHtml(s.categoria || 'GENERAL')}</span>
             <span class="badge bg-warning-subtle text-warning-emphasis border fw-semibold">Prioridad: ${escaperHtml(s.prioridad || 'MEDIA')}</span>
             <small class="text-muted ms-2"><i class="bi bi-calendar3"></i> ${fecha}</small>
           </div>
-          <h4 class="h5 fw-bold text-dark mb-1 mt-2">${escaperHtml(s.titulo || 'Solicitud de Viaje')}</h4>
+          <h2 class="h5 fw-bold text-dark mb-1 mt-2">${escaperHtml(s.titulo || 'Solicitud de Viaje')}</h2>
           <p class="text-muted small mb-0"><i class="bi bi-person-fill text-primary"></i> <strong>${escaperHtml(clienteNombre)}</strong> (${escaperHtml(clienteContacto)})</p>
         </div>
 

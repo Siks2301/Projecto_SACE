@@ -154,7 +154,7 @@ async function cargarDashboard(desde = '', hasta = '', silencioso = false) {
   }
 }
 
-// 1. Cargar Tarjetas KPI con datos reales y métricas de recaudo Bre-B @VXM301
+// 1. Cargar Tarjetas KPI con datos reales y métricas de recaudo
 async function cargarKpis(query = '') {
   let resp = await fetch(`${API_BASE}/reportes/admin${query}`);
   if (!resp.ok) {
@@ -170,7 +170,7 @@ async function cargarKpis(query = '') {
   document.getElementById('kpi-canceladas').textContent = kpis.solicitudesCanceladas || 0;
   document.getElementById('kpi-efectividad').textContent = `${kpis.porcentajeResueltas || 0}%`;
 
-  // Métricas de Recaudo Financiero (Llave Bre-B @VXM301)
+  // Métricas de Recaudo Financiero
   const formatCOP = val => '$ ' + Number(val || 0).toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' COP';
   if (document.getElementById('kpi-recaudado-breb')) {
     document.getElementById('kpi-recaudado-breb').textContent = formatCOP(kpis.totalRecaudadoBreB);
@@ -193,13 +193,13 @@ async function cargarGraficoEstados(query = '') {
   const valores = datos.map(item => item.cantidad);
 
   const coloresMap = {
-    'PENDIENTE': '#ffc107',
-    'EN_PROCESO': '#0dcaf0',
-    'RESUELTA': '#198754',
-    'CANCELADA': '#dc3545'
+    'PENDIENTE': '#F5A524',
+    'EN_PROCESO': '#1994D7',
+    'RESUELTA': '#12A06B',
+    'CANCELADA': '#D93025'
   };
 
-  const backgroundColors = datos.map(i => coloresMap[i.etiqueta] || '#6c757d');
+  const backgroundColors = datos.map(i => coloresMap[i.etiqueta] || '#6C6C6B');
 
   const ctx = document.getElementById('chartEstados').getContext('2d');
   if (chartEstadosInst) chartEstadosInst.destroy();
@@ -249,8 +249,8 @@ async function cargarGraficoCategorias(query = '') {
       datasets: [{
         label: 'Cantidad de Solicitudes',
         data: valores,
-        backgroundColor: 'rgba(13, 110, 253, 0.75)',
-        borderColor: '#0d6efd',
+        backgroundColor: 'rgba(25, 148, 215, 0.78)',
+        borderColor: '#0C86C4',
         borderWidth: 2,
         borderRadius: 8
       }]
@@ -293,11 +293,11 @@ async function cargarGraficoTendencia(query = '') {
       datasets: [{
         label: 'Solicitudes Registradas',
         data: valores,
-        borderColor: '#198754',
-        backgroundColor: 'rgba(25, 135, 84, 0.15)',
+        borderColor: '#12A06B',
+        backgroundColor: 'rgba(18, 160, 107, 0.15)',
         fill: true,
         tension: 0.35,
-        pointBackgroundColor: '#198754',
+        pointBackgroundColor: '#12A06B',
         pointRadius: 5
       }]
     },
@@ -340,8 +340,8 @@ async function cargarGraficoEmpleados(query = '') {
       datasets: [{
         label: 'Solicitudes Atendidas',
         data: valores,
-        backgroundColor: 'rgba(255, 193, 7, 0.8)',
-        borderColor: '#ffc107',
+        backgroundColor: 'rgba(245, 165, 36, 0.82)',
+        borderColor: '#F5A524',
         borderWidth: 2,
         borderRadius: 8
       }]
@@ -397,10 +397,9 @@ async function exportarReporteCSV() {
     csvContent += '===================================================\n\n';
 
     // 1. Resumen Ejecutivo KPIs
-    csvContent += '--- RESUMEN DE INDICADORES Y AUDITORÍA DE RECAUDO (Bre-B @VXM301) ---\n';
+    csvContent += '--- RESUMEN DE INDICADORES Y AUDITORÍA DE RECAUDO ---\n';
     csvContent += 'Métrica,Valor\n';
-    csvContent += `Llave de Abono Oficial,"Bre-B @VXM301"\n`;
-    csvContent += `Total Ingresos Recaudados (Bre-B @VXM301),"$ ${Number(kpis.totalRecaudadoBreB || 0).toLocaleString('es-CO', { minimumFractionDigits: 2 })} COP"\n`;
+    csvContent += `Total Ingresos Recaudados,"$ ${Number(kpis.totalRecaudadoBreB || 0).toLocaleString('es-CO', { minimumFractionDigits: 2 })} COP"\n`;
     csvContent += `Total Pagos Confirmados,${kpis.totalPagosConfirmados || 0}\n`;
     csvContent += `Ticket Promedio por Transacción,"$ ${Number(kpis.promedioMontoPago || 0).toLocaleString('es-CO', { minimumFractionDigits: 2 })} COP"\n`;
     csvContent += `Total Solicitudes,${kpis.totalSolicitudes || 0}\n`;

@@ -17,7 +17,7 @@ let solicitudParaPago = null;
 
 /* --- CARGA DE SOLICITUDES Y PAGOS DEL CLIENTE --- */
 async function cargarMisSolicitudes() {
-  const sesion = Sesion.obtener ? Sesion.obtener() : JSON.parse(sessionStorage.getItem('onvacation_sesion') || 'null');
+  const sesion = Sesion.obtener ? Sesion.obtener() : JSON.parse(sessionStorage.getItem('aleleo_sesion') || 'null');
   if (!sesion) {
     if (typeof Toast !== 'undefined') {
       Toast.mostrar('Debes iniciar sesión para consultar tus reservas.', 'info');
@@ -77,7 +77,7 @@ async function cargarMisSolicitudes() {
     .forEach(p => pagosRealizados.push(p));
 
   // Integrar reservas locales de respaldo
-  const reservasLocales = JSON.parse(localStorage.getItem('onvacation_reservas') || '[]')
+  const reservasLocales = JSON.parse(localStorage.getItem('aleleo_reservas') || '[]')
     .filter(r => r.usuario === sesion.correo || r.correo === sesion.correo);
 
   reservasLocales.forEach(rl => {
@@ -158,16 +158,16 @@ function renderizarSolicitudes() {
 
   if (filtradas.length === 0) {
     contenedor.innerHTML = `
-      <div class="card p-5 text-center border-0 shadow-sm" style="border-radius: var(--radius-lg); background:#f8fafc;">
+      <div class="card p-5 text-center border-0 shadow-sm" style="border-radius: var(--radius-lg); background: var(--ds-gray-50);">
         <i class="bi bi-calendar-x text-muted" style="font-size: 3.5rem;"></i>
-        <h4 class="mt-3 text-dark">No hay reservas ni solicitudes registradas</h4>
+        <h2 class="mt-3 text-dark">No hay reservas ni solicitudes registradas</h2>
         <p class="text-muted mb-3">Aún no tienes solicitudes en esta categoría. Puedes explorar nuestros destinos y realizar tu primera reserva.</p>
         <div>
           <a href="destinos.html" class="btn btn-primary px-4 py-2 me-2">
             <i class="bi bi-map-fill me-1"></i> Explorar Destinos
           </a>
           <button class="btn btn-outline-info px-3 py-2" onclick="document.getElementById('btn-abrir-nueva-solicitud').click();">
-            <i class="bi bi-plus-circle me-1"></i> Nueva Consulta
+            <i class="bi bi-plus-circle me-1"></i> Nueva Solicitud
           </button>
         </div>
       </div>
@@ -198,7 +198,7 @@ function renderizarSolicitudes() {
           <span class="badge-estado badge-${estado}">
             ${formatearTextoEstado(estado, s.categoria)}
           </span>
-          ${esPagado ? '<span class="badge bg-success text-white ms-2"><i class="bi bi-shield-check me-1"></i> Pago Confirmado (Bre-B @VXM301)</span>' : ''}
+          ${esPagado ? '<span class="badge bg-success text-white ms-2"><i class="bi bi-shield-check me-1"></i> Pago Confirmado</span>' : ''}
           <span class="text-muted ms-2 small">#SOL-${s.id}</span>
         </div>
         <div class="text-muted small">
@@ -206,9 +206,9 @@ function renderizarSolicitudes() {
         </div>
       </div>
 
-      <h3 class="h5 fw-bold text-dark mb-1">
+      <h2 class="h5 fw-bold text-dark mb-1">
         <i class="bi bi-geo-alt-fill text-danger me-1"></i> ${escaparHtml(s.titulo || 'Solicitud sin título')}
-      </h3>
+      </h2>
 
       ${s.asunto ? `<div class="text-primary small fw-semibold mb-2"><i class="bi bi-tag-fill me-1"></i> ${escaparHtml(s.asunto)}</div>` : ''}
 
@@ -224,7 +224,7 @@ function renderizarSolicitudes() {
 
           <!-- Botones de Pago / Comprobante PDF -->
           ${esReserva && !esPagado && !['CANCELADA', 'RECHAZADA'].includes(estado) ? `
-            <button class="btn btn-warning text-dark btn-sm px-3 fw-bold shadow-sm" onclick="abrirModalPago('${s.id}')" style="background:#ffc107; border:none;">
+            <button class="btn btn-warning text-dark btn-sm px-3 fw-bold shadow-sm" onclick="abrirModalPago('${s.id}')">
               <i class="bi bi-credit-card-2-front-fill me-1"></i> Pagar
             </button>
           ` : ''}
@@ -373,7 +373,7 @@ async function procesarPagoSolicitud(e) {
   }
 
   try {
-    const sesion = Sesion.obtener ? Sesion.obtener() : JSON.parse(sessionStorage.getItem('onvacation_sesion') || 'null');
+    const sesion = Sesion.obtener ? Sesion.obtener() : JSON.parse(sessionStorage.getItem('aleleo_sesion') || 'null');
     let targetSolicitudId = Number(rawSolicitudId);
 
     // Si la solicitud es local (reserva en localStorage o ID no persistido en backend), la creamos primero en BD
@@ -627,7 +627,7 @@ async function enviarMensajeCliente() {
   const texto = input.value.trim();
   if (!texto) return;
 
-  const sesion = Sesion.obtener ? Sesion.obtener() : JSON.parse(sessionStorage.getItem('onvacation_sesion') || 'null');
+  const sesion = Sesion.obtener ? Sesion.obtener() : JSON.parse(sessionStorage.getItem('aleleo_sesion') || 'null');
   const nombreCliente = sesion ? `${sesion.nombre} (Cliente)` : 'Cliente';
   const btn = document.getElementById('chat-cliente-enviar-btn');
 
@@ -662,9 +662,9 @@ async function cancelarSolicitud(id, esLocal) {
   if (!confirm('¿Estás seguro de que deseas cancelar esta reserva/solicitud?')) return;
 
   if (esLocal) {
-    const reservasLocales = JSON.parse(localStorage.getItem('onvacation_reservas') || '[]')
+    const reservasLocales = JSON.parse(localStorage.getItem('aleleo_reservas') || '[]')
       .filter(r => r.id !== id);
-    localStorage.setItem('onvacation_reservas', JSON.stringify(reservasLocales));
+    localStorage.setItem('aleleo_reservas', JSON.stringify(reservasLocales));
     Toast.mostrar('Reserva cancelada con éxito.', 'info');
     await cargarMisSolicitudes();
     return;
@@ -731,7 +731,7 @@ function inicializarFormularioNuevaSolicitud() {
   if (form) {
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const sesion = Sesion.obtener ? Sesion.obtener() : JSON.parse(sessionStorage.getItem('onvacation_sesion') || 'null');
+      const sesion = Sesion.obtener ? Sesion.obtener() : JSON.parse(sessionStorage.getItem('aleleo_sesion') || 'null');
       if (!sesion) return;
 
       const titulo = document.getElementById('nueva-sol-titulo').value.trim();

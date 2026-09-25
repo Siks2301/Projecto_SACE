@@ -7,10 +7,10 @@
   <title>Gestión de Empleados | ALELEO TOURS SACE</title>
   <link rel="icon" type="image/jpeg" href="img/logo-aleleo.jpg">
 
-  <!-- Google Fonts: Outfit & Dosis -->
+  <!-- Google Fonts: Outfit (tipografía unificada del design system) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Dosis:wght@400;600;700;800&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
   <!-- Bootstrap 5.3 CSS & Icons -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
@@ -40,7 +40,7 @@
       <button onclick="window.location.href='mis-solicitudes.html'" id="nav-mis-solicitudes" style="display:none;">
         <i class="bi bi-calendar-check-fill" aria-hidden="true"></i> Mis Reservas
       </button>
-      <button onclick="window.location.href='panel-empleado.html'" id="nav-panel-empleado" style="display:none; background:var(--grad-primary);">
+      <button onclick="window.location.href='panel-empleado.html'" id="nav-panel-empleado" style="display:none;">
         <i class="bi bi-headset" aria-hidden="true"></i> Panel Asesor
       </button>
 
@@ -67,7 +67,7 @@
         <i class="bi bi-person-plus-fill" aria-hidden="true"></i> Registrarse
       </button>
       <span id="nav-nombre" class="nav-nombre" style="display:none;" aria-live="polite"></span>
-      <button id="nav-salir" style="display:none; background:var(--grad-promo); color:#fff;">
+      <button id="nav-salir" style="display:none;">
         <i class="bi bi-box-arrow-right" aria-hidden="true"></i> Salir
       </button>
     </nav>
@@ -78,7 +78,7 @@
 
     <div class="admin-header">
       <div>
-        <h2 class="mb-0"><i class="bi bi-person-badge-fill text-primary me-2"></i> Gestión de Empleados</h2>
+        <h1 class="mb-0"><i class="bi bi-person-badge-fill text-primary me-2"></i> Gestión de Empleados</h2>
         <p class="text-muted small mb-0 mt-1">Administración de equipo de asesores, coordinadores y disponibilidad SACE.</p>
       </div>
     </div>
@@ -88,7 +88,7 @@
 
     <!-- FORMULARIO DE GESTIÓN -->
     <section class="card p-4 rounded-4 shadow-sm border-0 mb-4">
-      <h3 id="form-titulo" class="h5 fw-bold text-dark mb-3 border-bottom pb-2">
+      <h2 id="form-titulo" class="h5 fw-bold text-dark mb-3 border-bottom pb-2">
         <i class="bi bi-person-plus-fill text-primary me-1"></i> Registrar o Modificar Empleado
       </h3>
 
@@ -185,7 +185,7 @@
     <!-- TABLA DE RESULTADOS -->
     <section class="tabla-wrapper">
       <div class="p-3 bg-dark text-white d-flex justify-content-between align-items-center">
-        <h3 class="h6 mb-0 text-white fw-bold"><i class="bi bi-table me-2 text-warning"></i> Empleados Registrados en SACE</h3>
+        <h2 class="h6 mb-0 text-white fw-bold"><i class="bi bi-table me-2 text-warning"></i> Empleados Registrados en SACE</h3>
       </div>
       <div class="table-responsive">
         <table class="tabla-admin">
