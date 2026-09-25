@@ -11,7 +11,7 @@ Proyecto académico **SENA** compuesto por dos partes:
 
 - JDK 17
 - Maven 3.8+
-- PostgreSQL 14+ (base de datos `SACE_db`, usuario `postgres`, contraseña `1234`, puerto `5432`)
+- PostgreSQL 18+ (base de datos `SACE_db`, usuario `postgres`, contraseña `1234`, puerto `5432`)
 
 ## Crear la base de datos (una sola vez)
 
@@ -25,7 +25,9 @@ CREATE DATABASE SACE_db;
 Al arrancar el backend, Hibernate crea todas las tablas (`ddl-auto=update`) y
 `DataInitializer` inserta los datos iniciales: el administrador, el catálogo de
 servicios/destinos y las preguntas frecuentes del chatbot.
-(`backend-SACE/src/main/resources/schema_pagos.sql` queda como referencia de la tabla `pago`.)
+(`backend-SACE/src/main/resources/schema_pagos.sql` queda como referencia de la tabla `pago`;
+`schema_email_unico.sql` y `schema_datos_corporativos.sql` son las correcciones de datos
+aplicadas sobre la base: correo único en `persona`, dominio `@aleleotours.com` y un solo administrador.)
 
 ## Ejecutar el backend
 
@@ -44,10 +46,10 @@ Es un sitio 100 % estático; basta con servir la carpeta:
 
 ```powershell
 cd frontend-aleleo-tours
-python -m http.server 8090 --bind 127.0.0.1
+python -m http.server 8091 --bind 127.0.0.1
 ```
 
-Abrir **http://localhost:8090**. El frontend asume el backend en `localhost:8082`.
+Abrir **http://localhost:8091**. El frontend asume el backend en `localhost:8082`.
 
 ## Usuario administrador por defecto
 

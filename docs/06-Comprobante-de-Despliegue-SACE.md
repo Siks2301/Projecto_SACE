@@ -13,7 +13,7 @@ Verificación de despliegue realizada el 21 de septiembre de 2026 sobre el equip
 |---|---|---|---|
 | Base de datos | PostgreSQL 18.4 | localhost:5432 — SACE_db | Activo |
 | Backend (API REST) | Java 17 · Spring Boot 3.2 | http://localhost:8082/api | Activo |
-| Frontend | HTML/CSS/JS · Bootstrap 5.3.3 | http://localhost:8091 (por defecto 8090) | Activo |
+| Frontend | HTML/CSS/JS · Bootstrap 5.3.3 | http://localhost:8091 | Activo |
 | Comprobantes PDF | Carpeta uploads/comprobantes | Servida por el backend | Activo |
 
 ### 6.3 Comandos de despliegue utilizados
@@ -91,6 +91,6 @@ Se incluyen tres capturas del entorno desplegado (colaborador externo autenticad
 ![Captura](03_Despliegue_Destinos.png)
 
 ### 6.8 Notas y recomendaciones
-- En la verificación local el frontend se sirvió en el puerto 8091 porque el 8090 estaba ocupado temporalmente por un proceso externo; el valor por defecto documentado sigue siendo 8090.
+- El frontend se sirve en el puerto 8091 (comando `python -m http.server 8091`), consistente con el README y los planes de despliegue del paquete de evidencias.
 - Antes de exponer el sistema en producción: cambiar SACE_TOKEN_SECRET, la contraseña de PostgreSQL y las credenciales SMTP, y rotar el administrador semilla (admin123).
 - Mantener copias de respaldo del modelo de datos con pg_dump.

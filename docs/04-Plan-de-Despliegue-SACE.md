@@ -14,10 +14,10 @@ Dos componentes desplegados en el mismo equipo (local) o servidor académico: el
 | Java (JDK) | 17 (JAVA_HOME configurado) |
 | Maven | 3.8+ (compilación y empaquetado del backend) |
 | Spring Boot | 3.2 (artefacto com.mycompany:sacejpa:0.0.1-SNAPSHOT) |
-| PostgreSQL | 14+ (base SACE_db en el puerto 5432) |
+| PostgreSQL | 18+ (base SACE_db en el puerto 5432) |
 | Frontend | HTML/CSS/JS puro + Bootstrap 5.3.3 (CDN); sin build |
 | Servidor estático | python -m http.server o nginx |
-| Puertos | Backend 8082 · Frontend 8090 · PostgreSQL 5432 |
+| Puertos | Backend 8082 · Frontend 8091 · PostgreSQL 5432 |
 
 ### 4.3 Configuración y variables de entorno
 El backend centraliza su configuración en application.properties y admite sobrescritura por variables de entorno (formato ${NOMBRE:valor_por_defecto}), lo que permite cambiar la configuración sin tocar código:
@@ -46,9 +46,9 @@ Paso 3 — Servir el frontend estático:
 
      cd frontend-aleleo-tours
 
-     python -m http.server 8090 --bind 127.0.0.1   # http://localhost:8090
+     python -m http.server 8091 --bind 127.0.0.1   # http://localhost:8091
 
-Paso 4 — Verificación: abrir http://localhost:8090, iniciar sesión con el administrador semilla (admin@aleleotours.com / admin123) y comprobar los módulos (Plan de Pruebas, sección 3.6).
+Paso 4 — Verificación: abrir http://localhost:8091, iniciar sesión con el administrador semilla (admin@aleleotours.com / admin123) y comprobar los módulos (Plan de Pruebas, sección 3.6).
 
 ### 4.5 Despliegue en servidor (procedimiento previsto)
 1. Empaquetar el backend:  mvn clean package  → genera backend-SACE/target/sacejpa-0.0.1-SNAPSHOT.jar.

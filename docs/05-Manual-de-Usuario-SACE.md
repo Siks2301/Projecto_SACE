@@ -10,7 +10,7 @@ Este manual describe el uso del Sistema de Atención y Gestión de Solicitudes d
 
 ### 5.2 Acceso al sistema y requisitos
 - Navegador moderno de escritorio (Chrome, Edge o Firefox) con conexión al servidor local o académico.
-- Backend (API) iniciado en el puerto 8082 y frontend servido desde su carpeta (puerto por defecto 8090).
+- Backend (API) iniciado en el puerto 8082 y frontend servido desde su carpeta (puerto por defecto 8091).
 - Si el sistema no responde, verificar que el backend esté corriendo (sección 6 de este paquete de evidencias).
 ### 5.3 Perfiles y credenciales de acceso
 | Perfil | Cómo ingresar | Credenciales de demostración |
@@ -20,7 +20,7 @@ Este manual describe el uso del Sistema de Atención y Gestión de Solicitudes d
 | Administrador | Pestaña 'Empleado' de la página de login | admin@aleleotours.com / admin123 (semilla, solo desarrollo) |
 
 ### 5.4 Iniciar sesión
-En http://localhost:8090 abrir la opción 'Ingresar'. La página de login tiene dos pestañas: 'Cliente' y 'Empleado'. Se deben seleccionar según el perfil, escribir el correo y la contraseña y pulsar 'Ingresar'. Si las credenciales son incorrectas el sistema muestra el mensaje correspondiente. Al ingresar, el menú superior cambia según el rol y se redirige al área principal del perfil (solicitudes para clientes, panel para asesores, administración para el administrador).
+En http://localhost:8091 abrir la opción 'Ingresar'. La página de login tiene dos pestañas: 'Cliente' y 'Empleado'. Se deben seleccionar según el perfil, escribir el correo y la contraseña y pulsar 'Ingresar'. Si las credenciales son incorrectas el sistema muestra el mensaje correspondiente. Al ingresar, el menú superior cambia según el rol y se redirige al área principal del perfil (solicitudes para clientes, panel para asesores, administración para el administrador).
 
 ### 5.5 Sitio público: inicio y destinos
 - Inicio (index): presenta la agencia, menú de navegación, ofertas destacadas y acceso a destinos.
