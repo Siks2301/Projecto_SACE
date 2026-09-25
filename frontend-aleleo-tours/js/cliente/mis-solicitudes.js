@@ -17,7 +17,7 @@ let solicitudParaPago = null;
 
 /* --- CARGA DE SOLICITUDES Y PAGOS DEL CLIENTE --- */
 async function cargarMisSolicitudes() {
-  const sesion = Sesion.obtener ? Sesion.obtener() : JSON.parse(sessionStorage.getItem('onvacation_sesion') || 'null');
+  const sesion = Sesion.obtener ? Sesion.obtener() : JSON.parse(sessionStorage.getItem('aleleo_sesion') || 'null');
   if (!sesion) {
     if (typeof Toast !== 'undefined') {
       Toast.mostrar('Debes iniciar sesión para consultar tus reservas.', 'info');
@@ -77,7 +77,7 @@ async function cargarMisSolicitudes() {
     .forEach(p => pagosRealizados.push(p));
 
   // Integrar reservas locales de respaldo
-  const reservasLocales = JSON.parse(localStorage.getItem('onvacation_reservas') || '[]')
+  const reservasLocales = JSON.parse(localStorage.getItem('aleleo_reservas') || '[]')
     .filter(r => r.usuario === sesion.correo || r.correo === sesion.correo);
 
   reservasLocales.forEach(rl => {
@@ -373,7 +373,7 @@ async function procesarPagoSolicitud(e) {
   }
 
   try {
-    const sesion = Sesion.obtener ? Sesion.obtener() : JSON.parse(sessionStorage.getItem('onvacation_sesion') || 'null');
+    const sesion = Sesion.obtener ? Sesion.obtener() : JSON.parse(sessionStorage.getItem('aleleo_sesion') || 'null');
     let targetSolicitudId = Number(rawSolicitudId);
 
     // Si la solicitud es local (reserva en localStorage o ID no persistido en backend), la creamos primero en BD
@@ -627,7 +627,7 @@ async function enviarMensajeCliente() {
   const texto = input.value.trim();
   if (!texto) return;
 
-  const sesion = Sesion.obtener ? Sesion.obtener() : JSON.parse(sessionStorage.getItem('onvacation_sesion') || 'null');
+  const sesion = Sesion.obtener ? Sesion.obtener() : JSON.parse(sessionStorage.getItem('aleleo_sesion') || 'null');
   const nombreCliente = sesion ? `${sesion.nombre} (Cliente)` : 'Cliente';
   const btn = document.getElementById('chat-cliente-enviar-btn');
 
@@ -662,9 +662,9 @@ async function cancelarSolicitud(id, esLocal) {
   if (!confirm('¿Estás seguro de que deseas cancelar esta reserva/solicitud?')) return;
 
   if (esLocal) {
-    const reservasLocales = JSON.parse(localStorage.getItem('onvacation_reservas') || '[]')
+    const reservasLocales = JSON.parse(localStorage.getItem('aleleo_reservas') || '[]')
       .filter(r => r.id !== id);
-    localStorage.setItem('onvacation_reservas', JSON.stringify(reservasLocales));
+    localStorage.setItem('aleleo_reservas', JSON.stringify(reservasLocales));
     Toast.mostrar('Reserva cancelada con éxito.', 'info');
     await cargarMisSolicitudes();
     return;
@@ -731,7 +731,7 @@ function inicializarFormularioNuevaSolicitud() {
   if (form) {
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const sesion = Sesion.obtener ? Sesion.obtener() : JSON.parse(sessionStorage.getItem('onvacation_sesion') || 'null');
+      const sesion = Sesion.obtener ? Sesion.obtener() : JSON.parse(sessionStorage.getItem('aleleo_sesion') || 'null');
       if (!sesion) return;
 
       const titulo = document.getElementById('nueva-sol-titulo').value.trim();

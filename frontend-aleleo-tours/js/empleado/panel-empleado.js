@@ -78,7 +78,7 @@ function actualizarEstadoUIEmpleado() {
 function verificarAccesoEmpleado() {
   sesionEmpleado = typeof Sesion !== 'undefined' && Sesion.obtener
     ? Sesion.obtener()
-    : JSON.parse(sessionStorage.getItem('onvacation_sesion') || 'null');
+    : JSON.parse(sessionStorage.getItem('aleleo_sesion') || 'null');
 
   if (!sesionEmpleado) {
     if (typeof Toast !== 'undefined') Toast.mostrar('Debes iniciar sesión para acceder al Panel de Asesores.', 'error');
@@ -300,7 +300,7 @@ async function cargarSolicitudesAsignadas() {
 }
 
 function cargarSolicitudesLocal() {
-  const locales = JSON.parse(localStorage.getItem('onvacation_reservas') || '[]');
+  const locales = JSON.parse(localStorage.getItem('aleleo_reservas') || '[]');
   solicitudesAsignadas = locales.map(r => ({
     id: r.id,
     fechaCreacion: r.fechaReserva || new Date().toISOString(),

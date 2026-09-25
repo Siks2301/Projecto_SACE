@@ -128,7 +128,7 @@ function renderizarDestinos(lista) {
 }
 
 function abrirModal(id) {
-  const sesion = Sesion.obtener ? Sesion.obtener() : JSON.parse(sessionStorage.getItem('onvacation_sesion') || 'null');
+  const sesion = Sesion.obtener ? Sesion.obtener() : JSON.parse(sessionStorage.getItem('aleleo_sesion') || 'null');
   if (!sesion) {
     if (typeof Toast !== 'undefined') {
       Toast.mostrar('Debes iniciar sesi\u00f3n para reservar tu viaje.', 'info');
@@ -218,8 +218,8 @@ function inicializarFormularioReserva() {
     }
 
     const total    = destinoSeleccionado.precio * pasajeros;
-    const reservas = JSON.parse(localStorage.getItem('onvacation_reservas') || '[]');
-    const sesion   = Sesion.obtener ? Sesion.obtener() : JSON.parse(sessionStorage.getItem('onvacation_sesion') || 'null');
+    const reservas = JSON.parse(localStorage.getItem('aleleo_reservas') || '[]');
+    const sesion   = Sesion.obtener ? Sesion.obtener() : JSON.parse(sessionStorage.getItem('aleleo_sesion') || 'null');
 
     reservas.push({
       id:           Date.now(),
@@ -235,7 +235,7 @@ function inicializarFormularioReserva() {
       correo,
       fechaReserva: new Date().toISOString()
     });
-    localStorage.setItem('onvacation_reservas', JSON.stringify(reservas));
+    localStorage.setItem('aleleo_reservas', JSON.stringify(reservas));
 
     const btnConfirmar = document.querySelector('#form-reserva button[type="submit"]');
     let mensajeFinal = '\u00a1Reserva confirmada exitosamente! Te enviamos los detalles a tu correo.';

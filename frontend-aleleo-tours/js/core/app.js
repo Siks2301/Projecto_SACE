@@ -51,7 +51,7 @@ function escaperHtml(texto) {
 })();
 
 const Sesion = (() => {
-  const KEY = 'onvacation_sesion';
+  const KEY = 'aleleo_sesion';
 
   function obtener() {
     try { return JSON.parse(sessionStorage.getItem(KEY)); } catch { return null; }
