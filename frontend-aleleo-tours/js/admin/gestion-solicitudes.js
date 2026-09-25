@@ -101,7 +101,7 @@ function renderizarTablaSolicitudes(lista) {
       <td>${escaparHtml(s.prioridad || '')}</td>
       <td>${escaparHtml(nombreEmpleadoPorId(s.empleadoAsignadoId))}</td>
       <td>
-        <button type="button" class="btn btn-sm btn-info text-white" data-chat="${s.id}" title="Abrir Chat con el Cliente">
+        <button type="button" class="btn-info btn-sm-admin" data-chat="${s.id}" title="Abrir Chat con el Cliente">
           <i class="bi bi-chat-dots-fill"></i> Chat
         </button>
         <button type="button" class="btn-success btn-sm-admin ms-1" data-editar="${s.id}" title="Editar Solicitud">

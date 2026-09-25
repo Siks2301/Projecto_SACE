@@ -7,10 +7,10 @@
   <title>Reportes y Estadísticas | ALELEO TOURS SACE</title>
   <link rel="icon" type="image/jpeg" href="img/logo-aleleo.jpg">
 
-  <!-- Google Fonts: Outfit & Dosis -->
+  <!-- Google Fonts: Outfit (tipografía unificada del design system) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Dosis:wght@400;600;700;800&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
   <!-- Bootstrap 5.3 CSS & Icons -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
@@ -23,121 +23,26 @@
   <!-- Chart.js para Gráficos -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+  
   <style>
-    .hero-reportes {
-      background: var(--grad-dark);
-      color: #ffffff;
-      padding: 2.2rem 2rem;
-      border-radius: 24px;
-      margin-bottom: 2rem;
-      box-shadow: 0 16px 36px rgba(10, 25, 47, 0.3);
-      border: 2px solid var(--color-primary);
-    }
+    /* Todo el estilo de pantalla vive en css/style.css.
+       Aquí solo queda la cabecera de impresión y las reglas @media print. */
+    .print-only-header { display: none; }
 
-    .kpi-card {
-      background: #ffffff;
-      border-radius: 20px;
-      padding: 20px;
-      box-shadow: var(--shadow-md);
-      border: 1px solid var(--color-border);
-      transition: all 0.3s ease;
-    }
-    .kpi-card:hover {
-      transform: translateY(-4px);
-      box-shadow: var(--shadow-lg);
-      border-color: var(--color-primary);
-    }
-    .kpi-card .kpi-icon {
-      width: 48px;
-      height: 48px;
-      border-radius: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.4rem;
-      margin-bottom: 10px;
-    }
-    .kpi-card .kpi-val {
-      font-size: 2rem;
-      font-weight: 800;
-      color: var(--color-dark);
-      line-height: 1.1;
-    }
-    .kpi-card .kpi-lbl {
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: var(--color-text-light);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .chart-card {
-      background: #ffffff;
-      border-radius: 24px;
-      padding: 22px;
-      box-shadow: var(--shadow-md);
-      border: 1px solid var(--color-border);
-      height: 100%;
-      transition: all 0.3s ease;
-    }
-    .chart-card:hover {
-      box-shadow: var(--shadow-lg);
-    }
-    .chart-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 16px;
-      border-bottom: 1px solid #f1f5f9;
-      padding-bottom: 10px;
-    }
-    .chart-title {
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: var(--color-dark);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin: 0;
-    }
-    .chart-container {
-      position: relative;
-      min-height: 250px;
-      max-height: 300px;
-    }
-
-    .btn-export {
-      background: var(--grad-primary);
-      color: white;
-      border: none;
-      padding: 10px 22px;
-      border-radius: 14px;
-      font-weight: 700;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      transition: all 0.3s ease;
-    }
-    .btn-export:hover {
-      color: white;
-      transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(13, 110, 253, 0.3);
-    }
-
-    .print-only-header {
-      display: none;
-    }
-
-    /* ESTILOS DE IMPRESIÓN PROFESIONALES */
+/* ESTILOS DE IMPRESIÓN PROFESIONALES */
     @media print {
       @page {
         size: letter portrait;
         margin: 10mm 12mm;
       }
 
+      /* Los blancos de esta hoja son a proposito y no son hex sueltos que
+         haya que cambiar por un token: al imprimir, el papel es blanco. Si se
+         sustituyeran por --ds-gray-50 (#F8F8F7) el reporte saldria con un
+         tinte gris en toda la pagina. */
       body {
         background: #ffffff !important;
-        color: #0f172a !important;
+        color: var(--ds-navy-900) !important;
         font-family: 'Outfit', 'Segoe UI', system-ui, sans-serif !important;
         font-size: 10pt !important;
         margin: 0 !important;
@@ -157,7 +62,7 @@
 
       .print-only-header {
         display: block !important;
-        border-bottom: 2.5px solid #0d6efd !important;
+        border-bottom: 2.5px solid var(--ds-coral-700) !important;
         padding-bottom: 8px !important;
         margin-bottom: 16px !important;
       }
@@ -165,7 +70,7 @@
       .print-brand-title {
         font-size: 18pt !important;
         font-weight: 800 !important;
-        color: #0a192f !important;
+        color: var(--ds-navy-950) !important;
         margin: 0 !important;
         line-height: 1.1 !important;
       }
@@ -173,13 +78,13 @@
       .print-sub-title {
         font-size: 11pt !important;
         font-weight: 700 !important;
-        color: #0284c7 !important;
+        color: var(--ds-blue-700) !important;
         margin: 2px 0 0 0 !important;
       }
 
       .print-meta-text {
         font-size: 9pt !important;
-        color: #64748b !important;
+        color: var(--ds-gray-500) !important;
         margin: 0 !important;
       }
 
@@ -192,8 +97,8 @@
 
       .kpi-card {
         box-shadow: none !important;
-        border: 1px solid #cbd5e1 !important;
-        background: #f8fafc !important;
+        border: 1px solid var(--ds-gray-300) !important;
+        background: var(--ds-gray-50) !important;
         border-radius: 8px !important;
         padding: 8px 4px !important;
         text-align: center !important;
@@ -208,7 +113,7 @@
       .kpi-card .kpi-val {
         font-size: 1.3rem !important;
         font-weight: 800 !important;
-        color: #0f172a !important;
+        color: var(--ds-navy-900) !important;
         line-height: 1 !important;
         margin-bottom: 2px !important;
       }
@@ -216,7 +121,7 @@
       .kpi-card .kpi-lbl {
         font-size: 7pt !important;
         font-weight: 700 !important;
-        color: #475569 !important;
+        color: var(--ds-gray-600) !important;
         text-transform: uppercase !important;
         letter-spacing: 0.3px !important;
       }
@@ -233,7 +138,7 @@
 
       .chart-card {
         box-shadow: none !important;
-        border: 1px solid #cbd5e1 !important;
+        border: 1px solid var(--ds-gray-300) !important;
         background: #ffffff !important;
         border-radius: 10px !important;
         padding: 12px !important;
@@ -245,13 +150,13 @@
       .chart-header {
         margin-bottom: 8px !important;
         padding-bottom: 6px !important;
-        border-bottom: 1px solid #e2e8f0 !important;
+        border-bottom: 1px solid var(--ds-gray-200) !important;
       }
 
       .chart-title {
         font-size: 10pt !important;
         font-weight: 700 !important;
-        color: #0f172a !important;
+        color: var(--ds-navy-900) !important;
       }
 
       .chart-container {
@@ -311,7 +216,7 @@
           <li><a class="dropdown-item py-2 fw-semibold" href="gestion-servicios.html"><i class="bi bi-briefcase-fill text-success me-2"></i> Gestión Servicios</a></li>
         </ul>
       </div>
-      <button onclick="window.location.href='reportes.html'" id="nav-reportes" style="display:none; background:var(--grad-primary);">
+      <button onclick="window.location.href='reportes.html'" id="nav-reportes" style="display:none;">
         <i class="bi bi-bar-chart-line-fill" aria-hidden="true"></i> Dashboard
       </button>
 
@@ -323,7 +228,7 @@
         <i class="bi bi-person-plus-fill" aria-hidden="true"></i> Registrarse
       </button>
       <span id="nav-nombre" class="nav-nombre" style="display:none;" aria-live="polite"></span>
-      <button id="nav-salir" style="display:none; background:var(--grad-promo); color:#fff;">
+      <button id="nav-salir" style="display:none;">
         <i class="bi bi-box-arrow-right" aria-hidden="true"></i> Salir
       </button>
     </nav>
@@ -461,15 +366,15 @@
       </div>
     </div>
 
-    <!-- BANNER & SECCIÓN FINANCIERA DE LA LLAVE Bre-B @VXM301 -->
-    <div class="card border-0 shadow-sm rounded-4 mb-4 overflow-hidden" style="background: linear-gradient(135deg, #0a192f 0%, #0f172a 100%); border: 1.5px solid #ffc107 !important;">
+    <!-- BANNER & SECCIÓN FINANCIERA DE RECAUDO -->
+    <div class="card superficie-oscura border-0 shadow-sm rounded-4 mb-4 overflow-hidden" style="background: linear-gradient(135deg, var(--ds-navy-950) 0%, var(--ds-navy-900) 100%); border: 1.5px solid var(--ds-amber-500) !important;">
       <div class="card-body p-4 text-white">
         <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-3">
           <div>
             <span class="badge bg-warning text-dark fw-bold uppercase px-3 py-1 rounded-pill mb-1">AUDITORÍA DE RECAUDO FINANCIERO SACE</span>
-            <h3 class="h4 fw-extrabold text-warning mb-0">
-              <i class="bi bi-bank2 me-2"></i> Recaudo Oficial<span class="font-monospace"></span>
-            </h3>
+            <h2 class="h4 fw-extrabold text-warning mb-0">
+              <i class="bi bi-bank2 me-2"></i> Recaudo Oficial
+            </h2>
           </div>
           <span class="badge bg-success-subtle text-success border border-success fw-bold px-3 py-2 fs-6">
             <i class="bi bi-shield-check me-1"></i> Transacciones Sanitizadas & Verificadas
@@ -479,7 +384,7 @@
         <div class="row g-3">
           <div class="col-12 col-md-4">
             <div class="p-3 bg-white bg-opacity-10 rounded-3 border border-light border-opacity-25">
-              <div class="small text-warning fw-bold uppercase"><i class="bi bi-cash-stack me-1"></i> Total Ingresos (Bre-B @VXM301)</div>
+              <div class="small text-warning fw-bold uppercase"><i class="bi bi-cash-stack me-1"></i> Total Ingresos</div>
               <div class="fs-3 fw-extrabold text-white" id="kpi-recaudado-breb">$ 0 COP</div>
               <small class="text-light opacity-75">Suma total de abonos confirmados</small>
             </div>

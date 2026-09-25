@@ -48,10 +48,10 @@ function renderizarTablaEmpleados(lista) {
         <span class="badge ${accesoClass} rounded-pill px-2 py-1 ms-1">${acceso}</span>
       </td>
       <td>
-        <button type="button" class="btn-success btn-sm-admin" data-editar="${e.id}">
+        <button type="button" class="btn-success btn-sm-admin" data-editar="${e.id}" title="Editar" aria-label="Editar empleado">
           <i class="bi bi-pencil-fill" aria-hidden="true"></i>
         </button>
-        <button type="button" class="btn-danger btn-sm-admin" data-eliminar="${e.id}">
+        <button type="button" class="btn-danger btn-sm-admin" data-eliminar="${e.id}" title="Eliminar" aria-label="Eliminar empleado">
           <i class="bi bi-trash-fill" aria-hidden="true"></i>
         </button>
       </td>
