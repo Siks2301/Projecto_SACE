@@ -79,7 +79,7 @@ La base SACE_db existe con 11 tablas en el esquema public (usuarios, solicitudes
 | GET /api/servicios (catálogo público) | HTTP 200, 7 destinos |
 | POST /api/auth/login con admin semilla | HTTP 200, rol ADMINISTRADOR, token firmado |
 | Páginas login, index, destinos y registro | HTTP 200 en las 4 |
-| Suite de regresión 62/62 (Plan de Pruebas, CP-01…CP-14) | 62 PASS / 0 FAIL |
+| Suite de regresión 92/92 (Plan de Pruebas, CP-01–CP-24) | 92 PASS / 0 FAIL |
 
 ### 6.7 Evidencia visual del sistema en ejecución
 Se incluyen tres capturas del entorno desplegado (colaborador externo autenticado o vista pública), disponibles además en 7_Despliegue/Capturas_Despliegue/ y en docs/capturas/ del repositorio:

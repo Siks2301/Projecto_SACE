@@ -1,4 +1,4 @@
-/* ==========================================================================
+﻿/* ==========================================================================
    AleLeo Tours - mis-solicitudes.js
    Gestion de reservas, solicitudes, pagos en linea con pasarela y descarga de comprobantes PDF.
    ========================================================================== */
@@ -61,7 +61,7 @@ async function cargarMisSolicitudes() {
     solicitudesCliente = [];
   }
 
-  // Pagos APROBADOS del cliente: alimentan el badge "Pago Confirmado" y los
+  // Pagos APROBADOS del cliente: alimentan el badge "Pago Aprobado" y los
   // botones de comprobante (antes se adivinaba por el estado RESUELTA y se
   // mostraban comprobantes fantasma en solicitudes sin ningun pago).
   //
@@ -202,7 +202,7 @@ function renderizarSolicitudes() {
           <span class="badge-estado badge-${estado}">
             ${formatearTextoEstado(estado, s.categoria)}
           </span>
-          ${esPagado ? '<span class="badge bg-success text-white ms-2"><i class="bi bi-shield-check me-1"></i> Pago Confirmado</span>' : ''}
+          ${esPagado ? '<span class="badge bg-success text-white ms-2"><i class="bi bi-shield-check me-1"></i> Pago Aprobado</span>' : ''}
           <span class="text-muted ms-2 small">#SOL-${s.id}</span>
         </div>
         <div class="text-muted small">

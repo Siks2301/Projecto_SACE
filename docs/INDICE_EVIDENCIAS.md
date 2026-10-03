@@ -19,7 +19,7 @@ las versiones `.md`, los diagramas, las capturas y el DDL del esquema.
 | 5 | Control de versiones y colaboración (10 %) | Repositorio público GitHub (Siks2301/Projecto_SACE) · rama `main` con commits y `merge --no-ff` · **commits por integrante** (Cesar/backend, Yerson/BD, Felipe/frontend) · `.gitignore` | Completo (5) |
 | 6 | Gestión del proyecto (10 %) | [`02-Backlog-y-Gestion-del-Proyecto-SACE.md`](02-Backlog-y-Gestion-del-Proyecto-SACE.md) · backlog · 11 historias de usuario · tareas T1…T8 · sprints S1…S5 · seguimiento y cumplimiento | Completo (5) |
 | 7 | Documentación (5 %) | README.md (requisitos, instalación, tecnologías, configuración y evidencias) · docs/*.md · [`05-Manual-de-Usuario-SACE.md`](05-Manual-de-Usuario-SACE.md) · INDICE_EVIDENCIAS.md | Completo (5) |
-| 8 | Preparación para pruebas (5 %) | [`03-Plan-de-Pruebas-SACE.md`](03-Plan-de-Pruebas-SACE.md) · casos CP-01…CP-14 · datos de prueba · criterios de aceptación · **62 PASS / 0 FAIL** | Completo (5) |
+| 8 | Preparación para pruebas (5 %) | [`03-Plan-de-Pruebas-SACE.md`](03-Plan-de-Pruebas-SACE.md) · casos CP-01–CP-24 · datos de prueba · criterios de aceptación · **92 PASS / 0 FAIL** | Completo (5) |
 | 9 | Preparación para el despliegue (5 %) | [`04-Plan-de-Despliegue-SACE.md`](04-Plan-de-Despliegue-SACE.md) · [`06-Comprobante-de-Despliegue-SACE.md`](06-Comprobante-de-Despliegue-SACE.md) con verificación real (servicios, salud HTTP, capturas) | Completo (5) |
 
 ## Recursos del repositorio

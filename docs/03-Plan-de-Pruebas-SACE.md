@@ -39,7 +39,7 @@ Verificar el cumplimiento funcional y de seguridad del sistema SACE de extremo a
 | CP-06 | Pago único y doble cobro | 201 el primero; 400 el segundo (ValidacionException explícita). Garantía final: índice único parcial `uq_pago_aprobado_por_solicitud` |
 | CP-07 | Intento de imponer el precio: envío de `monto`, `amount` o `precio` en `POST /pagos` | 400 con el mensaje "El monto no lo puede elegir el cliente". El DTO no tiene dónde almacenarlo. Sin servicio con precio válido también se rechaza, nunca se cobra un cero |
 | CP-08 | Comprobante PDF: descarga del propietario y de un tercero | 200 + application/pdf para el dueño; 403 para el tercero |
-| CP-09 | Solicitud RESUELTA con pago: etiquetas y botones | Badge 'Pago Confirmado' + descargar; sin botón Pagar |
+| CP-09 | Solicitud RESUELTA con pago: etiquetas y botones | Badge 'Pago Aprobado' + descargar; sin botón Pagar |
 | CP-10 | Cancelación de solicitud inexistente y PUT rechazado | Aviso claro al usuario; se muestra el motivo real del servidor; sin DELETE de clientes |
 | CP-11 | Reportes y KPIs (admin vs cliente) | 200 para admin; 403 para cliente |
 | CP-12 | Saneamiento de datos del API en plantillas (XSS) | Los valores con HTML se escapan; no se ejecutan |

@@ -18,7 +18,7 @@ El esquema tiene 11 tablas en el esquema public de PostgreSQL 18.4:
 | empleado | Especialización de persona para empleados (cargo específico, departamento y disponibilidad). | id (PK + FK a persona) |
 | solicitud | Solicitudes de soporte por categoría (RESERVA, CONSULTA, CAMBIO_FECHA, EQUIPAJE, OTRO), estado y prioridad. | id (identity) |
 | mensaje | Mensajes del hilo de conversación por solicitud (TEXTO, ARCHIVO o SISTEMA) con ruta del adjunto y calificación. | id (identity) |
-| pago | Pagos: monto, método, llave de destino, estado, fecha, URL del comprobante y notificación. | id_pago (identity) |
+| pago | Pagos: referencia única, monto, método, pasarela, código de autorización, estado, fechas de creación/aprobación, URL del comprobante y notificación. | id_pago (identity) |
 | servicio | Catálogo de servicios/destinos con precio decimal preciso y tipo de servicio. | id (identity) |
 | pregunta_frecuente | Catálogo del chatbot: pregunta, respuesta, categoría y palabras clave. | id (identity) |
 | chatbot | Instancia del bot con nombre, versión y estado operativo. | id (identity) |

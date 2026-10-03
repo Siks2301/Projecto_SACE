@@ -29,7 +29,7 @@ El backlog se deriva de las 11 historias de usuario documentadas en 'Historias_d
 | S2 | 22 ago – 4 sep | Diseño del sistema y de la base de datos | Diagramas de casos de uso, clases, MER y modelo relacional; diccionario de datos; Historias_de_usuario.docx |
 | S3 | 5 – 12 sep | Construcción del backend y base de datos | Informe-01-Backend-SACE.docx; API REST funcional en /api |
 | S4 | 13 – 19 sep | Construcción del frontend e integración | Informe-02-Frontend-AleLeo-Tours.docx; páginas y chatbot integrados |
-| S5 | 20 – 21 sep | Pruebas, seguridad, documentación y publicación | Plan de Pruebas; 62/62 pruebas automáticas; README; plan de despliegue; repositorio GitHub |
+| S5 | 20 – 21 sep | Pruebas, seguridad, documentación y publicación | Plan de Pruebas; 92/92 pruebas automatizadas; README; plan de despliegue; repositorio GitHub |
 
 ### 2.4 Seguimiento y cumplimiento
 | Métrica | Valor |
