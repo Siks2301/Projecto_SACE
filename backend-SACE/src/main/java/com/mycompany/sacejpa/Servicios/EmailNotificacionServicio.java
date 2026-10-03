@@ -36,8 +36,8 @@ public class EmailNotificacionServicio {
         if (pago == null) return false;
 
         Long idSolicitud = (pago.getSolicitud() != null) ? pago.getSolicitud().getId() : 0L;
-        String llave = (pago.getLlaveDestino() != null) ? pago.getLlaveDestino() : "Bre-B @VXM301";
-        String asunto = "[NUEVO PAGO CONFIRMADO] Comprobante - Llave " + llave + " - Solicitud #" + idSolicitud;
+        String referencia = (pago.getReferencia() != null) ? pago.getReferencia() : "S/N";
+        String asunto = "[NUEVO PAGO CONFIRMADO] Comprobante - Ref " + referencia + " - Solicitud #" + idSolicitud;
 
         try {
             if (mailSender == null) {
@@ -60,16 +60,17 @@ public class EmailNotificacionServicio {
             String cuerpoHtml = "<div style='font-family: Arial, sans-serif; padding: 20px; background: #f8fafc; color: #0f172a;'>" +
                     "<div style='max-width: 600px; margin: 0 auto; background: #ffffff; padding: 25px; border-radius: 16px; border: 1px solid #cbd5e1;'>" +
                     "<h2 style='color: #0a192f; margin-top: 0;'><span style='color:#ffb703;'>ALELEO TOURS</span> — Nuevo Pago Recibido</h2>" +
-                    "<p style='font-size: 15px;'>Se ha confirmado exitosamente una nueva transaccion asociada a la <strong>Llave de Destino: " + llave + "</strong>.</p>" +
+                    "<p style='font-size: 15px;'>Se ha confirmado exitosamente una nueva transaccion procesada por la pasarela de pagos.</p>" +
                     "<hr style='border: none; border-top: 1px solid #e2e8f0; margin: 20px 0;'>" +
                     "<table style='width: 100%; font-size: 14px; border-collapse: collapse;'>" +
-                    "<tr><td style='padding: 6px 0; color: #64748b;'>ID Pago:</td><td style='font-weight: bold;'>#" + pago.getId() + "</td></tr>" +
+                    "<tr><td style='padding: 6px 0; color: #64748b;'>Referencia:</td><td style='font-weight: bold;'>" + referencia + "</td></tr>" +
                     "<tr><td style='padding: 6px 0; color: #64748b;'>Solicitud:</td><td style='font-weight: bold;'>#" + idSolicitud + " — " + tourTitulo + "</td></tr>" +
                     "<tr><td style='padding: 6px 0; color: #64748b;'>Cliente:</td><td>" + clienteNombre + " (" + clienteCorreo + ")</td></tr>" +
                     "<tr><td style='padding: 6px 0; color: #64748b;'>Monto Abonado:</td><td style='font-weight: bold; color: #198754; font-size: 16px;'>" + montoFormatted + "</td></tr>" +
-                    "<tr><td style='padding: 6px 0; color: #64748b;'>Metodo de Pago:</td><td>" + (pago.getMetodoPago() != null ? pago.getMetodoPago() : "TRANSFERENCIA") + "</td></tr>" +
+                    "<tr><td style='padding: 6px 0; color: #64748b;'>Metodo de Pago:</td><td>" + (pago.getMetodoPago() != null ? pago.getMetodoPago().etiqueta() : "No especificado") + "</td></tr>" +
+                    "<tr><td style='padding: 6px 0; color: #64748b;'>Pasarela:</td><td>" + (pago.getPasarela() != null ? pago.getPasarela() : "-") + "</td></tr>" +
+                    "<tr><td style='padding: 6px 0; color: #64748b;'>Codigo de Autorizacion:</td><td>" + (pago.getCodigoAutorizacion() != null ? pago.getCodigoAutorizacion() : "-") + "</td></tr>" +
                     "<tr><td style='padding: 6px 0; color: #64748b;'>Fecha & Hora:</td><td>" + fechaFormatted + "</td></tr>" +
-                    "<tr><td style='padding: 6px 0; color: #64748b;'>Llave Destino:</td><td style='font-weight: bold; color: #dc3545;'>" + llave + "</td></tr>" +
                     "</table>" +
                     "<hr style='border: none; border-top: 1px solid #e2e8f0; margin: 20px 0;'>" +
                     "<p style='font-size: 13px; color: #64748b;'>Se adjunta el Comprobante Oficial en formato PDF (Estilo Recibo de Servicio Electrico).</p>" +

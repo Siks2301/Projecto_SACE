@@ -117,8 +117,12 @@ public class PdfComprobanteServicio {
                 : "N/A";
         String idSolicitudStr = solicitud != null ? "#SOL-" + solicitud.getId() : "N/A";
         String tituloTour = solicitud != null ? sanitizar(solicitud.getTitulo()) : "Reserva / Servicio Turistico";
-        String llaveDestino = sanitizar(pago.getLlaveDestino(), "Bre-B @VXM301");
-        String metodoPago = sanitizar(pago.getMetodoPago(), "TRANSFERENCIA BANCARIA");
+        String referencia = sanitizar(pago.getReferencia(), "S/N");
+        String metodoPago = sanitizar(
+                pago.getMetodoPago() != null ? pago.getMetodoPago().etiqueta() : null,
+                "Metodo no especificado");
+        String pasarela = sanitizar(pago.getPasarela(), "No especificada");
+        String autorizacion = sanitizar(pago.getCodigoAutorizacion(), "No informado");
 
         PdfPTable infoTable = new PdfPTable(2);
         infoTable.setWidthPercentage(100);
@@ -141,8 +145,10 @@ public class PdfComprobanteServicio {
         cDestino.setPadding(8);
         cDestino.addElement(new Paragraph("DATOS DE LA TRANSACCION & RESERVA", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 9, new Color(13, 110, 253))));
         cDestino.addElement(new Paragraph("Solicitud Asociada: " + idSolicitudStr, fontBold));
-        cDestino.addElement(new Paragraph("LLAVE DE DESTINO: " + llaveDestino, fontDestacado));
+        cDestino.addElement(new Paragraph("REFERENCIA DE PAGO: " + referencia, fontDestacado));
         cDestino.addElement(new Paragraph("Metodo de Pago: " + metodoPago, fontNormal));
+        cDestino.addElement(new Paragraph("Pasarela: " + pasarela, fontNormal));
+        cDestino.addElement(new Paragraph("Codigo de Autorizacion: " + autorizacion, fontNormal));
         infoTable.addCell(cDestino);
 
         document.add(infoTable);
@@ -170,7 +176,7 @@ public class PdfComprobanteServicio {
         // solicitud ya trae su propia descripcion (p.ej. "Reserva: ...", "Cotizacion: ...")
         // y anteponer un texto fijo duplicaba la palabra y ademas era incorrecto para
         // solicitudes que no son de tipo Reserva (Cotizacion, Consulta, PQR, etc).
-        addCellBody(itemTable, tituloTour + " (Abono a Llave Bre-B @VXM301)", fontNormal, Element.ALIGN_LEFT);
+        addCellBody(itemTable, tituloTour + " (Pago en linea verificado por pasarela)", fontNormal, Element.ALIGN_LEFT);
         addCellBody(itemTable, "1", fontNormal, Element.ALIGN_CENTER);
         addCellBody(itemTable, "$ " + MONTO_FORMAT.format(valorUnitario) + " COP", fontNormal, Element.ALIGN_RIGHT);
         addCellBody(itemTable, "$ " + MONTO_FORMAT.format(total) + " COP", fontNormal, Element.ALIGN_RIGHT);
@@ -185,7 +191,7 @@ public class PdfComprobanteServicio {
         PdfPCell cNote = new PdfPCell();
         cNote.setBorder(Rectangle.NO_BORDER);
         Paragraph pSeal = new Paragraph("SELLO DIGITAL DE CONFIRMACION DE PAGO SACE (SHA-256)\n" +
-                "Hash: " + sha256Hex(folioStr + "|" + llaveDestino + "|" + total.toPlainString()).substring(0, 16) + "-OK\n" +
+                "Hash: " + sha256Hex(folioStr + "|" + referencia + "|" + total.toPlainString()).substring(0, 16) + "-OK\n" +
                 "Este comprobante sirve como constancia oficial de abono y reserva.", FontFactory.getFont(FontFactory.HELVETICA_OBLIQUE, 8, new Color(100, 116, 139)));
         cNote.addElement(pSeal);
         totalsTable.addCell(cNote);

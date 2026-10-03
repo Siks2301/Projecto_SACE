@@ -47,7 +47,7 @@ public class ReporteController {
 
     /**
      * GET /api/reportes/admin?desde={fecha}&hasta={fecha}
-     * Endpoint analitico que devuelve KPIs (totales, promedios, ingresos a Bre-B @VXM301) filtrados por rango de fechas.
+     * Endpoint analitico que devuelve KPIs (totales, promedios, ingresos por pagos aprobados) filtrados por rango de fechas.
      */
     @GetMapping("/admin")
     public ReporteDTOs.KpiResumenDTO obtenerReporteAdmin(

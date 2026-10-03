@@ -1,6 +1,6 @@
 /* ==========================================================================
    AleLeo Tours - mis-solicitudes.js
-   Gestion de reservas, solicitudes, Pagos con Bre-B @VXM301 y Descarga de Comprobantes PDF.
+   Gestion de reservas, solicitudes, pagos en linea con pasarela y descarga de comprobantes PDF.
    ========================================================================== */
 
 'use strict';
@@ -61,9 +61,13 @@ async function cargarMisSolicitudes() {
     solicitudesCliente = [];
   }
 
-  // Pagos CONFIRMADOS del cliente: alimentan el badge "Pago Confirmado" y los
+  // Pagos APROBADOS del cliente: alimentan el badge "Pago Confirmado" y los
   // botones de comprobante (antes se adivinaba por el estado RESUELTA y se
   // mostraban comprobantes fantasma en solicitudes sin ningun pago).
+  //
+  // El backend ahora responde un estado de transaccion real. Se aceptan
+  // 'APROBADO' y el antiguo 'CONFIRMADO' para que las solicitudes ya pagadas
+  // antes de la migracion no dejen de mostrar su comprobante.
   pagosRealizados = [];
   const pagosPorSolicitud = await Promise.all(
     solicitudesCliente
@@ -73,7 +77,7 @@ async function cargarMisSolicitudes() {
         .catch(() => []))
   );
   pagosPorSolicitud.flat()
-    .filter(p => p && String(p.estado || '').toUpperCase() === 'CONFIRMADO')
+    .filter(p => p && esPagoAprobado(p.estado))
     .forEach(p => pagosRealizados.push(p));
 
   // Integrar reservas locales de respaldo
@@ -179,11 +183,11 @@ function renderizarSolicitudes() {
 
   filtradas.forEach(s => {
     const estado = normalizarEstado(s.estado);
-    // "Pagado" = existe un pago CONFIRMADO real para esta solicitud; el estado
+    // "Pagado" = existe un pago APROBADO real para esta solicitud; el estado
     // RESUELTA por si solo no garantiza que se haya cobrado.
     const pagoConfirmado = pagosRealizados.find(p =>
       Number(p.solicitudId) === Number(s.id) &&
-      String(p.estado || '').toUpperCase() === 'CONFIRMADO');
+      esPagoAprobado(p.estado));
     const esPagado = !!pagoConfirmado;
     const esReserva = String(s.categoria || 'RESERVA').toUpperCase() === 'RESERVA';
     const fecha = s.fechaCreacion
@@ -279,8 +283,202 @@ function escaparHtml(texto) {
   return div.innerHTML;
 }
 
-/* --- MODAL Y PROCESAMIENTO DE PAGO CON Bre-B @VXM301 --- */
-function abrirModalPago(solicitudId) {
+/**
+ * Indica si un estado de pago corresponde a un cobro aprobado.
+ *
+ * <p>Se aceptan los dos vocabularios porque conviven durante la transicion:
+ * 'APROBADO' es el estado nuevo del backend y 'CONFIRMADO' el de los pagos
+ * que quedaron registrados antes de integrar la pasarela. Sin esta
+ * tolerancia, las reservas ya pagadas perderian su comprobante en pantalla el
+ * dia que se despliegue el cambio.
+ *
+ * @param {string} estado estado devuelto por la API de pagos
+ * @returns {boolean} true si el pago fue aprobado
+ */
+function esPagoAprobado(estado) {
+  const normalizado = String(estado || '').toUpperCase();
+  return normalizado === 'APROBADO' || normalizado === 'APPROVED' || normalizado === 'CONFIRMADO';
+}
+
+/* --- MODAL Y PROCESAMIENTO DE PAGO CON PASARELA (Wompi / simulada) --- */
+
+/**
+ * Configuracion de pagos cacheada en el navegador.
+ *
+ * <p>Se pide una sola vez y se reutiliza cada vez que se abre el modal. El
+ * objetivo es no ofrecer un metodo de pago que el servidor vaya a rechazar: si
+ * el backend tiene PSE y TARJETA habilitados, el selector muestra exactamente
+ * esos dos, ni uno mas ni uno menos.
+ */
+let configPagosCacheada = null;
+
+/** Maximo de intentos de consulta del estado antes de rendirse. */
+const MAX_INTENTOS_ESTADO = 40;
+
+/** Tiempo entre consultas del estado, en milisegundos. */
+const INTERVALO_ESTADO_MS = 2500;
+
+/**
+ * Como se ve cada metodo de pago en el selector.
+ *
+ * <p>El texto esta en el codigo, no en el servidor, porque es presentacion: el
+ * backend responde solo con los codigos validos.
+ */
+const PRESENTACION_METODOS = {
+  PSE: {
+    icono: 'bi-bank2',
+    color: 'text-primary',
+    titulo: 'PSE (transferencia bancaria)',
+    detalle: 'Pagas desde tu banco en linea, sin salir de AleLeo Tours'
+  },
+  TARJETA: {
+    icono: 'bi-credit-card-fill',
+    color: 'text-success',
+    titulo: 'Tarjeta Debito / Credito',
+    detalle: 'Procesamiento seguro en la pasarela de pagos'
+  },
+  NEQUI: {
+    icono: 'bi-phone',
+    color: 'text-info',
+    titulo: 'Nequi',
+    detalle: 'Pagas desde tu billetera movil'
+  }
+};
+
+/**
+ * Pinta el selector de metodos de pago segun lo que habilito el servidor.
+ *
+ * @param {Array} metodos respuesta de GET /api/pagos/configuracion
+ */
+function pintarMetodosPago(metodos) {
+  const contenedor = document.getElementById('pago-metodos-container');
+  if (!contenedor) return;
+
+  contenedor.innerHTML = '';
+
+  if (!Array.isArray(metodos) || metodos.length === 0) {
+    contenedor.innerHTML =
+      '<div class="col-12"><div class="alert alert-warning mb-0 small">' +
+      'No hay metodos de pago disponibles en este momento. Intenta mas tarde.</div></div>';
+    return;
+  }
+
+  metodos.forEach((metodo, indice) => {
+    const info = PRESENTACION_METODOS[metodo.codigo] || {
+      icono: 'bi-cash-coin',
+      color: 'text-primary',
+      titulo: metodo.nombre || metodo.codigo,
+      detalle: 'Pago en linea seguro'
+    };
+
+    const columna = document.createElement('div');
+    // Con mas de dos metodos las tarjetas se vuelven estrechas: se reparten en
+    // columnas mas angostas en vez de dejar dos en blanco.
+    columna.className = metodos.length > 2 ? 'col-md-4' : 'col-md-6';
+
+    const marcado = indice === 0 ? 'checked' : '';
+    columna.innerHTML =
+      '<div class="form-check card-select-metodo p-3 border rounded-3 bg-white shadow-sm cursor-pointer h-100">' +
+      '<input class="form-check-input" type="radio" name="metodoPagoRadio" ' +
+      'id="metodo-' + escaparHtml(metodo.codigo) + '" ' +
+      'value="' + escaparHtml(metodo.codigo) + '" ' + marcado + '>' +
+      '<label class="form-check-label fw-bold text-dark w-100 cursor-pointer ms-1" ' +
+      'for="metodo-' + escaparHtml(metodo.codigo) + '">' +
+      '<i class="bi ' + info.icono + ' ' + info.color + ' me-2 fs-5"></i> ' +
+      escaparHtml(info.titulo) +
+      '<small class="d-block text-muted fw-normal">' + escaparHtml(info.detalle) + '</small>' +
+      '</label></div>';
+
+    contenedor.appendChild(columna);
+  });
+}
+
+/**
+ * Carga (y cachea) la configuracion de pagos del servidor.
+ *
+ * @returns {Promise<object>} configuracion de pagos
+ */
+async function obtenerConfiguracionPagos() {
+  if (configPagosCacheada) return configPagosCacheada;
+
+  try {
+    const resp = await fetch(`${API_BASE}/pagos/configuracion`);
+    if (!resp.ok) throw new Error('configuracion no disponible');
+    configPagosCacheada = await resp.json();
+  } catch (e) {
+    // Si el backend no responde no se inventa la configuracion: se avisa y el
+    // modal se cierra, porque sin metodos habilitados el pago no puede continuar.
+    configPagosCacheada = null;
+    throw new Error('No pudimos cargar la configuracion de pagos.');
+  }
+
+  pintarMetodosPago(configPagosCacheada.metodos);
+
+  const nombreEl = document.getElementById('pago-pasarela-nombre');
+  const detalleEl = document.getElementById('pago-pasarela-detalle');
+  const badgeEl = document.getElementById('pago-modo-badge');
+  const seguridadEl = document.getElementById('pago-seguridad-pasarela');
+
+  const nombrePasarela = configPagosCacheada.pasarela === 'WOMPI'
+    ? 'Wompi'
+    : 'Pasarela de pruebas';
+
+  if (nombreEl) nombreEl.textContent = nombrePasarela;
+  if (detalleEl) {
+    detalleEl.textContent = configPagosCacheada.modoSimulado
+      ? 'Modo de demostracion: no se realiza ningun cobro real.'
+      : 'Pago en linea verificado con firma digital.';
+  }
+  if (badgeEl) {
+    badgeEl.textContent = configPagosCacheada.modoSimulado ? 'MODO PRUEBAS' : 'PAGO REAL';
+  }
+  if (seguridadEl) seguridadEl.textContent = nombrePasarela;
+
+  return configPagosCacheada;
+}
+
+/**
+ * Pide al servidor el precio de la solicitud y lo muestra bloqueado.
+ *
+ * <p>Este es el cambio de fondo respecto a la version anterior: el monto ya no
+ * se calcula en el navegador. Antes se armaba a mano con el precio local, el
+ * precio del catalogo o un "total estimado" del texto, y ese valor se enviaba
+ * al servidor, que lo aceptaba sin comparar nada. Ahora el unico que dice
+ * cuanto vale una reserva es el backend.
+ *
+ * @param {number} solicitudId id de la solicitud a cotizar
+ * @returns {Promise<number>} precio en pesos
+ */
+async function cargarPrecioDesdeServidor(solicitudId) {
+  const resp = await fetch(`${API_BASE}/pagos/cotizacion/${solicitudId}`);
+  const data = await resp.json().catch(() => ({}));
+
+  if (!resp.ok) {
+    throw new Error(data.mensaje || data.error || 'No pudimos obtener el precio de la reserva.');
+  }
+
+  if (data.yaPagado) {
+    throw new Error('Esta solicitud ya tiene un pago aprobado. No se puede volver a pagar.');
+  }
+
+  const monto = Number(data.monto);
+  if (!Number.isFinite(monto) || monto <= 0) {
+    throw new Error('Esta solicitud aun no tiene un precio asignado. Un asesor debe configurarlo.');
+  }
+
+  return monto;
+}
+
+/**
+ * Abre el modal de pago.
+ *
+ * <p>Se pide el precio al servidor antes de mostrar nada. Si la solicitud no
+ * tiene precio, el modal no se abre: es preferible un mensaje claro a mostrar
+ * un formulario que va a fallar al enviar.
+ *
+ * @param {number} solicitudId id de la solicitud a pagar
+ */
+async function abrirModalPago(solicitudId) {
   solicitudParaPago = solicitudesCliente.find(s => String(s.id) === String(solicitudId));
   if (!solicitudParaPago) {
     // Nunca se paga "la primera de la lista": si no se encuentra la solicitud
@@ -294,66 +492,194 @@ function abrirModalPago(solicitudId) {
   if (!modalEl) return;
   const modalBs = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
 
+  ocultarMensaje('msg-modal-pago');
+  setProgresoPago(false);
+  resetearBotonPago();
+
   document.getElementById('pago-solicitud-id').value = solicitudParaPago.id;
   document.getElementById('pago-tour-titulo').textContent = solicitudParaPago.titulo || 'Reserva de Viaje';
   document.getElementById('pago-solicitud-badge').textContent = `Solicitud #SOL-${solicitudParaPago.id}`;
 
-  // Precio fijo con fuente real (antes: el primer numero de la descripcion o
-  // 150.000 inventados). Orden: precio de la reserva local -> precio del
-  // servicio vinculado en BD -> "Total estimado" explicito de la descripcion.
-  let montoEstimado = 0;
-  if (solicitudParaPago.precioEstimado) {
-    montoEstimado = Number(solicitudParaPago.precioEstimado) || 0;
-  }
-  if (!montoEstimado && solicitudParaPago.servicioGeneradoId) {
-    const srv = catalogoServicios.find(c => Number(c.id) === Number(solicitudParaPago.servicioGeneradoId));
-    if (srv) montoEstimado = Number(srv.precio) || 0;
-  }
-  if (!montoEstimado && solicitudParaPago.descripcion) {
-    const match = solicitudParaPago.descripcion.match(/total estimado[^$\d]*\$?\s*([\d.,]+)/i);
-    if (match) {
-      const parsed = parseFloat(match[1].replace(/\./g, '').replace(',', '.'));
-      if (parsed > 0) montoEstimado = parsed;
-    }
-  }
-  if (!montoEstimado) {
-    // Sin precio definido no se abre el pago: un asesor debe fijar el valor.
-    if (typeof Toast !== 'undefined') {
-      Toast.mostrar('Esta solicitud aún no tiene un precio definido. Un asesor confirmará el valor antes del pago.', 'info');
-    }
-    solicitudParaPago = null;
-    return;
-  }
-
-  const montoInput = document.getElementById('pago-monto-input');
-  montoInput.value = montoEstimado;
-  montoInput.readOnly = true; // Precio fijo: el cliente no puede pagar lo que quiera
-  document.getElementById('pago-notas-input').value = '';
-  ocultarMensaje('msg-modal-pago');
-
+  // Se muestra de inmediato para que el usuario vea que la accion arranco, y
+  // se rellena el precio en cuanto responde el servidor.
+  document.getElementById('pago-monto-input').value = 'Calculando...';
   modalBs.show();
+
+  try {
+    // Primero la configuracion (metodos habilitados y pasarela activa).
+    await obtenerConfiguracionPagos();
+
+    // Despues el precio. En este orden porque el selector de metodos es
+    // independiente del monto y ambos necesitan estar listos antes de que el
+    // usuario pulse "Pagar".
+    const monto = await cargarPrecioDesdeServidor(solicitudParaPago.id);
+
+    document.getElementById('pago-monto-input').value = formatearPesos(monto);
+    document.getElementById('pago-monto-origina').textContent =
+      'Precio fijado por AleLeo Tours segun el catalogo de servicios.';
+    document.getElementById('pago-notas-input').value = '';
+
+  } catch (error) {
+    // Se cierra el modal: no se cobra nada y el motivo queda claro.
+    modalBs.hide();
+    if (typeof Toast !== 'undefined') {
+      Toast.mostrar(error.message || 'No pudimos abrir el pago.', 'error');
+    }
+  }
 }
 
-function copiarLlaveTransferencia() {
-  const llave = 'Bre-B @VXM301';
-  navigator.clipboard.writeText(llave).then(() => {
-    if (typeof Toast !== 'undefined') {
-      Toast.mostrar('¡Llave Bre-B @VXM301 copiada al portapapeles!', 'ok');
-    }
-  }).catch(() => {
-    if (typeof Toast !== 'undefined') {
-      Toast.mostrar('Llave: Bre-B @VXM301', 'info');
-    }
+/**
+ * Formatea un monto en pesos colombianos.
+ *
+ * @param {number} monto valor en pesos
+ * @returns {string} texto con separadores de miles
+ */
+function formatearPesos(monto) {
+  const numero = Number(monto) || 0;
+  return numero.toLocaleString('es-CO', {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2
   });
 }
 
+/** Vuelve el boton de pago a su estado normal. */
+function resetearBotonPago() {
+  const btn = document.getElementById('btn-confirmar-pago');
+  if (btn) {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="bi bi-check-circle-fill me-1"></i> Pagar Ahora';
+  }
+}
+
+/** Muestra u oculta la pantalla de "Procesando el pago...". */
+function setProgresoPago(visible, titulo, detalle) {
+  const caja = document.getElementById('pago-progreso');
+  if (!caja) return;
+
+  caja.classList.toggle('d-none', !visible);
+  if (visible) {
+    const t = document.getElementById('pago-progreso-titulo');
+    const d = document.getElementById('pago-progreso-detalle');
+    if (t && titulo) t.textContent = titulo;
+    if (d && detalle) d.textContent = detalle;
+  }
+}
+
+/**
+ * Muestra el progreso del cobro con un boton de reintento.
+ *
+ * <p>El boton aparece siempre: si la pasarela esta lenta y el usuario cierra el
+ * modal, la reserva NO se pierde. El pago queda en estado PENDIENTE y se puede
+ * volver a intentar, que es exactamente como funciona un cobro en la vida real.
+ *
+ * @param {string} referencia referencia del pago pendiente
+ */
+function mostrarPagoPendiente(referencia) {
+  const caja = document.getElementById('pago-progreso');
+  if (!caja) return;
+
+  caja.classList.remove('d-none');
+  caja.innerHTML =
+    '<div class="d-flex flex-column flex-md-row align-items-center justify-content-between gap-3 p-3 rounded-3" ' +
+    'style="background:var(--ds-gray-50); border:1px solid #cbd5e1;">' +
+    '<div>' +
+    '<strong class="d-block text-dark"><i class="bi bi-hourglass-split me-1"></i> ' +
+    'Pago en proceso de confirmacion</strong>' +
+    '<small class="text-muted">Referencia <code>' + escaparHtml(referencia || '-') + '</code>. ' +
+    'La pasarela aun no confirma el cobro. Puedes cerrar esta ventana: no se te cobrara nada hasta que se apruebe.</small>' +
+    '</div>' +
+    '<button type="button" class="btn btn-sm btn-outline-primary flex-shrink-0" id="pago-reintentar">' +
+    '<i class="bi bi-arrow-repeat me-1"></i> Consultar de nuevo</button>' +
+    '</div>';
+
+  const btnReintentar = document.getElementById('pago-reintentar');
+  if (btnReintentar) {
+    btnReintentar.addEventListener('click', () => consultarEstadoPago(referencia, true));
+  }
+}
+
+/**
+ * Consulta el estado del pago hasta que la pasarela responda.
+ *
+ * <p>El polling se hace contra el BACKEND, nunca contra la pasarela. Wompi no
+ * permite que el navegador consulte su API directamente, y ademas el frontend
+ * no tiene las credenciales para firmar las peticiones. Ademas asi funciona
+ * cuando el webhook se pierde: el backend reconcilia antes de responder.
+ *
+ * @param {string} referencia referencia del pago
+ * @param {boolean} [mostrarFeedback] si se muestra el spinner de espera
+ * @returns {Promise<object|null>} el pago cuando queda en estado final
+ */
+async function consultarEstadoPago(referencia, mostrarFeedback) {
+  if (mostrarFeedback) {
+    setProgresoPago(true, 'Consultando el estado del pago...', 'Un momento, estamos verificando con la pasarela.');
+  }
+
+  for (let intento = 0; intento < MAX_INTENTOS_ESTADO; intento++) {
+    try {
+      const resp = await fetch(`${API_BASE}/pagos/estado/${encodeURIComponent(referencia)}`);
+      const data = await resp.json().catch(() => ({}));
+
+      if (!resp.ok) {
+        // Un fallo puntual no cancela la espera: puede ser el servidor
+        // reiniciandose. Se reintenta hasta agotar los intentos.
+        console.warn(`Consulta de estado fallida (intento ${intento + 1}):`, data.mensaje || data.error);
+        await dormir(INTERVALO_ESTADO_MS);
+        continue;
+      }
+
+      if (data.comprobanteDisponible) {
+        setProgresoPago(false);
+        return data;
+      }
+
+      if (data.estado === 'RECHAZADO') {
+        setProgresoPago(false);
+        return data;
+      }
+
+      if (data.estado === 'ERROR' || data.estado === 'ANULADO') {
+        setProgresoPago(false);
+        return data;
+      }
+
+      setProgresoPago(true, 'Procesando el pago...',
+        'La pasarela aun responde PENDIENTE. No cierres esta ventana.');
+
+    } catch (e) {
+      console.warn('Error de red consultando el estado:', e);
+    }
+
+    await dormir(INTERVALO_ESTADO_MS);
+  }
+
+  // Se agotaron los intentos sin respuesta concluyente. No se afirma que el
+  // pago haya fallado: solo se informa que la confirmacion sigue pendiente.
+  setProgresoPago(false);
+  return null;
+}
+
+/** Promesa que espera un numero de milisegundos. */
+function dormir(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+/**
+ * Procesa el pago de una solicitud.
+ *
+ * <p>El cuerpo de la peticion tiene exactamente dos datos: que solicitud se
+ * paga y con que metodo. NO incluye el monto, porque el backend ya sabe cuanto
+ * vale. Antes se enviaba el monto y el servidor lo aceptaba sin verificarlo.
+ *
+ * @param {Event} [e] evento de submit del formulario
+ */
 async function procesarPagoSolicitud(e) {
   if (e) e.preventDefault();
   ocultarMensaje('msg-modal-pago');
+  setProgresoPago(false);
 
   const rawSolicitudId = document.getElementById('pago-solicitud-id').value;
-  const montoVal = parseFloat(document.getElementById('pago-monto-input').value);
-  const metodoPago = document.querySelector('input[name="metodoPagoRadio"]:checked')?.value || 'TRANSFERENCIA';
+  const metodoPago = document.querySelector('input[name="metodoPagoRadio"]:checked')?.value;
   const notas = document.getElementById('pago-notas-input').value.trim();
 
   if (!rawSolicitudId) {
@@ -361,63 +687,36 @@ async function procesarPagoSolicitud(e) {
     return;
   }
 
-  if (isNaN(montoVal) || montoVal <= 0) {
-    mostrarMensaje('msg-modal-pago', 'El monto a abonar debe ser mayor a cero (0).', 'error');
+  if (!metodoPago) {
+    mostrarMensaje('msg-modal-pago', 'Selecciona un método de pago para continuar.', 'error');
     return;
   }
 
   const btnConfirmar = document.getElementById('btn-confirmar-pago');
   if (btnConfirmar) {
     btnConfirmar.disabled = true;
-    btnConfirmar.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Generando Comprobante...';
+    btnConfirmar.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Enviando a la pasarela...';
   }
 
   try {
-    const sesion = Sesion.obtener ? Sesion.obtener() : JSON.parse(sessionStorage.getItem('aleleo_sesion') || 'null');
     let targetSolicitudId = Number(rawSolicitudId);
 
-    // Si la solicitud es local (reserva en localStorage o ID no persistido en backend), la creamos primero en BD
+    // Si la solicitud es local (reserva en localStorage o ID no persistido en
+    // backend), se registra primero para poder cobrarla.
     if (solicitudParaPago && (solicitudParaPago.esLocal || isNaN(targetSolicitudId) || targetSolicitudId > 1000000000)) {
-      if (sesion && sesion.id) {
-        try {
-          const respSol = await fetch(`${API_BASE}/solicitudes`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              fechaCreacion: new Date().toISOString(),
-              titulo: solicitudParaPago.titulo || 'Reserva de Viaje',
-              asunto: solicitudParaPago.asunto || 'Reserva para viaje SACE',
-              descripcion: solicitudParaPago.descripcion || 'Reserva de viaje',
-              estado: 'PENDIENTE',
-              prioridad: 'MEDIA',
-              categoria: 'RESERVA',
-              clienteId: sesion.id
-            })
-          });
-
-          if (respSol.ok) {
-            const nuevaSolBackend = await respSol.json();
-            targetSolicitudId = nuevaSolBackend.id;
-            solicitudParaPago.id = targetSolicitudId;
-            solicitudParaPago.esLocal = false;
-          }
-        } catch (eSol) {
-          console.warn('Advertencia registrando solicitud local:', eSol);
-        }
-      }
+      targetSolicitudId = await persistirSolicitudLocal();
     }
 
-    if (isNaN(targetSolicitudId) || targetSolicitudId <= 0) {
-      mostrarMensaje('msg-modal-pago', 'Error: No se encontró la solicitud en el servidor. Intenta nuevamente.', 'error');
+    if (!targetSolicitudId || isNaN(targetSolicitudId) || targetSolicitudId <= 0) {
+      mostrarMensaje('msg-modal-pago', 'No se encontró la solicitud en el servidor. Intenta nuevamente.', 'error');
       return;
     }
 
+    // OJO: no se envia monto. El servidor lo calcula desde el catalogo.
     const payloadPago = {
       solicitudId: targetSolicitudId,
-      monto: montoVal,
       metodoPago: metodoPago,
-      llaveDestino: 'Bre-B @VXM301',
-      notas: notas
+      notas: notas || null
     };
 
     const resp = await fetch(`${API_BASE}/pagos`, {
@@ -429,24 +728,51 @@ async function procesarPagoSolicitud(e) {
     const data = await resp.json().catch(() => ({}));
 
     if (!resp.ok) {
-      mostrarMensaje('msg-modal-pago', data.error || data.mensaje || 'No se pudo procesar el pago en el servidor.', 'error');
+      // El backend responde {error, mensaje}. Se lee "mensaje" primero porque
+      // "error" trae el nombre de la excepcion ("Bad Request"), que no le
+      // sirve de nada a un usuario.
+      mostrarMensaje('msg-modal-pago', data.mensaje || data.error || 'No se pudo procesar el pago.', 'error');
       return;
     }
 
-    if (typeof Toast !== 'undefined') {
-      Toast.mostrar('¡Pago confirmado! Se ha generado tu recibo PDF.', 'ok');
+    // Camino 1: la pasarela tiene checkout externo y devuelve una URL.
+    if (data.urlCheckout) {
+      if (typeof Toast !== 'undefined') {
+        Toast.mostrar('Redirigiendo a la pasarela de pagos...', 'info');
+      }
+      window.location.href = data.urlCheckout;
+      return;
     }
 
-    const modalEl = document.getElementById('modalPagoSolicitud');
-    const modalBs = bootstrap.Modal.getInstance(modalEl);
-    if (modalBs) modalBs.hide();
-
-    if (data.idPago) {
-      setTimeout(() => {
-        descargarComprobantePdf(data.idPago);
-      }, 500);
+    // Camino 2: el pago ya quedo aprobado de inmediato (no es lo habitual).
+    if (data.comprobanteDisponible) {
+      await finalizarPagoExitoso(data);
+      return;
     }
 
+    // Camino 3: queda pendiente. Se espera la confirmacion de la pasarela.
+    setProgresoPago(true, 'Procesando el pago...',
+      'La pasarela esta procesando tu cobro. Esto toma unos segundos.');
+
+    const resultado = await consultarEstadoPago(data.referencia, false);
+
+    if (!resultado) {
+      mostrarPagoPendiente(data.referencia);
+      await cargarMisSolicitudes();
+      return;
+    }
+
+    if (resultado.comprobanteDisponible) {
+      await finalizarPagoExitoso(resultado);
+      return;
+    }
+
+    // La pasarela respondio con un estado negativo.
+    const motivo = resultado.estado === 'RECHAZADO'
+      ? 'La pasarela rechazo el pago. Intenta con otro método.'
+      : 'No se pudo completar el pago. Intenta de nuevo.';
+
+    mostrarMensaje('msg-modal-pago', motivo, 'error');
     await cargarMisSolicitudes();
 
   } catch (err) {
@@ -454,9 +780,70 @@ async function procesarPagoSolicitud(e) {
   } finally {
     if (btnConfirmar) {
       btnConfirmar.disabled = false;
-      btnConfirmar.innerHTML = '<i class="bi bi-check-circle-fill me-1"></i> Confirmar Pago & Generar PDF';
+      btnConfirmar.innerHTML = '<i class="bi bi-check-circle-fill me-1"></i> Pagar Ahora';
     }
   }
+}
+
+/**
+ * Persiste en el backend una solicitud que solo existia en el navegador.
+ *
+ * @returns {Promise<number|null>} id asignado por el servidor, o null
+ */
+async function persistirSolicitudLocal() {
+  const sesion = Sesion.obtener ? Sesion.obtener() : JSON.parse(sessionStorage.getItem('aleleo_sesion') || 'null');
+  if (!sesion || !sesion.id) return null;
+
+  try {
+    const respSol = await fetch(`${API_BASE}/solicitudes`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        fechaCreacion: new Date().toISOString(),
+        titulo: solicitudParaPago.titulo || 'Reserva de Viaje',
+        asunto: solicitudParaPago.asunto || 'Reserva para viaje SACE',
+        descripcion: solicitudParaPago.descripcion || 'Reserva de viaje',
+        estado: 'PENDIENTE',
+        prioridad: 'MEDIA',
+        categoria: 'RESERVA',
+        clienteId: sesion.id
+      })
+    });
+
+    if (!respSol.ok) return null;
+
+    const nueva = await respSol.json();
+    solicitudParaPago.id = nueva.id;
+    solicitudParaPago.esLocal = false;
+    return nueva.id;
+  } catch (eSol) {
+    console.warn('Advertencia registrando solicitud local:', eSol);
+    return null;
+  }
+}
+
+/**
+ * Cierra el flujo con exito: avisa, descarga el comprobante y refresca la lista.
+ *
+ * @param {object} pago respuesta del backend con el pago aprobado
+ */
+async function finalizarPagoExitoso(pago) {
+  setProgresoPago(false);
+
+  if (typeof Toast !== 'undefined') {
+    Toast.mostrar('¡Pago aprobado! Tu comprobante se está descargando.', 'ok');
+  }
+
+  const modalEl = document.getElementById('modalPagoSolicitud');
+  const modalBs = bootstrap.Modal.getInstance(modalEl);
+  if (modalBs) modalBs.hide();
+
+  if (pago.idPago) {
+    await new Promise(resolve => setTimeout(resolve, 400));
+    descargarComprobantePdf(pago.idPago);
+  }
+
+  await cargarMisSolicitudes();
 }
 
 /* --- DESCARGAR E IMPRIMIR COMPROBANTE PDF CON TOKEN BEARER --- */
@@ -821,10 +1208,8 @@ function inicializarFiltrosYBusqueda() {
     });
   }
 
-  const btnCopiar = document.getElementById('btn-copiar-llave');
-  if (btnCopiar) {
-    btnCopiar.addEventListener('click', copiarLlaveTransferencia);
-  }
+  // El boton de "copiar llave" se elimino junto con la llave Bre-B fija: el pago
+  // ya no se hace copiando una clave a mano, sino a traves de la pasarela.
 
   const formPago = document.getElementById('form-procesar-pago');
   if (formPago) {

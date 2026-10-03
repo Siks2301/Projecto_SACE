@@ -247,17 +247,15 @@
           <div class="modal-body p-4">
             <div id="msg-modal-pago" class="mensaje mb-3"></div>
 
-            <!-- Datos para la transferencia. La llave va una sola vez, en un
-                 sitio, y sin etiquetas publicitarias alrededor: aqui el
-                 cliente solo necesita leerla y copiarla bien. -->
+            <!-- Estado de la pasarela. Antes esta franja mostraba una llave
+                 Bre-B fija que el usuario copiaba a mano; ahora muestra quien
+                 procesa el cobro y como se verifica. -->
             <div class="superficie-oscura p-3 mb-4 rounded-4 text-white shadow-sm d-flex flex-column flex-md-row align-items-center justify-content-between gap-3" style="background: linear-gradient(135deg, var(--ds-navy-950) 0%, var(--ds-navy-700) 100%); border: 2px solid var(--ds-amber-500);">
               <div>
-                <h4 class="mb-1 fw-bold text-warning font-monospace fs-3" id="llave-destacada-label">Bre-B @VXM301</h4>
-                <small class="text-light opacity-90">Transfiere a esta llave exacta y luego confirma el pago aquí.</small>
+                <h4 class="mb-1 fw-bold text-warning fs-5" id="pago-pasarela-nombre">Pasarela de pagos</h4>
+                <small class="text-light opacity-90" id="pago-pasarela-detalle">Cargando configuracion...</small>
               </div>
-              <button type="button" class="btn btn-warning text-dark fw-extrabold px-3 py-2 rounded-pill shadow-sm text-nowrap" id="btn-copiar-llave">
-                <i class="bi bi-clipboard-check-fill me-1"></i> Copiar Llave
-              </button>
+              <span class="badge rounded-pill px-3 py-2 text-dark fw-bold" id="pago-modo-badge" style="background:var(--ds-amber-500);">--</span>
             </div>
 
             <!-- Detalles de la Reserva -->
@@ -271,11 +269,15 @@
               </div>
               <div class="col-md-6">
                 <div class="p-3 bg-light rounded-3 border">
-                  <label for="pago-monto-input" class="form-label fw-bold text-dark mb-1">Precio Fijo de la Reserva (COP) * <i class="bi bi-lock-fill text-warning" title="Precio fijo: no editable"></i></label>
+                  <label for="pago-monto-input" class="form-label fw-bold text-dark mb-1">Precio de la Reserva (COP) <i class="bi bi-lock-fill text-warning" title="Precio fijado por AleLeo Tours: no editable"></i></label>
                   <div class="input-group">
                     <span class="input-group-text bg-primary text-white fw-bold">$</span>
-                    <input type="number" step="0.01" min="1" class="form-control fw-bold fs-5 text-success" id="pago-monto-input" placeholder="Precio fijo" readonly style="background:var(--ds-gray-50); cursor:not-allowed;" title="Precio fijo de la reserva: no editable" required>
+                    <!-- readonly porque el precio lo fija el backend. El campo
+                         ademas no se envia nunca en la peticion de pago: el
+                         cliente solo envia el id de la solicitud y el metodo. -->
+                    <input type="text" class="form-control fw-bold fs-5 text-success" id="pago-monto-input" readonly style="background:var(--ds-gray-50); cursor:not-allowed;" title="Precio fijado por el servidor: no se puede modificar">
                   </div>
+                  <small class="text-muted d-block mt-1" id="pago-monto-origina">Precio calculado por el servidor.</small>
                 </div>
               </div>
             </div>
@@ -283,37 +285,37 @@
             <!-- Selección de Método de Pago -->
             <div class="mb-3">
               <label class="form-label fw-bold text-dark me-2">Método de Pago *</label>
-              <div class="row g-2" role="radiogroup">
-                <div class="col-md-6">
-                  <div class="form-check card-select-metodo p-3 border rounded-3 bg-white shadow-sm cursor-pointer">
-                    <input class="form-check-input" type="radio" name="metodoPagoRadio" id="metodo-transferencia" value="TRANSFERENCIA" checked>
-                    <label class="form-check-label fw-bold text-dark w-100 cursor-pointer ms-1" for="metodo-transferencia">
-                      <i class="bi bi-bank2 text-primary me-2 fs-5"></i> Transferencia Bancaria
-                      <small class="d-block text-muted fw-normal">Abono directo a la cuenta de AleLeo Tours</small>
-                    </label>
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="form-check card-select-metodo p-3 border rounded-3 bg-white shadow-sm cursor-pointer">
-                    <input class="form-check-input" type="radio" name="metodoPagoRadio" id="metodo-tarjeta" value="TARJETA">
-                    <label class="form-check-label fw-bold text-dark w-100 cursor-pointer ms-1" for="metodo-tarjeta">
-                      <i class="bi bi-credit-card-fill text-success me-2 fs-5"></i> Tarjeta Débito / Crédito
-                      <small class="d-block text-muted fw-normal">Procesamiento seguro en línea</small>
-                    </label>
-                  </div>
-                </div>
+              <div class="row g-2" role="radiogroup" id="pago-metodos-container">
+                <!-- Los metodos se pintan desde GET /api/pagos/configuracion, para
+                     no ofrecer una opcion que el servidor vaya a rechazar. -->
               </div>
             </div>
 
             <div class="mb-3">
               <label for="pago-notas-input" class="form-label fw-semibold text-dark">Notas o Número de Referencia (Opcional)</label>
-              <input type="text" class="form-control" id="pago-notas-input" placeholder="Ej: Transferencia desde Nequi / Bancolombia Ref: #98421">
+              <input type="text" class="form-control" id="pago-notas-input" placeholder="Ej: pago con tarjeta terminada en 4242">
+            </div>
+
+            <!-- Pantalla de espera: se muestra mientras la pasarela resuelve el
+                 cobro. El backend NO marca el pago como pagado hasta que la
+                 pasarela lo confirma, y el comprobante solo se descarga cuando
+                 el estado es APROBADO. -->
+            <div id="pago-progreso" class="d-none mb-3">
+              <div class="d-flex align-items-center gap-3 p-3 rounded-3" style="background:var(--ds-gray-50); border:1px solid #cbd5e1;">
+                <div class="spinner-border text-warning flex-shrink-0" role="status" aria-hidden="true" style="width:2rem;height:2rem;"></div>
+                <div>
+                  <strong class="d-block text-dark" id="pago-progreso-titulo">Procesando el pago...</strong>
+                  <small class="text-muted" id="pago-progreso-detalle">Estamos confirmando la transaccion con la pasarela. No cierres esta ventana.</small>
+                </div>
+              </div>
             </div>
 
             <div class="alert alert-info border-info-subtle mb-0 small text-dark d-flex align-items-center gap-2">
               <i class="bi bi-shield-lock-fill text-primary fs-4"></i>
               <div>
-                Al confirmar el pago, se generará tu <strong>Comprobante PDF Oficial estilo recibo</strong> y se enviará una notificación con el comprobante adjunto al propietario de la plataforma.
+                Tu pago se procesa con <strong id="pago-seguridad-pasarela">la pasarela de pagos</strong>.
+                SACE nunca recibe el número de tu tarjeta. Al confirmarse el cobro generamos tu
+                <strong>Comprobante PDF Oficial</strong> y te enviamos una notificación.
               </div>
             </div>
           </div>
@@ -321,7 +323,7 @@
           <div class="modal-footer bg-light">
             <button type="button" class="btn btn-outline-secondary fw-bold px-4" data-bs-dismiss="modal">Cancelar</button>
             <button type="submit" class="btn btn-warning text-dark fw-extrabold px-4" id="btn-confirmar-pago" onclick="procesarPagoSolicitud(event)" style="background:var(--ds-amber-500); border:none;">
-              <i class="bi bi-check-circle-fill me-1"></i> Confirmar Pago & Generar PDF
+              <i class="bi bi-check-circle-fill me-1"></i> Pagar Ahora
             </button>
           </div>
         </form>

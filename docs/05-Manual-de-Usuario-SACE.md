@@ -48,8 +48,15 @@ Desde 'Registrarse' se diligencian nombre (obligatorio), apellido (opcional), co
 ### 5.10 Chatbot AleLeoBot
 El botón flotante con el ícono de robot abre el asistente. Responde preguntas frecuentes y sugiere destinos con el precio tomado del catálogo real de la API; si el backend no responde, usa respaldos locales para no dejar al usuario sin atención. Ante una solicitud de soporte especializada, orienta al usuario hacia el canal humano.
 
-### 5.11 Pagos con Bre-B
-El pago usa la llave de verificación 'Bre-B @VXM301' del flujo académico (no hay pasarela real). El monto siempre proviene del servicio almacenado en la base de datos; el sistema impide el doble cobro de una misma solicitud y emite el comprobante PDF con el desglose de IVA.
+### 5.11 Pago en línea con pasarela de pagos
+Desde la solicitud, pulsa **Pagar**. El modal muestra el precio de la reserva **bloqueado** (lo fija AleLeo Tours, no se puede modificar) y te deja elegir el método: **PSE** (transferencia bancaria) o **Tarjeta débito/crédito**. Al confirmar, la pasarela procesa el cobro; verás una pantalla de «Procesando el pago...» mientras se confirma. Cuando el pago es aprobado, se descarga automáticamente tu **Comprobante PDF** con el desglose de IVA y el sello de integridad SHA-256.
+
+Aspectos importantes del flujo:
+- **El monto lo calcula el servidor** a partir del catálogo de servicios. Aunque intentes modificarlo, el sistema cobra el precio real.
+- **Nunca debes ingresar el número de tu tarjeta en AleLeo Tours.** Ese dato se pide directamente en la página segura de la pasarela; SACE no lo recibe.
+- Si la pasarela rechaza el pago o se cae la conexión, **no se te cobra nada** y la reserva queda disponible para reintentar.
+- Una solicitud pagada una sola vez **no se puede volver a pagar**: el sistema lo bloquea con un índice único en la base de datos.
+- Si cierras la ventana antes de la confirmación, el pago queda *pendiente*; puedes volver a «Mis solicitudes» y consultar su estado.
 
 ### 5.12 Solución de problemas frecuentes
 - El sistema no carga: verificar que el backend (8082) y el frontend estén iniciados y que PostgreSQL esté en ejecución.

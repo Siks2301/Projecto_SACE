@@ -111,7 +111,7 @@ public class ReporteServicio {
                 pctResueltas, totalClientes, totalServicios, totalEmpleados
         );
 
-        // Metricas Financieras de la Llave Bre-B @VXM301
+        // Metricas financieras del recaudo (solo pagos APROBADOS por la pasarela)
         Date fInicio = parseFechaInicio(desde);
         Date fFin = parseFechaFin(hasta);
         try {

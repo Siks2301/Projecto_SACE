@@ -39,11 +39,23 @@ Base URL: `http://localhost:8082/api` · Formato: JSON · Autenticación: `Autho
 
 ## Pagos (`/pagos`)
 
+Pagos en línea contra una pasarela real (Wompi) o una pasarela simulada según la
+configuración. El monto **lo calcula el backend** desde el catálogo de servicios;
+el cliente solo elige el método. Ver `docs/09-Integracion-Pasarela-Pagos-SACE.md`.
+
 | Método | Ruta | Descripción |
 |---|---|---|
-| POST | `/pagos` | Pagar una solicitud: monto real de BD, llave Bre-B, anti-doble-cobro |
-| GET | `/pagos/comprobante/{idPago}` | Descargar comprobante PDF (solo propietario, sello SHA-256 + IVA) |
-| GET | `/pagos/solicitud/{idSolicitud}` | Consultar el pago de una solicitud |
+| GET | `/pagos/configuracion` | Pasarela activa y métodos de pago habilitados |
+| GET | `/pagos/cotizacion/{idSolicitud}` | Precio que SACE cobra por una solicitud |
+| POST | `/pagos` | Inicia un cobro. Acepta **solo** `solicitudId`, `metodoPago` y `notas` |
+| GET | `/pagos/estado/{referencia}` | Estado del pago; reconcilia con la pasarela antes de responder |
+| GET | `/pagos/comprobante/{idPago}` | Descargar comprobante PDF (solo si está APROBADO; sello SHA-256 + IVA) |
+| GET | `/pagos/solicitud/{idSolicitud}` | Consultar los pagos de una solicitud |
+| POST | `/pagos/webhook/wompi` | Notificación de la pasarela. **Público**, autenticado por checksum SHA-256 |
+| POST | `/pagos/webhook/verificacion` | Verificación de vida del endpoint |
+
+> Enviar un campo `monto` en `POST /pagos` produce `400`: el servidor rechaza
+> explícitamente que el cliente imponga el precio.
 
 ## Administración (CRUD, solo admin/roles autorizados)
 

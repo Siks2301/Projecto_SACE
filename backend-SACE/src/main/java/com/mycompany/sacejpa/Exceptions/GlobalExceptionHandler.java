@@ -3,6 +3,7 @@ package com.mycompany.sacejpa.Exceptions;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -46,6 +47,23 @@ public class GlobalExceptionHandler {
                 ex.getMessage());
     }
 
+    // El cuerpo JSON no se pudo convertir al objeto esperado. Es el caso que
+    // produce el DTO de pagos cuando alguien intenta enviar un "monto": el
+    // deserializador lo detecta y lanza, y Jackson envuelve ese fallo aqui.
+    //
+    // Sin este handler Spring responderia con su propio error generico de
+    // parseo, que no le dice nada al usuario. Con el, se traduce la causa real
+    // para que el mensaje que llega al navegador sea entendible.
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<Object> manejarCuerpoInvalido(HttpMessageNotReadableException ex) {
+        String causa = causaRaiz(ex).getMessage();
+        String mensaje = causa != null && causa.contains("El monto no lo puede elegir el cliente")
+                ? causa
+                : "El cuerpo de la peticion no tiene el formato esperado. Revisa los campos enviados.";
+
+        return construirRespuesta(HttpStatus.BAD_REQUEST, mensaje, causa);
+    }
+
     // Cubre los RuntimeException que ya lanzan los Servicios de este
     // proyecto, del estilo: throw new RuntimeException("Cliente no
     // encontrado con id: " + id). Si el mensaje habla de "no encontrado" o
@@ -59,6 +77,25 @@ public class GlobalExceptionHandler {
         boolean esNoEncontrado = mensaje.toLowerCase().contains("no encontrad");
         HttpStatus estado = esNoEncontrado ? HttpStatus.NOT_FOUND : HttpStatus.BAD_REQUEST;
         return construirRespuesta(estado, mensaje, null);
+    }
+
+    /**
+     * Desciende hasta la excepcion original.
+     *
+     * <p>Spring envuelve el fallo real del deserializador en varias capas
+     * (HttpMessageNotReadableException -> JsonMappingException -> la excepcion
+     * que lanzo el codigo). Sin desempaquetar, el mensaje util queda enterrado y
+     * solo se ve la envoltura.
+     *
+     * @param ex excepcion a desenvolver
+     * @return la excepcion mas profunda de la cadena
+     */
+    private Throwable causaRaiz(Throwable ex) {
+        Throwable actual = ex;
+        while (actual.getCause() != null && actual.getCause() != actual) {
+            actual = actual.getCause();
+        }
+        return actual;
     }
 
     // Errores de regla de negocio (ValidacionException): 400 con el mensaje que

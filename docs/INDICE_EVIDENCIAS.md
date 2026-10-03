@@ -35,4 +35,4 @@ las versiones `.md`, los diagramas, las capturas y el DDL del esquema.
 
 - Administrador semilla: `admin@aleleotours.com` / `admin123` (solo desarrollo).
 - Cliente de demostración: `carlos.captura@ejemplo.com` / `DemoClave2026!a`.
-- Llave de pago del flujo académico: `Bre-B @VXM301`.
+- Pasarela de pagos: **Wompi** (sandbox) y versión simulada. El monto lo calcula el backend desde el catálogo; no hay cuenta de destino fija en el código. Ver `docs/09-Integracion-Pasarela-Pagos-SACE.md`.

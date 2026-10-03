@@ -1,115 +1,199 @@
 package com.mycompany.sacejpa.DTOs;
 
+import com.mycompany.sacejpa.Modelo.MetodoPago;
+import com.mycompany.sacejpa.Modelo.PagoEstado;
+
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.List;
 
+/**
+ * Objetos de transferencia del modulo de pagos.
+ *
+ * <p>Dos cambios de fondo respecto a la version anterior:
+ *
+ * <ul>
+ *   <li><b>{@code CrearPagoDTO} ya no tiene campo {@code monto}.</b> Ese es el
+ *       arreglo del problema de seguridad mas grave del proyecto: el precio lo
+ *       decide el backend leyendo el catalogo de servicios. Si el DTO lo
+ *       aceptara, un cliente podria enviar cualquier cifra y el servidor la
+ *       guardaria.</li>
+ *   <li><b>La respuesta describe el flujo completo</b>: estado, referencia y URL
+ *       de checkout son lo que el navegador necesita para seguir el pago hasta
+ *       el final.</li>
+ * </ul>
+ */
 public class PagoDTOs {
 
-    public static class CrearPagoDTO {
-        private Long solicitudId;
-        private BigDecimal monto;
-        private String metodoPago;
-        private String llaveDestino;
-        private String notas;
-
-        public CrearPagoDTO() {}
-
-        public CrearPagoDTO(Long solicitudId, BigDecimal monto, String metodoPago, String llaveDestino) {
-            this.solicitudId = solicitudId;
-            this.monto = monto;
-            this.metodoPago = metodoPago;
-            this.llaveDestino = llaveDestino;
-        }
-
-        public Long getSolicitudId() { return solicitudId; }
-        public void setSolicitudId(Long solicitudId) { this.solicitudId = solicitudId; }
-
-        public BigDecimal getMonto() { return monto; }
-        public void setMonto(BigDecimal monto) { this.monto = monto; }
-
-        public String getMetodoPago() { return metodoPago; }
-        public void setMetodoPago(String metodoPago) { this.metodoPago = metodoPago; }
-
-        public String getLlaveDestino() { return llaveDestino; }
-        public void setLlaveDestino(String llaveDestino) { this.llaveDestino = llaveDestino; }
-
-        public String getNotas() { return notas; }
-        public void setNotas(String notas) { this.notas = notas; }
+    private PagoDTOs() {
     }
 
-    public static class PagoRespuestaDTO {
-        private Long idPago;
+    /**
+     * Datos que envia el cliente para iniciar un pago.
+     *
+     * <p>Solo tres campos, y ninguno es el precio:
+     * <ul>
+     *   <li>{@code solicitudId}: sobre que reserva se cobra.</li>
+     *   <li>{@code metodoPago}: como quiere pagar (lo unico que el cliente decide).</li>
+     *   <li>{@code notas}: comentario opcional.</li>
+     * </ul>
+     *
+     * El backend responde con un error explicito si llega un {@code monto}, de
+     * forma que quede registro de que alguien intento alterar el precio.
+     */
+    public static class CrearPagoDTO {
+
         private Long solicitudId;
-        private String solicitudTitulo;
-        private Long clienteId;
-        private String clienteNombre;
-        private String clienteEmail;
-        private BigDecimal monto;
-        private Date fechaPago;
         private String metodoPago;
-        private String llaveDestino;
-        private String estado;
-        private String urlPdf;
-        private Boolean correoNotificado;
+        private String notas;
 
-        public PagoRespuestaDTO() {}
-
-        public PagoRespuestaDTO(Long idPago, Long solicitudId, String solicitudTitulo, Long clienteId,
-                               String clienteNombre, String clienteEmail, BigDecimal monto, Date fechaPago,
-                               String metodoPago, String llaveDestino, String estado, String urlPdf, Boolean correoNotificado) {
-            this.idPago = idPago;
-            this.solicitudId = solicitudId;
-            this.solicitudTitulo = solicitudTitulo;
-            this.clienteId = clienteId;
-            this.clienteNombre = clienteNombre;
-            this.clienteEmail = clienteEmail;
-            this.monto = monto;
-            this.fechaPago = fechaPago;
-            this.metodoPago = metodoPago;
-            this.llaveDestino = llaveDestino;
-            this.estado = estado;
-            this.urlPdf = urlPdf;
-            this.correoNotificado = correoNotificado;
+        public CrearPagoDTO() {
         }
 
-        public Long getIdPago() { return idPago; }
-        public void setIdPago(Long idPago) { this.idPago = idPago; }
+        public CrearPagoDTO(Long solicitudId, String metodoPago) {
+            this.solicitudId = solicitudId;
+            this.metodoPago = metodoPago;
+        }
 
-        public Long getSolicitudId() { return solicitudId; }
-        public void setSolicitudId(Long solicitudId) { this.solicitudId = solicitudId; }
+        public Long getSolicitudId() {
+            return solicitudId;
+        }
 
-        public String getSolicitudTitulo() { return solicitudTitulo; }
-        public void setSolicitudTitulo(String solicitudTitulo) { this.solicitudTitulo = solicitudTitulo; }
+        public void setSolicitudId(Long solicitudId) {
+            this.solicitudId = solicitudId;
+        }
 
-        public Long getClienteId() { return clienteId; }
-        public void setClienteId(Long clienteId) { this.clienteId = clienteId; }
+        public String getMetodoPago() {
+            return metodoPago;
+        }
 
-        public String getClienteNombre() { return clienteNombre; }
-        public void setClienteNombre(String clienteNombre) { this.clienteNombre = clienteNombre; }
+        public void setMetodoPago(String metodoPago) {
+            this.metodoPago = metodoPago;
+        }
 
-        public String getClienteEmail() { return clienteEmail; }
-        public void setClienteEmail(String clienteEmail) { this.clienteEmail = clienteEmail; }
+        public String getNotas() {
+            return notas;
+        }
 
-        public BigDecimal getMonto() { return monto; }
-        public void setMonto(BigDecimal monto) { this.monto = monto; }
+        public void setNotas(String notas) {
+            this.notas = notas;
+        }
 
-        public Date getFechaPago() { return fechaPago; }
-        public void setFechaPago(Date fechaPago) { this.fechaPago = fechaPago; }
+        /**
+         * Lee un posible campo "monto" aunque no exista en la clase.
+         *
+         * <p>Sirve para DETECTAR el intento de manipulo en vez de ignorarlo en
+         * silencio. Spring Jackson ignora por defecto los campos desconocidos, asi
+         * que sin esto el ataque pasaria inadvertido y el log no dejaria rastro.
+         *
+         * @param json cuerpo crudo de la peticion, ya deserializado en mapa
+         * @return true si el cliente intento enviar un monto
+         */
+        @com.fasterxml.jackson.annotation.JsonAnySetter
+        public void registrarCampoDesconocido(String clave, Object valor) {
+            if ("monto".equalsIgnoreCase(clave) || "amount".equalsIgnoreCase(clave)
+                    || "precio".equalsIgnoreCase(clave)) {
+                throw new IllegalArgumentException(
+                        "El monto no lo puede elegir el cliente: se calcula con el precio del servicio reservado.");
+            }
+        }
+    }
 
-        public String getMetodoPago() { return metodoPago; }
-        public void setMetodoPago(String metodoPago) { this.metodoPago = metodoPago; }
+    /**
+     * Estado de un pago tal como lo ve el navegador.
+     *
+     * @param idPago              identificador interno
+     * @param referencia          clave de idempotencia, la que conoce la pasarela
+     * @param solicitudId         solicitud pagada
+     * @param solicitudTitulo     nombre del tour
+     * @param clienteId           cliente que paga
+     * @param clienteNombre       nombre completo
+     * @param clienteEmail        correo
+     * @param monto               monto cobrado, calculado por el backend
+     * @param moneda              codigo de moneda
+     * @param metodoPago          metodo elegido
+     * @param metodoPagoEtiqueta  nombre legible del metodo
+     * @param estado              estado actual
+     * @param estadoEtiqueta      nombre legible del estado
+     * @param pasarela            pasarela procesadora
+     * @param codigoAutorizacion  codigo bancario de autorizacion
+     * @param fechaCreacion       momento en que se creo la orden
+     * @param fechaAprobacion     momento en que la pasarela aprobo, si ya ocurrio
+     * @param urlCheckout         pagina de pago de la pasarela, o null
+     * @param urlPdf              comprobante generado, disponible solo si esta aprobado
+     * @param correoNotificado    si el comprobante ya se envio por correo
+     * @param comprobanteDisponible si ya se puede descargar el PDF
+     */
+    public record PagoRespuestaDTO(
+            Long idPago,
+            String referencia,
+            Long solicitudId,
+            String solicitudTitulo,
+            Long clienteId,
+            String clienteNombre,
+            String clienteEmail,
+            BigDecimal monto,
+            String moneda,
+            MetodoPago metodoPago,
+            String metodoPagoEtiqueta,
+            PagoEstado estado,
+            String estadoEtiqueta,
+            String pasarela,
+            String codigoAutorizacion,
+            Date fechaCreacion,
+            Date fechaAprobacion,
+            String urlCheckout,
+            String urlPdf,
+            Boolean correoNotificado,
+            boolean comprobanteDisponible
+    ) {
+    }
 
-        public String getLlaveDestino() { return llaveDestino; }
-        public void setLlaveDestino(String llaveDestino) { this.llaveDestino = llaveDestino; }
+    /**
+     * Cotizacion que el backend devuelve ANTES de cobrar.
+     *
+     * <p>Es la fuente de verdad del precio para la interfaz: el campo monto del
+     * formulario se rellena con esto y queda bloqueado. Asi el cliente ve el
+     * valor correcto y a la vez el backend conserva la autoridad sobre el.
+     *
+     * @param solicitudId  solicitud a cotizar
+     * @param titulo       nombre del tour
+     * @param monto        precio del servicio, en pesos
+     * @param moneda       codigo de moneda
+     * @param metodos      metodos de pago que el sistema acepta
+     * @param yaPagado     true si la solicitud ya tiene un cobro aprobado
+     */
+    public record CotizacionDTO(
+            Long solicitudId,
+            String titulo,
+            BigDecimal monto,
+            String moneda,
+            java.util.List<String> metodos,
+            boolean yaPagado
+    ) {
+    }
 
-        public String getEstado() { return estado; }
-        public void setEstado(String estado) { this.estado = estado; }
+    /**
+     * Configuracion de pagos que el frontend necesita antes de mostrar el modal.
+     *
+     * <p>Se expone la pasarela activa y si el flujo termina en el checkout
+     * externo o dentro de la misma pagina. El frontend necesita saberlo para no
+     * intentar abrir una pestana que no lleva a ningun sitio.
+     *
+     * @param pasarela          nombre de la pasarela activa
+     * @param modoSimulado      true si es la pasarela de pruebas local
+     * @param checkoutExterno   true si el pago ocurre en una pagina de la pasarela
+     * @param metodos           metodos habilitados
+     * @param mensajes          textos a mostrar por metodo
+     */
+    public record ConfiguracionPagosDTO(
+            String pasarela,
+            boolean modoSimulado,
+            boolean checkoutExterno,
+            java.util.List<MetodoPagoInfoDTO> metodos
+    ) {
+    }
 
-        public String getUrlPdf() { return urlPdf; }
-        public void setUrlPdf(String urlPdf) { this.urlPdf = urlPdf; }
-
-        public Boolean getCorreoNotificado() { return correoNotificado; }
-        public void setCorreoNotificado(Boolean correoNotificado) { this.correoNotificado = correoNotificado; }
+    /** Descripcion de un metodo de pago para pintar el selector. */
+    public record MetodoPagoInfoDTO(String codigo, String nombre) {
     }
 }

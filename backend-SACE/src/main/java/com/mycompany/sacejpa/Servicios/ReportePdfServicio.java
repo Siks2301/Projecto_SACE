@@ -103,7 +103,7 @@ public class ReportePdfServicio {
         document.add(kpiTable);
         document.add(new Paragraph(" ", FontFactory.getFont(FontFactory.HELVETICA, 6)));
 
-        // 3. Resumen financiero (llave Bre-B @VXM301)
+        // 3. Resumen financiero (pagos aprobados por la pasarela)
         document.add(new Paragraph("AUDITORIA DE RECAUDO FINANCIERO", fontSeccion));
         document.add(new Paragraph(" ", FontFactory.getFont(FontFactory.HELVETICA, 4)));
 

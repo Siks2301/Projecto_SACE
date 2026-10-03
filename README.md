@@ -61,7 +61,7 @@ Abrir **http://localhost:8091**. El frontend asume el backend en `localhost:8082
 - Registro/login de clientes (apellido opcional) y panel de empleados/administradores.
 - Gestión de solicitudes por categorías: RESERVA, CONSULTA, CAMBIO_FECHA, EQUIPAJE, OTRO.
 - Chat de mensajes por solicitud y chatbot con catálogo desde la API.
-- Pago con llave **Bre-B**, precio tomado del servicio real en BD, anti-doble-cobro y comprobante PDF con sello SHA-256 + IVA 19 %.
+- **Pago en línea con pasarela real** (Wompi, sandbox) o pasarela simulada sin conexión: el precio lo calcula el backend desde el catálogo (el cliente solo elige método), confirmación por webhook firmado con SHA-256 y polling de respaldo, anti-doble-cobro garantizado con índice único parcial en la base de datos, y comprobante PDF con sello SHA-256 + IVA 19 %. Detalle en [`docs/09-Integracion-Pasarela-Pagos-SACE.md`](docs/09-Integracion-Pasarela-Pagos-SACE.md).
 - Reportes y KPIs restringidos a administradores.
 - Autorización por propiedad (403) en pagos, cancelaciones, mensajes y reportes.
 

@@ -49,7 +49,7 @@ No incluye: pasarela de pago real o facturación fiscal (DIAN), aplicación móv
 | RF-08 | Chatbot AleLeoBot con preguntas frecuentes y destinos obtenidos de la API (respaldos locales si el backend no responde). | Media |
 | RF-09 | Panel del empleado: ver solicitudes asignadas, alternar disponibilidad y atender en vivo. | Media |
 | RF-10 | CRUD de administración: clientes, empleados, servicios, solicitudes y preguntas frecuentes. | Media |
-| RF-11 | Pago de una solicitud con monto tomado del servicio real en BD, llave 'Bre-B @VXM301', prevención de doble cobro y validación del propietario. | Alta |
+| RF-11 | Pago en línea de una solicitud contra una pasarela de pagos (Wompi) o su versión simulada: monto calculado por el backend desde el catálogo de servicios, webhook autenticado por firma SHA-256, anti-doble-cobro garantizado con índice único parcial y validación del propietario. | Alta |
 | RF-12 | Comprobante PDF del pago: sello SHA-256 de folio|llave|monto, desglose con IVA (base exacta /1.19) y descarga exclusiva del propietario. | Alta |
 | RF-13 | Reportes y KPIs (ventas consolidadas, conteos por categoría/estado) restringidos a administradores, con exportación PDF. | Media |
 | RF-14 | Notificación por correo con tope de fallo (fail-safe): si el SMTP no está disponible, el flujo continúa sin romperse. | Baja |
@@ -71,6 +71,6 @@ Restricción tecnológica: Java 17 + Spring Boot, PostgreSQL local y frontend en
 
 Suposición: las pruebas y la ejecución se hacen en un entorno local de desarrollo (localhost).
 
-El sistema NO está conectado a pasarelas de pago reales (Bre-B es la llave de verificación del comprobante en el flujo académico); la facturación electrónica fiscal (DIAN) queda fuera del alcance de esta fase.
+El pago se realiza contra **Wompi**, pasarela de pagos del Banco de Colombia, en modo **sandbox** (llaves de prueba, sin movimiento real de dinero). El proyecto incluye además una pasarela simulada para poder operar sin conexión durante la demostración. La facturación electrónica fiscal (DIAN) queda fuera del alcance de esta fase.
 
 El sistema NO aborda despliegues multi-tenant ni alta disponibilidad en producción: el despliegue previsto es local o servidor académico con un solo entorno.
