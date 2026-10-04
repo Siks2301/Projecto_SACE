@@ -26,7 +26,7 @@ public class Servicio {
     @Column(name = "nombre")
     private String nombre;
 
-    @Column(name = "descripcion")
+    @Column(name = "descripcion", columnDefinition = "TEXT")
     private String descripcion;
 
     @Enumerated(EnumType.STRING)

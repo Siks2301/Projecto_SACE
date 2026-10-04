@@ -17,10 +17,10 @@ public class PreguntaFrecuente {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "pregunta")
+    @Column(name = "pregunta", columnDefinition = "TEXT")
     private String pregunta;
 
-    @Column(name = "respuesta")
+    @Column(name = "respuesta", columnDefinition = "TEXT")
     private String respuesta;
 
     @Column(name = "palabras_clave")

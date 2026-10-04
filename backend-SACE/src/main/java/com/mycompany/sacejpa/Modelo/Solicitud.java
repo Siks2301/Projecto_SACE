@@ -39,10 +39,14 @@ public class Solicitud {
     @Column(name = "titulo")
     private String titulo;
 
-    @Column(name = "asunto")
+    @Column(name = "asunto", columnDefinition = "TEXT")
     private String asunto;
 
-    @Column(name = "descripcion")
+    // El requerimiento del cliente es texto libre y puede pasar de 255
+    // caracteres: ver migracion_textos_largos.sql. Sin columnDefinition, el
+    // ddl-auto de Hibernate volveria a declararla varchar(255) y el error
+    // reaparece con un mensaje que no explica la causa.
+    @Column(name = "descripcion", columnDefinition = "TEXT")
     private String descripcion;
 
     @Enumerated(EnumType.STRING)

@@ -29,7 +29,7 @@ public class Mensaje {
     @Column(name = "fecha")
     private Date fecha;
 
-    @Column(name = "contenido")
+    @Column(name = "contenido", columnDefinition = "TEXT")
     private String contenido;
 
     @Enumerated(EnumType.STRING)
@@ -48,7 +48,7 @@ public class Mensaje {
     @Column(name = "calificacion")
     private Integer calificacion;
 
-    @Column(name = "comentario_satisfaccion")
+    @Column(name = "comentario_satisfaccion", columnDefinition = "TEXT")
     private String comentarioSatisfaccion;
 
     // Solicitud a la que pertenece (registra) este mensaje

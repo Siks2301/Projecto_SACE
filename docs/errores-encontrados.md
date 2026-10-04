@@ -337,6 +337,69 @@ cerrar la sesión es lo correcto. Se documenta por dos razones: porque apareció
 verdad durante las pruebas, y porque hace que cualquier prueba automática de
 credenciales se enturbie con el estado de la sesión de la página.
 
+### 3.9 El backend respondía "borra tus datos relacionados" cuando el problema era la longitud del texto — CORREGIDO
+
+El más engañoso de los tres, porque **el mensaje que veía el usuario era falso**.
+
+`GlobalExceptionHandler` tenía un solo manejador para
+`DataIntegrityViolationException`, y devolvía siempre `409` con este texto:
+
+> No se pudo completar la operacion porque este registro todavia tiene otros datos
+> relacionados (por ejemplo, Solicitudes, Mensajes o Servicios asociados). Elimina
+> o reasigna esas relaciones primero.
+
+Ese mensaje es cierto para una llave foránea, pero `DataIntegrityViolationException`
+**también** se dispara cuando un texto no cabe en su columna. Y así se encontró:
+al crear una solicitud cuya descripción pasaba de 255 caracteres, PostgreSQL
+rechazaba el `INSERT` y el navegador recibía el aviso de borrar datos
+relacionados, cuando lo único que sobraba eran letras. El `detalle` técnico de la
+respuesta sí decía la verdad (`el valor es demasiado largo para el tipo character
+varying(255)`), pero ese campo no se le muestra a nadie.
+
+Causa de fondo: las columnas de texto libre estaban declaradas `varchar(255)`
+—el valor por defecto de Hibernate— y **los formularios no tenían `maxlength`**.
+El límite no lo ponía nadie a propósito: simplementemente no estaba.
+
+Medido antes y después, sobre `solicitud.descripcion`:
+
+| Caracteres enviados | Antes | Ahora |
+|---|---|---|
+| 200 | `201` | `201` |
+| 255 | `201` | `201` |
+| 256 | `409` "borra tus datos relacionados" | `201` |
+| 900 | `409` "borra tus datos relacionados" | `201` (guarda los 900) |
+
+**Tres cambios:**
+
+1. **El manejador ahora clasifica por el código SQLState de PostgreSQL**, que es lo
+   que de verdad dice qué falló: `22001` (el texto no cabe) responde `400` con un
+   mensaje cierto; `23505` (valor duplicado) responde `409` diciendo que ya existe;
+   `23503` (llave foránea) conserva el `409` de datos relacionados, que en ese caso
+   sí es cierto.
+
+2. **Nueve columnas de texto libre pasan de `varchar(255)` a `TEXT`**, porque el
+   defecto era el mismo en todas: `solicitud.descripcion`, `solicitud.asunto`,
+   `mensaje.contenido`, `mensaje.comentario_satisfaccion`, `servicio.descripcion`,
+   `cliente.historial_consultas`, `cliente.preferencias_comunicacion`,
+   `pregunta_frecuente.pregunta` y `pregunta_frecuente.respuesta`. Los nombres,
+   correos, estados y rutas **siguen en `varchar(255)`**: esos valores son cortos
+   por definición y el límite es una protección, no un estorbo.
+
+   El cambio está en `migracion_textos_largos.sql`, que es idempotente, y las
+   entidades llevan `columnDefinition = "TEXT"` para que el `ddl-auto` de Hibernate
+   no lo revierta al volver a arrancar.
+
+3. **Los formularios sí ponen un techo, pero visible**: los cinco campos de texto
+   largo y el del chatbot llevan `maxlength="2000"` y un contador en vivo
+   (`inicializarContadoresTexto()` en `js/core/app.js`) que avisa en amarillo al
+   acercarse al final. El límite se ve antes de llegar, no después.
+
+Verificado que los tres caminos de error siguen dando la respuesta correcta: llave
+foránea `409` con el mensaje de datos relacionados, valor duplicado `409` con
+"Ya existe un registro con esos mismos datos unicos", y texto excedido `400`.
+
+## 4. HALLAZGOS ABIERTOS
+
 ### 4.1 Dos bases de datos con el mismo nombre en distinta caja — ALTO
 
 PostgreSQL existe **`SACE_db`** (la real: 41 personas, 28 solicitudes) y
@@ -353,16 +416,33 @@ reales.
 
 **No se borró la base sobrante porque no hay permiso.**
 
-### 4.2 25 de 36 clientes son cuentas de prueba de seguridad — MEDIO
+### 4.2 25 de 36 clientes eran cuentas de prueba de seguridad — CERRADO en esta ronda
 
 Pruebas de penetración anteriores quedaron en la base de producción, con nombres
 como `victima1298@test.com` / "Vic Tima" y `atacante1298@test.com` / "Ata Cante",
 además de `test.valido@test.com` y `prueba.funcional.*`.
 
-Hoy son **25 de 36 clientes**. Ruido importante en cualquier evaluación: un
-revisor que abra la base ve tresquarters de clientes que no son clientes.
+Llegaron a ser **25 de 36 clientes**: ruido importante en cualquier evaluación, un
+revisor que abriera la base veía tres de cada cuatro clientes que no eran
+clientes.
 
-**No se borraron por si son evidencia que todavía se necesita.**
+**Cerrado.** Con permiso explícito se borraron las 26 cuentas de patrón sintético
+(`victima*`, `atacante*`, `unonombre*`, `patosinapellido*`, `malo*`, `probe*`,
+`diego*`, `prueba.funcional*`, `test.valido`, `test2.valido`, `emp.bueno`,
+`qa.aleleo`), lo que arrastró 11 pagos, 4 mensajes y 7 solicitudes que solo
+existían para esas pruebas. Antes de tocar nada se hizo un `pg_dump` completo y el
+borrado se ensayó dentro de una transacción con `ROLLBACK` para contar exactamente
+lo que se iba a eliminar.
+
+**Cuatro cuentas con nombre real no se borraron** porque no son de prueba y tienen
+historial asociado: `cesarleonardo.rm2301@gmail.com`, `claudiamariasuesca@gmail.com`
+(5 solicitudes), `sebastiandavidmolinarivera2380@gmail.com` (5 solicitudes y
+4 pagos) y `laura.gomez.497161538@gmail.com` (1 solicitud y 4 pagos).
+
+Como la base quedó demasiado vacía para una sustentación, se repobló con datos
+realistas: 4 solicitudes del cliente de demostración repartidas en los cuatro
+estados (`PENDIENTE`, `EN_PROCESO`, `RESUELTA`, `CANCELADA`), una de ellas ya
+cotizada a $320.000 para poder cobrar en vivo durante la presentación.
 
 ### 4.3 Dos cuentas activas que nadie puede entrar — BAJO
 
@@ -388,8 +468,10 @@ Cada intento de pago escribe un PDF en `uploads/comprobantes/` aunque quede
 `comprobanteDisponible` y solo se ofrece con el pago `APROBADO`. Es acumulación
 de archivos sin nada que los referencie.
 
-Detalle actual: hay 16 comprobantes en disco y 16 pagos, sin huérfanos. Los
-pagos 6, 7 y 8 están `ANULADO` y conservaron su PDF.
+Detalle actual tras la limpieza: hay 8 comprobantes en disco y 8 pagos que los
+referencian, sin huérfanos ni rutas absolutas. Los pagos 6, 7 y 8 están `ANULADO` y
+conservaron su PDF, y **se verificó que la API se niega a servirlos** (`400` con
+"Este pago aun no se ha aprobado"), así que el archivo no es una fuga.
 
 ### 4.6 `JAVA_HOME` apunta a un JRE, no a un JDK — BAJO
 
@@ -440,10 +522,35 @@ la base.
 Dos detalles que quedaron como **comportamiento conocido**, no como fallo:
 
 - Al crear una solicitud, el campo `estado` viene `null` en la respuesta. No
-  rompe nada porque la interfaz agrupa por estado al recargar, pero es un valor
-  que debería venir informado.
+  rompe nada porque la interfaz agrupa por estado al recargar (`normalizarEstado`
+  trata el vacío como `PENDIENTE`), pero es un valor que debería venir informado.
 - El chatbot no se cierra solo al pulsar fuera del panel. Se cierra con su
   botón, que sí funciona.
+
+### 5.1 Segunda ronda, tras corregir el 3.9 (35 comprobaciones)
+
+Como el arreglo del 3.9 tocaba el backend, las entidades y cinco formularios, se
+volvió a manejar todo en el navegador: **35 comprobaciones, 0 fallos**.
+
+| Qué se comprobó | Resultado |
+|---|---|
+| Los tres logins por formulario | Correctos, cada uno en su pestaña de perfil |
+| Las 11 páginas por rol | Maquetan, con la fuente `Outfit` local y sin peticiones a internet |
+| El `maxlength` del formulario | Presente (`2000`) en los cinco campos de texto largo y en el del chatbot |
+| El contador de caracteres | Marca `0 / 2000`, sigue la escritura, avisa en amarillo al acercarse y el navegador corta al teclear de más |
+| El panel del cliente con datos nuevos | Las 4 solicitudes de demostración a la vista, 4 tarjetas |
+| Los filtros por estado | `{TODAS: 4, PENDIENTE: 1, EN_PROCESO: 1, RESUELTA: 1, CANCELADA: 1}` — reparten las cuatro sin perder ninguna |
+| Cada filtro muestra lo que promete | Comprobado con el texto del distintivo de cada tarjeta, no solo con el número |
+| La solicitud cotizada | `GET /pagos/cotizacion/59` responde `200` con monto $320.000: se puede cobrar en vivo |
+| El chatbot | Se abre, responde con datos reales, admite una pregunta de más de 1000 caracteres y su campo está limitado a 2000 |
+| Los tres caminos de error del backend | Llave foránea `409` con el mensaje de datos relacionados, duplicado `409`, texto excedido `400` |
+
+Una comprobación dio un falso positivo y merece decirse: al teclear el precio en
+la respuesta del chatbot, la consola lo mostraba pegado al número de días
+(`$ 320.0003 dias`). Al medir la posición real de los elementos resultó que están
+en líneas distintas, a 22 px de distancia: el `&nbsp;` y el `<br>` del HTML los
+separan bien. Era el arnés de prueba (`textContent` no respeta el maquetado), no
+la aplicación.
 
 ---
 
@@ -454,15 +561,20 @@ Dos detalles que quedaron como **comportamiento conocido**, no como fallo:
 | 1 | Modal de pago fuera de pantalla | ALTA | Corregido (`36e6291`) |
 | 2 | Rutas absolutas de Windows en 16 de 16 comprobantes | ALTA | Corregido |
 | 3 | **Clientes creados por el administrador sin contraseña usable** | **ALTA** | **Corregido** |
-| 4 | Dos bases `SACE_db` / `sace_db` | ALTA | **Abierto** |
-| 5 | Comprobantes PDF de clientes en git | MEDIA | Corregido en el índice; **historial abierto** |
-| 6 | `unique = true` inoperante sobre base existente | ALTA | Corregido |
-| 7 | Cambios de datos fuera de git | MEDIA | Documentado con orden de scripts |
-| 8 | Maquetación desde CDN | MEDIA | Corregido |
-| 9 | 25 de 36 clientes son pruebas de seguridad | MEDIA | **Abierto** |
-| 10 | Campos con nombre equivocado se descartan en silencio | MEDIA | Documentado (ver 3.7) |
-| 11 | Dos cuentas activas con contraseña desconocida | BAJA | **Abierto** |
-| 12 | Archivos PDF de pago no completados sin referencia | BAJO | **Abierto** |
-| 13 | `JAVA_HOME` apunta a un JRE | BAJA | **Abierto** (documentado el procedimiento) |
-| 14 | Un `401` en cualquier `fetch` cierra la sesión | BAJA | Documentado (ver 3.8) |
-| 15 | Puerto 8083 vs 8082 | BAJA | Cerrado: el archivo ya dice 8082 |
+| 4 | **El backend culpaba a "datos relacionados" cuando el texto era demasiado largo** | **ALTA** | **Corregido** |
+| 5 | Dos bases `SACE_db` / `sace_db` | ALTA | **Abierto** |
+| 6 | Comprobantes PDF de clientes en git | MEDIA | Corregido en el índice; **historial abierto** |
+| 7 | `unique = true` inoperante sobre base existente | ALTA | Corregido |
+| 8 | Cambios de datos fuera de git | MEDIA | Documentado con orden de scripts |
+| 9 | Maquetación desde CDN | MEDIA | Corregido |
+| 10 | 25 de 36 clientes eran pruebas de seguridad | MEDIA | **Cerrado** (borradas con permiso) |
+| 11 | Campos con nombre equivocado se descartan en silencio | MEDIA | Documentado (ver 3.7) |
+| 12 | Dos cuentas activas con contraseña desconocida | BAJA | **Abierto** |
+| 13 | Archivos PDF de pago no completados sin referencia | BAJO | **Abierto** |
+| 14 | `JAVA_HOME` apunta a un JRE | BAJA | **Abierto** (documentado el procedimiento) |
+| 15 | Un `401` en cualquier `fetch` cierra la sesión | BAJA | Documentado (ver 3.8) |
+| 16 | Puerto 8083 vs 8082 | BAJA | Cerrado: el archivo ya dice 8082 |
+
+**Balance:** 11 de 16 hallazgos corregidos, 5 abiertos (uno de ellos alto: las dos
+bases de datos). Verificado con 139 comprobaciones reales en total (104 en la
+primera ronda, 35 en la segunda), sin un solo fallo pendiente.

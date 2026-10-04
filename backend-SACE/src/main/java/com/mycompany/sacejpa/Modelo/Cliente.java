@@ -18,10 +18,10 @@ import java.util.List;
 @PrimaryKeyJoinColumn(name = "id")
 public class Cliente extends Persona {
 
-    @Column(name = "historial_consultas")
+    @Column(name = "historial_consultas", columnDefinition = "TEXT")
     private String historialConsultas;
 
-    @Column(name = "preferencias_comunicacion")
+    @Column(name = "preferencias_comunicacion", columnDefinition = "TEXT")
     private String preferenciasComunicacion;
 
     // Solicitudes generadas por este cliente

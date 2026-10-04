@@ -619,6 +619,62 @@ function inicializarTabsLogin() {
   tabEmpleado.addEventListener('click', () => activarTab(true));
 }
 
+/**
+ * Contador de caracteres para los campos de texto largo.
+ *
+ * <p>Motivo: las columnas de descripcion, contenido de mensaje, respuesta de
+ * preguntas frecuentes, etc. son TEXT en la base, pero el formulario tiene que
+ * poner un techo. Antes no havia ninguno, y al superar el limite el backend
+ * respondia con un mensaje que no explicaba la causa (ver el 3.9 de
+ * docs/errores-encontrados.md). Con el contador, el usuario ve cuanto le queda
+ * antes de llegar al tope en lugar de encontrarse un error.
+ *
+ * <p>Se activa sola en cualquier textarea o input que traiga el atributo
+ * maxlength, asi que no hay que anadir nada en el HTML mas que el limite.
+ *
+ * @param {number} limite Aviso en color de advertencia cuando faltan menos
+ *                      de este numero de caracteres.
+ */
+function inicializarContadoresTexto(limite = 80) {
+  const campos = document.querySelectorAll('textarea[maxlength], input[maxlength][data-contador]');
+  campos.forEach((campo) => {
+    if (campo.dataset.contadorActivo === 'true') return;
+    campo.dataset.contadorActivo = 'true';
+
+    const maximo = parseInt(campo.getAttribute('maxlength'), 10);
+    if (!maximo) return;
+
+    const contador = document.createElement('small');
+    contador.className = 'form-text d-block text-end text-muted';
+    contador.setAttribute('aria-live', 'polite');
+
+    const actualizar = () => {
+      const usados = campo.value.length;
+      contador.textContent = usados + ' / ' + maximo + ' caracteres';
+      const restantes = maximo - usados;
+      if (restantes <= 0) {
+        contador.className = 'form-text d-block text-end text-danger fw-bold';
+        contador.textContent = 'Limite alcanzado (' + maximo + ')';
+      } else if (restantes <= limite) {
+        contador.className = 'form-text d-block text-end text-warning';
+      } else {
+        contador.className = 'form-text d-block text-end text-muted';
+      }
+    };
+
+    campo.addEventListener('input', actualizar);
+    // El contador se coloca despues del campo; si esta dentro de un input-group
+    // o de una celda de formulario, se anade al contenedor mas cercano.
+    const contenedor = campo.closest('.col-md-6, .col-md-12, .col, .mb-3, .campo-form');
+    if (contenedor) {
+      contenedor.appendChild(contador);
+    } else {
+      campo.insertAdjacentElement('afterend', contador);
+    }
+    actualizar();
+  });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   Sesion.actualizar();
   inicializarNavToggle();
@@ -629,4 +685,5 @@ document.addEventListener('DOMContentLoaded', () => {
   inicializarBuscador();
   inicializarTabsLogin();
   inicializarTabsBusqueda();
+  inicializarContadoresTexto();
 });

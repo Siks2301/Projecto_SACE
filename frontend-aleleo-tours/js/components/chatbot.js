@@ -992,6 +992,7 @@
                     class="chatbot-input"
                     id="chatbot-input"
                     placeholder="Escribe tu consulta aquí..."
+                    maxlength="2000"
                     autocomplete="off">
 
 

@@ -20,21 +20,75 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    // Se dispara cuando Postgres rechaza un DELETE (o un INSERT/UPDATE) por
-    // violar una llave foranea o una restriccion unica. Es exactamente lo
-    // que pasa hoy al borrar un Cliente/Empleado/Servicio que todavia tiene
-    // Solicitudes, o una Solicitud que todavia tiene Mensajes.
+    // Se dispara cuando Postgres rechaza una operacion por violar una
+    // restriccion. Ojo: DataIntegrityViolationException no significa solo
+    // "hay datos relacionados", tambien cubre otros fallos de integridad, y
+    // responder siempre 409 hacia que el usuario persiguiera un problema que
+    // no tiene. Se clasifica por el SQLState de PostgreSQL para que el mensaje
+    // diga la verdad:
+    //
+    //   22001  el texto no cabe en la columna   -> 400, no es un conflicto
+    //   23503  llave foranea                    -> 409, si hay datos relacionados
+    //   23505  valor duplicado                  -> 409, ya existe
+    //
+    // El caso 22001 se veia a diario: al escribir mas de 255 caracteres en la
+    // descripcion de una solicitud, el navegador recibia "este registro todavia
+    // tiene otros datos relacionados, elimina o reasigna esas relaciones", y
+    // el usuario se iba a borrar datos de verdad para un problema de longitud.
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<Object> manejarIntegridadReferencial(DataIntegrityViolationException ex) {
         String detalle = ex.getMostSpecificCause() != null
                 ? ex.getMostSpecificCause().getMessage()
                 : ex.getMessage();
+        String sqlState = sqlStateDe(ex);
+
+        if ("22001".equals(sqlState)) {
+            return construirRespuesta(HttpStatus.BAD_REQUEST,
+                    "Alguno de los textos enviados es mas largo de lo que admite "
+                            + "el campo. Revisa el detalle para saber cual es.",
+                    detalle);
+        }
+        if ("23505".equals(sqlState)) {
+            return construirRespuesta(HttpStatus.CONFLICT,
+                    "Ya existe un registro con esos mismos datos unicos.",
+                    detalle);
+        }
         return construirRespuesta(HttpStatus.CONFLICT,
                 "No se pudo completar la operacion porque este registro todavia "
                         + "tiene otros datos relacionados (por ejemplo, Solicitudes, "
                         + "Mensajes o Servicios asociados). Elimina o reasigna esas "
                         + "relaciones primero.",
                 detalle);
+    }
+
+    /**
+     * Busca el SQLState de PostgreSQL recorriendo toda la cadena de causas.
+     *
+     * <p>Spring envuelve el fallo de PostgreSQL en varias capas
+     * (DataIntegrityViolationException -&gt; PSQLException -&gt; ServerErrorMessage),
+     * asi que el codigo no esta ni en la primera ni en la ultima: hay que
+     * recorrer la cadena y quedarse con el primer SQLException que aparezca.
+     *
+     * @param ex excepcion a desenvolver
+     * @return codigo SQLState de PostgreSQL, o null si no se pudo determinar
+     */
+    private String sqlStateDe(Throwable ex) {
+        Throwable actual = ex;
+        int guardia = 0;
+        while (actual != null && guardia++ < 20) {
+            if (actual instanceof java.sql.SQLException) {
+                String state = ((java.sql.SQLException) actual).getSQLState();
+                if (state != null) {
+                    return state;
+                }
+            }
+            Throwable siguiente = actual.getCause();
+            if (siguiente == actual) {
+                break;
+            }
+            actual = siguiente;
+        }
+        return null;
     }
 
     // Se dispara cuando llega un valor de enum invalido, por ejemplo
