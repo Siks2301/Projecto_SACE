@@ -1644,6 +1644,24 @@ a:hover { color: var(--ds-coral-700); }
   box-shadow: var(--shadow-xl);
   overflow: hidden;
 }
+/* Los dos modales de mis-solicitudes.html (nueva solicitud y pago) envuelven el
+   cuerpo y el pie en un <form> para poder validarlos y enviarlos. Ese <form> se
+   cuela entre .modal-content y .modal-body y rompe el mecanismo de
+   modal-dialog-scrollable: Bootstrap limita el alto de .modal-content y espera que
+   .modal-body sea el hijo que encoge y desplaza. Pero aqui el hijo que encoge es
+   el <form>, y como es un bloque con overflow visible su min-height:auto le impide
+   reducirse, asi que se quedaba con su alto natural, el pie (con el boton Pagar
+   Ahora) quedaba por debajo de la pantalla y el overflow:hidden de arriba lo
+   recortaba sin dejar desplazamiento posible.
+   Convirtiendo el <form> en una columna flexible que si puede encoger, el
+   .modal-body vuelve a ser el hijo desplazable y el pie queda siempre visible. */
+.modal-content > form {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  overflow: hidden;
+}
+.modal-content > form > .modal-footer { flex-shrink: 0; }
 .modal-header {
   background: var(--grad-dark) !important;
   border-bottom: 2px solid var(--ds-amber-500) !important;
