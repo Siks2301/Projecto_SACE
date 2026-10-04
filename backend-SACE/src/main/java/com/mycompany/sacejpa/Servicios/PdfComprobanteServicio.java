@@ -10,12 +10,18 @@ import com.mycompany.sacejpa.Modelo.Solicitud;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.awt.Color;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -29,21 +35,34 @@ import java.util.Locale;
 @Service
 public class PdfComprobanteServicio {
 
+    private static final Logger log = LoggerFactory.getLogger(PdfComprobanteServicio.class);
+
     @Value("${app.upload.dir:uploads/comprobantes}")
     private String uploadDir;
 
     private static final DecimalFormat MONTO_FORMAT = new DecimalFormat("#,##0.00");
     private static final SimpleDateFormat FECHA_FORMAT = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a", new Locale("es", "CO"));
 
+    /**
+     * Genera el PDF del comprobante y devuelve la ruta <b>relativa</b> que se
+     * guarda en {@code pago.url_pdf}.
+     *
+     * <p>Guardar la ruta absoluta era un error de portability: la base quedaba
+     * atada a la maquina y al usuario de Windows que la creo
+     * ({@code C:\Users\cesar\...}). En otra maquina, en un servidor, o tras
+     * cambiar de usuario, el comprobante no existia y el pago quedaba con un
+     * enlace roto. Con la ruta relativa el archivo se resuelve en tiempo de
+     * lectura contra el directorio de la aplicacion.
+     */
     public String generarComprobantePdf(Pago pago) throws Exception {
         if (pago == null) {
             throw new IllegalArgumentException("El objeto Pago no puede ser nulo.");
         }
 
-        // Crear directorio fisico si no existe
-        File dir = new File(uploadDir);
-        if (!dir.exists()) {
-            dir.mkdirs();
+        File dir = getDirectorioUpload();
+        if (!dir.exists() && !dir.mkdirs()) {
+            throw new IllegalStateException(
+                    "No se pudo crear el directorio de comprobantes: " + dir.getAbsolutePath());
         }
 
         String nombreArchivo = "recibo_pago_" + (pago.getId() != null ? pago.getId() : System.currentTimeMillis()) + ".pdf";
@@ -227,7 +246,71 @@ public class PdfComprobanteServicio {
 
         document.close();
 
-        return archivoSalida.getAbsolutePath();
+        // Relativa al directorio de trabajo de la aplicacion, que es donde vive
+        // 'uploadDir'. Ver resolverRutaDeComprobante().
+        return construirRutaRelativa(nombreArchivo);
+    }
+
+    /** Directorio fisico donde se escriben los comprobantes. */
+    private File getDirectorioUpload() {
+        Path base = Paths.get(uploadDir);
+        // Una ruta absoluta en la configuracion manda sobre el directorio de trabajo.
+        return base.isAbsolute() ? base.toFile() : Paths.get(System.getProperty("user.dir"), uploadDir).toFile();
+    }
+
+    /**
+     * Construye la ruta que se guarda en la base: relativa y siempre con
+     * separadores {@code /}, para que el mismo valor sirva en Windows y en Linux.
+     */
+    private String construirRutaRelativa(String nombreArchivo) {
+        String base = Paths.get(uploadDir).normalize().toString().replace('\\', '/');
+        return base.endsWith("/") ? base + nombreArchivo : base + "/" + nombreArchivo;
+    }
+
+    /**
+     * Resuelve la ruta guardada en la base contra el disco.
+     *
+     * <p>Acepta tanto la ruta relativa nueva como la absoluta heredada de datos
+     * anteriores. Para la heredada se usa solo el nombre del archivo: si la ruta
+     * absoluta ya no existe (otra maquina, otro usuario, carpeta eliminada) pero
+     * el PDF esta en el directorio de trabajo, el comprobante sigue abriendose en
+     * lugar de romperse.
+     *
+     * @return archivo existente, o {@code null} si no hay nada que abrir
+     */
+    public File resolverRutaDeComprobante(String rutaGuardada) {
+        if (rutaGuardada == null || rutaGuardada.trim().isEmpty()) {
+            return null;
+        }
+        String ruta = rutaGuardada.trim();
+
+        // 1. La ruta tal cual, sea relativa o absoluta.
+        Path directa = Paths.get(ruta);
+        if (!directa.isAbsolute()) {
+            directa = Paths.get(System.getProperty("user.dir"), ruta);
+        }
+        if (Files.isRegularFile(directa)) {
+            return directa.toFile();
+        }
+
+        // 2. Ruta absoluta heredada: se recupera solo el nombre del archivo.
+        int separador = Math.max(ruta.lastIndexOf('/'), ruta.lastIndexOf('\\'));
+        if (separador >= 0 && separador < ruta.length() - 1) {
+            String nombre = ruta.substring(separador + 1);
+            // El nombre no debe poder escapar del directorio configurado.
+            if (!nombre.contains("..")) {
+                File porNombre = new File(getDirectorioUpload(), nombre);
+                if (porNombre.isFile()) {
+                    log.warn("La ruta del comprobante '{}' no es valida en esta maquina; "
+                            + "se resolvio por nombre dentro de {}. Conviene ejecutar "
+                            + "migracion_rutas_comprobantes.sql.", ruta, getDirectorioUpload().getAbsolutePath());
+                    return porNombre;
+                }
+            }
+        }
+
+        log.warn("No se encontro el comprobante para la ruta '{}'.", ruta);
+        return null;
     }
 
     /**

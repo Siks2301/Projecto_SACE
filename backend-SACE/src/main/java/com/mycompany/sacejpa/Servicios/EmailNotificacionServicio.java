@@ -29,6 +29,10 @@ public class EmailNotificacionServicio {
     @Autowired(required = false)
     private JavaMailSender mailSender;
 
+    /** Resuelve la ruta del comprobante (relativa o absoluta heredada) a un archivo. */
+    @Autowired
+    private PdfComprobanteServicio pdfComprobanteServicio;
+
     @Value("${app.propietario.email:propietario@aleleotours.com}")
     private String propietarioEmail;
 
@@ -78,12 +82,12 @@ public class EmailNotificacionServicio {
 
             helper.setText(cuerpoHtml, true);
 
-            if (rutaPdf != null) {
-                File pdfFile = new File(rutaPdf);
-                if (pdfFile.exists()) {
-                    FileSystemResource res = new FileSystemResource(pdfFile);
-                    helper.addAttachment("Comprobante_Pago_Solicitud_" + idSolicitud + ".pdf", res);
-                }
+            // La ruta guardada es relativa; se resuelve igual que en la descarga,
+            // para que el adjunto exista tambien en otra maquina o en un servidor.
+            File pdfFile = pdfComprobanteServicio.resolverRutaDeComprobante(rutaPdf);
+            if (pdfFile != null) {
+                FileSystemResource res = new FileSystemResource(pdfFile);
+                helper.addAttachment("Comprobante_Pago_Solicitud_" + idSolicitud + ".pdf", res);
             }
 
             mailSender.send(message);

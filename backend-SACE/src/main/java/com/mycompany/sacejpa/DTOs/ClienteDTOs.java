@@ -17,6 +17,15 @@ public class ClienteDTOs {
     private List<Long> solicitudesGeneradasIds;
     private List<Long> serviciosContratadosIds;
 
+    /**
+     * Solo de entrada: la envia el administrador al crear o al reasignar la
+     * clave. Nunca se devuelve en las respuestas, y el servicio la guarda
+     * hasheada con BCrypt. Es el mismo criterio que {@link EmpleadoDTOs}: sin
+     * este campo el cliente creado desde "Gestion de clientes" quedaba sin
+     * contrasena y no podia iniciar sesion (401 en el login).
+     */
+    private String contrasenia;
+
     public ClienteDTOs() {
     }
 
@@ -143,8 +152,22 @@ public class ClienteDTOs {
         this.serviciosContratadosIds = serviciosContratadosIds;
     }
 
+    // WRITE_ONLY: el backend la acepta al crear o reasignar la clave, pero nunca
+    // la serializa. Sin esta anotacion el JSON de respuesta incluía
+    // "contrasenia": null, que anuncia el campo y dependeria de que el mapper
+    // lo deje siempre en null para no filtrar un hash.
+    @com.fasterxml.jackson.annotation.JsonProperty(access = com.fasterxml.jackson.annotation.JsonProperty.Access.WRITE_ONLY)
+    public String getContrasenia() {
+        return contrasenia;
+    }
+
+    public void setContrasenia(String contrasenia) {
+        this.contrasenia = contrasenia;
+    }
+
     @Override
     public String toString() {
+        // La contrasenia no se imprime: un volcado en un log no debe filtrarla.
         return "ClienteDTOs{" + "id=" + id + ", nombre='" + nombre + '\'' + ", apellido='" + apellido + '\'' + "}";
     }
 }

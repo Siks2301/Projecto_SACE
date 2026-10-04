@@ -41,7 +41,14 @@ public class Persona {
     // Unico y obligatorio: el login busca por correo (findByEmailIgnoreCase), de
     // modo que dos personas con el mismo correo hacen que ese login falle siempre
     // para las dos. Ocurrio con admin@onvacation.com, que estaba duplicado en los
-    // ids 2 y 4. Con unique = true la base lo impide en vez de dejarlo al azar.
+    // ids 2 y 4.
+    //
+    // OJO: 'unique = true' NO basta por si solo. Con ddl-auto=update, Hibernate
+    // solo aplica esa unicidad al CREAR la tabla; sobre una base que ya existe no
+    // anade el indice, y se comprobo con una prueba de fuego que el duplicado
+    // entraba sin error. Por eso la restriccion la garantiza en cada arranque
+    // PersonaEmailConstraintInitializer, y el indice va sobre lower(email) para
+    // cubrir tambien las mayusculas, que es como compara el login.
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 

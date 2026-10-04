@@ -407,7 +407,7 @@ public class PagoServicio {
         }
 
         String ruta = pago.getUrlPdf();
-        File archivo = (ruta != null && !ruta.trim().isEmpty()) ? new File(ruta) : null;
+        File archivo = pdfComprobanteServicio.resolverRutaDeComprobante(ruta);
 
         if (archivo == null || !archivo.exists()) {
             // El archivo se perdio del disco pero el pago existe: se regenera

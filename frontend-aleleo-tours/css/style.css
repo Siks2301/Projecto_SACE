@@ -473,7 +473,7 @@ a:hover { color: var(--ds-coral-700); }
   position: relative;
   background:
     var(--grad-hero),
-    url('https://images.unsplash.com/photo-1559827291-72ee739d0d9a?auto=format&fit=crop&w=1920&q=80')
+    url('../img/hero/hero-destino.jpg')
     center 45% / cover no-repeat;
   color: #fff;
   text-align: center;

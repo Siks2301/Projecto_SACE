@@ -4,7 +4,9 @@ import com.mycompany.sacejpa.DTOs.ClienteDTOs;
 import com.mycompany.sacejpa.Mapper.ClienteMapper;
 import com.mycompany.sacejpa.Modelo.Cliente;
 import com.mycompany.sacejpa.Repositorio.Reposi_Cliente;
+import com.mycompany.sacejpa.Seguridad.ContraseniaUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,6 +18,9 @@ public class ClienteServicio {
 
     @Autowired
     private Reposi_Cliente repositorioCliente;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     // Metodo que consulta y lista todos los clientes de la base de datos
     public List<ClienteDTOs> listarClientes() {
@@ -41,6 +46,16 @@ public class ClienteServicio {
             cliente.setEstadoAcceso(Cliente.EstadoAcceso.ACTIVA);
         }
         cliente.setEmail(normalizarEmail(cliente.getEmail()));
+        // La contrasenia la define el administrador en el formulario de alta.
+        // Antes este campo no existia en el DTO, asi que el cliente se guardaba
+        // sin hash: la UI pedia la clave y el backend la descartaba en silencio.
+        // El cliente quedaba creado pero sin poder iniciar sesion (401). Se
+        // valida la fortaleza y se guarda hasheada con BCrypt, igual que en
+        // EmpleadoServicio.insertarEmpleado.
+        if (dto.getContrasenia() != null && !dto.getContrasenia().isBlank()) {
+            ContraseniaUtil.validar(dto.getContrasenia());
+            cliente.setContrasenia(passwordEncoder.encode(dto.getContrasenia()));
+        }
         Cliente guardado = repositorioCliente.save(cliente);
         return ClienteMapper.toDTO(guardado);
     }
@@ -75,6 +90,13 @@ public class ClienteServicio {
             }
             if (dto.getPreferenciasComunicacion() != null) {
                 cliente.setPreferenciasComunicacion(dto.getPreferenciasComunicacion());
+            }
+            // Reasignacion de clave desde la pantalla de edicion. Si viene
+            // vacia se conserva la existente: un PUT parcial nunca debe borrar
+            // la contrasena y dejar al cliente sin poder entrar.
+            if (dto.getContrasenia() != null && !dto.getContrasenia().isBlank()) {
+                ContraseniaUtil.validar(dto.getContrasenia());
+                cliente.setContrasenia(passwordEncoder.encode(dto.getContrasenia()));
             }
             Cliente actualizado = repositorioCliente.save(cliente);
             return ClienteMapper.toDTO(actualizado);

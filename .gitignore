@@ -37,3 +37,10 @@ Desktop.ini
 
 # ===== Logs =====
 *.log
+
+# ===== Comprobantes PDF de pagos =====
+# Son datos personales de clientes (nombre, correo, monto). No se versionan.
+# La base guarda solo la ruta RELATIVA (uploads/comprobantes/...);
+# el PDF se regenera solo desde los datos del pago si falta.
+backend-SACE/uploads/
+
