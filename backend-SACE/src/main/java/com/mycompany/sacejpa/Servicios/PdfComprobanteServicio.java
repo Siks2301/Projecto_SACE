@@ -90,10 +90,12 @@ public class PdfComprobanteServicio {
         PdfPCell cellEmpresa = new PdfPCell();
         cellEmpresa.setBorder(Rectangle.NO_BORDER);
         Paragraph pEmpresa = new Paragraph("ALELEO TOURS S.A.S.", fontTitulo);
-        Paragraph pSub = new Paragraph("COMPROBANTE OFICIAL DE PAGO Y RESERVA", fontSubTitulo);
+        Paragraph pSub = new Paragraph("FACTURA DE VENTA", fontSubTitulo);
+        Paragraph pSub2 = new Paragraph("COMPROBANTE OFICIAL DE PAGO Y RESERVA", FontFactory.getFont(FontFactory.HELVETICA, 8, new Color(100, 116, 139)));
         Paragraph pNit = new Paragraph("NIT: 901.452.879-1 | PBX: (601) 745-8899\nAv. El Dorado #68B-31, Bogota D.C. - Colombia", fontNormal);
         cellEmpresa.addElement(pEmpresa);
         cellEmpresa.addElement(pSub);
+        cellEmpresa.addElement(pSub2);
         cellEmpresa.addElement(pNit);
         headerTable.addCell(cellEmpresa);
 
