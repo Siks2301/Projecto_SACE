@@ -221,7 +221,7 @@ public class PdfComprobanteServicio {
         cTotals.setBorder(Rectangle.NO_BORDER);
         PdfPTable innerTotals = new PdfPTable(2);
         innerTotals.setWidthPercentage(100);
-        innerTotals.setWidths(new float[]{55f, 45f});
+        innerTotals.setWidths(new float[]{60f, 40f});
 
         addCellBody(innerTotals, "Subtotal:", fontNormal, Element.ALIGN_RIGHT);
         addCellBody(innerTotals, "$ " + MONTO_FORMAT.format(subtotal), fontNormal, Element.ALIGN_RIGHT);
@@ -229,8 +229,27 @@ public class PdfComprobanteServicio {
         addCellBody(innerTotals, "IVA (19%):", fontNormal, Element.ALIGN_RIGHT);
         addCellBody(innerTotals, "$ " + MONTO_FORMAT.format(iva), fontNormal, Element.ALIGN_RIGHT);
 
-        addCellBody(innerTotals, "Total:", fontBold, Element.ALIGN_RIGHT);
-        addCellBody(innerTotals, "$ " + MONTO_FORMAT.format(total) + " COP", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 10, new Color(25, 135, 84)), Element.ALIGN_RIGHT);
+        // Línea divisoria entre IVA y total
+        PdfPCell div1 = new PdfPCell();
+        div1.setBorder(Rectangle.NO_BORDER);
+        div1.setFixedHeight(4);
+        innerTotals.addCell(div1);
+        PdfPCell div2 = new PdfPCell(new Paragraph(" ", fontNormal));
+        div2.setBorder(Rectangle.BOTTOM);
+        div2.setFixedHeight(4);
+        innerTotals.addCell(div2);
+
+        PdfPCell lblTotal = new PdfPCell(new Paragraph("TOTAL:", fontBold));
+        lblTotal.setBorder(Rectangle.NO_BORDER);
+        lblTotal.setHorizontalAlignment(Element.ALIGN_RIGHT);
+        lblTotal.setPaddingTop(4);
+        innerTotals.addCell(lblTotal);
+
+        PdfPCell valTotal = new PdfPCell(new Paragraph("$ " + MONTO_FORMAT.format(total) + " COP", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 11, new Color(25, 135, 84))));
+        valTotal.setBorder(Rectangle.TOP);
+        valTotal.setHorizontalAlignment(Element.ALIGN_RIGHT);
+        valTotal.setPaddingTop(4);
+        innerTotals.addCell(valTotal);
 
         cTotals.addElement(innerTotals);
         totalsTable.addCell(cTotals);
