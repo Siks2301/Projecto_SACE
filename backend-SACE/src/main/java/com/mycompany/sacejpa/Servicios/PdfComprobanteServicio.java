@@ -207,13 +207,13 @@ public class PdfComprobanteServicio {
         // 5. Tabla Resumen Totales
         PdfPTable totalsTable = new PdfPTable(2);
         totalsTable.setWidthPercentage(100);
-        totalsTable.setWidths(new float[]{55f, 45f});
+        totalsTable.setWidths(new float[]{60f, 40f});
 
         PdfPCell cNote = new PdfPCell();
         cNote.setBorder(Rectangle.NO_BORDER);
         Paragraph pSeal = new Paragraph("SELLO DIGITAL DE CONFIRMACION DE PAGO SACE (SHA-256)\n" +
                 "Hash: " + sha256Hex(folioStr + "|" + referencia + "|" + total.toPlainString()).substring(0, 16) + "-OK\n" +
-                "Este comprobante sirve como constancia oficial de abono y reserva.", FontFactory.getFont(FontFactory.HELVETICA_OBLIQUE, 8, new Color(100, 116, 139)));
+                "Este documento cumple con lo dispuesto en el artículo 617 del Estatuto Tributario.", FontFactory.getFont(FontFactory.HELVETICA_OBLIQUE, 8, new Color(100, 116, 139)));
         cNote.addElement(pSeal);
         totalsTable.addCell(cNote);
 
@@ -221,17 +221,15 @@ public class PdfComprobanteServicio {
         cTotals.setBorder(Rectangle.NO_BORDER);
         PdfPTable innerTotals = new PdfPTable(2);
         innerTotals.setWidthPercentage(100);
-        // Mas espacio para la columna de valores para que "$ 1.000,00 COP" no se
-        // parta en dos lineas dentro de una celda tan angosta.
-        innerTotals.setWidths(new float[]{45f, 55f});
+        innerTotals.setWidths(new float[]{55f, 45f});
 
-        addCellBody(innerTotals, "Base Imponible:", fontNormal, Element.ALIGN_RIGHT);
+        addCellBody(innerTotals, "Subtotal:", fontNormal, Element.ALIGN_RIGHT);
         addCellBody(innerTotals, "$ " + MONTO_FORMAT.format(subtotal), fontNormal, Element.ALIGN_RIGHT);
 
         addCellBody(innerTotals, "IVA (19%):", fontNormal, Element.ALIGN_RIGHT);
         addCellBody(innerTotals, "$ " + MONTO_FORMAT.format(iva), fontNormal, Element.ALIGN_RIGHT);
 
-        addCellBody(innerTotals, "TOTAL ABONADO:", fontBold, Element.ALIGN_RIGHT);
+        addCellBody(innerTotals, "Total:", fontBold, Element.ALIGN_RIGHT);
         addCellBody(innerTotals, "$ " + MONTO_FORMAT.format(total) + " COP", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 10, new Color(25, 135, 84)), Element.ALIGN_RIGHT);
 
         cTotals.addElement(innerTotals);
