@@ -154,6 +154,25 @@ const Toast = (() => {
   return { mostrar };
 })();
 
+/* Lleva a la vista un aviso que haya quedado fuera de la pantalla. Se usa al
+   pintar un mensaje de error: si el aviso esta por encima o por debajo del
+   area visible, la pagina se desplaza hasta el; si ya se ve, no se mueve nada
+   para no desorientar al usuario. */
+function llevarAVistaSiHaceFalta(el) {
+  if (!el) return;
+  const caja = el.getBoundingClientRect();
+  // Sin caja (por ejemplo dentro de algo oculto) no hay nada que desplazar.
+  if (caja.width === 0 && caja.height === 0) return;
+
+  const alto = window.innerHeight || document.documentElement.clientHeight;
+  const margen = 12;
+  if (caja.top >= margen && caja.bottom <= alto - margen) return;
+
+  const reducirMovimiento = typeof window.matchMedia === 'function'
+    && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  el.scrollIntoView({ behavior: reducirMovimiento ? 'auto' : 'smooth', block: 'center' });
+}
+
 function mostrarMensaje(idEl, texto, tipo) {
   const el = document.getElementById(idEl);
   if (!el) return;
@@ -161,6 +180,8 @@ function mostrarMensaje(idEl, texto, tipo) {
   el.className = 'mensaje ' + (tipo === 'error' ? 'mensaje-error' : 'mensaje-ok');
   el.style.display = 'block';
   el.setAttribute('role', 'alert');
+  // Si el error cae fuera de la pantalla, se sube hasta el.
+  if (tipo === 'error') llevarAVistaSiHaceFalta(el);
 }
 
 function ocultarMensaje(idEl) {

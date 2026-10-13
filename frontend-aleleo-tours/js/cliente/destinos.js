@@ -51,6 +51,12 @@ async function cargarDestinosDesdeBackend() {
 }
 
 function mostrarMensajeModal(texto, tipo) {
+  // Se reutiliza el manejador global de avisos, que ademas lleva el mensaje a
+  // la vista si quedo fuera de la pantalla.
+  if (typeof mostrarMensaje === 'function') {
+    mostrarMensaje('msg-reserva', texto, tipo);
+    return;
+  }
   const el = $('msg-reserva');
   if (!el) return;
   el.textContent = texto;
