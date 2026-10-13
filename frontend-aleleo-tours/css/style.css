@@ -1840,13 +1840,52 @@ code {
 
 
 /* ───────────────────  18. RESPONSIVE  ─────────────────── */
-@media (max-width: 1100px) {
-  .hero-search-grid { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+/* Criterio: el diseño de escritorio se conserva y se comprime; el diseño de
+   telefono (menu hamburguesa, una sola columna) queda solo para anchos de
+   telefono reales. Antes el menu se volvia hamburguesa y el buscador se
+   apilaba ya en 900px, de modo que una ventana de escritorio a media pantalla
+   se veia como la version movil. Los puntos de quiebre bajan para que el
+   escritorio aguante lo mas posible. */
+
+/* El encabezado pasa a poder crecer y envolver, pero la navegacion sigue
+   siendo horizontal: si no cabe en una fila se reparte en dos. Se estrechan
+   los botones para que quepa en una sola fila el mayor tiempo posible. */
+@media (max-width: 1080px) {
+  .franja { height: auto; min-height: 72px; padding: 8px var(--sp-md); }
+  /* El menu se deja encoger (min-width:0) para que envuelva sus propios
+     botones en vez de saltar a una fila debajo del logo. Asi el encabezado
+     sigue siendo una sola fila de escritorio. */
+  .tabs { min-width: 0; justify-content: flex-end; }
+  .tabs button,
+  .tabs .nav-btn-dropdown { padding: 8px 11px; font-size: 13.5px; }
+}
+
+/* Buscador del hero: primero se estrechan las columnas y el boton pasa a su
+   propia fila; despues baja a dos columnas y por ultimo a una. */
+@media (max-width: 900px) {
+  .hero-search-grid { grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); }
   .btn-search-hero { grid-column: 1 / -1; }
 }
 
-@media (max-width: 900px) {
-  .franja { height: auto; padding: 12px var(--sp-md); flex-wrap: wrap; align-content: flex-start; }
+@media (max-width: 780px) {
+  .hero { padding: 60px 16px 72px; }
+  .hero-search-grid { grid-template-columns: 1fr 1fr; }
+
+  .seccion-destinos { padding: var(--sp-xl) var(--sp-md); }
+  .seccion-beneficios { padding: var(--sp-xl) var(--sp-md); }
+
+  .hero-reportes,
+  .hero-panel-empleado,
+  .hero-reservas { padding: 2rem 1.6rem; border-radius: var(--radius-lg); }
+
+  .form-container-card { margin: 32px 16px; padding: 30px 24px; }
+}
+
+/* A partir de aqui si es un telefono: menu hamburguesa y una sola columna. */
+@media (max-width: 600px) {
+  /* El panel del menu ocupa toda la fila, asi que aqui el encabezado si
+     envuelve a una segunda linea. */
+  .franja { flex-wrap: wrap; }
   .nav-toggle { display: flex; align-items: center; justify-content: center; }
 
   .tabs {
@@ -1866,6 +1905,7 @@ code {
     text-align: left;
     border-radius: var(--radius-sm);
     padding: 12px 16px;
+    font-size: 14px;
     border-color: var(--ds-gray-200);
     background: #fff;
   }
@@ -1874,23 +1914,9 @@ code {
   .tabs button#nav-panel-empleado { background: var(--ds-navy-900); color: #fff; }
   .tabs .nav-nombre { width: 100%; justify-content: center; }
 
-  .hero { padding: 68px 16px 88px; }
-  .hero-search-grid { grid-template-columns: 1fr 1fr; }
-  .btn-search-hero { grid-column: 1 / -1; }
-
-  .seccion-destinos { padding: var(--sp-xl) var(--sp-md); }
-  .seccion-beneficios { padding: var(--sp-xl) var(--sp-md); }
-
-  .hero-reportes,
-  .hero-panel-empleado,
-  .hero-reservas { padding: 1.8rem 1.4rem; border-radius: var(--radius-lg); }
-
-  .form-container-card { margin: 32px 16px; padding: 30px 24px; }
-}
-
-@media (max-width: 640px) {
   .hero-search-grid { grid-template-columns: 1fr; }
   .destinos-grid { grid-template-columns: 1fr; }
+
   .beneficios-grid { grid-template-columns: 1fr 1fr; gap: 14px; }
   .beneficio-card { padding: 24px 16px; }
   .beneficio-icon { font-size: 30px; }
@@ -1906,7 +1932,7 @@ code {
   .footer-container { gap: 26px; }
 }
 
-@media (max-width: 400px) {
+@media (max-width: 420px) {
   .beneficios-grid { grid-template-columns: 1fr; }
   .destino-card-body { padding: 18px 18px 20px; }
 }
