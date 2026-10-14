@@ -189,7 +189,13 @@
 
   <!-- MODAL DE CHAT CON EL ASESOR (CLIENTE) -->
   <div class="modal fade" id="modalChatCliente" tabindex="-1" aria-labelledby="modalChatClienteLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
+    <!-- modal-dialog-scrollable: sin esta clase el .modal-content se quedaba con
+         su alto natural (el cuerpo lleva height:480px en linea) y, como el
+         .modal-content recorta con overflow:hidden, en ventanas de 660px o menos
+         la fila de escritura del pie se iba por debajo de la pantalla. Con la
+         clase, Bootstrap limita el alto al de la ventana y el cuerpo puede
+         encoger, igual que en la consola del administrador. -->
+    <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
       <div class="modal-content border-0 shadow-lg" style="border-radius: 24px; overflow: hidden;">
         <div class="modal-header text-white" style="background:var(--grad-dark); border-bottom:3px solid var(--color-primary);">
           <div class="d-flex align-items-center gap-2">
