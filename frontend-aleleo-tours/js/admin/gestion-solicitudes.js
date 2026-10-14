@@ -339,7 +339,7 @@ async function cargarMensajesChatAdmin(solicitudId, mantenerScroll = false) {
     }
 
     mensajes.forEach(m => {
-      const esAsesor = (m.remitente || '').toLowerCase().includes('asesor') || (m.remitente || '').toLowerCase().includes('admin');
+      const esAsesor = !mensajeEsDelCliente(m.remitente);
       const esSistema = (m.remitente || '').toLowerCase().includes('sistema') || m.tipo === 'SISTEMA';
 
       const divMsg = document.createElement('div');

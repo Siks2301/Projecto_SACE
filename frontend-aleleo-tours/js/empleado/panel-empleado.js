@@ -537,7 +537,7 @@ async function cargarMensajesChat(solicitudId, mantenerScroll = false) {
   contenedorMsg.innerHTML = '';
 
   mensajes.forEach(m => {
-    const esEmpleado = m.remitente && (m.remitente.includes(sesionEmpleado.nombre) || m.remitente.includes('Asesor'));
+    const esEmpleado = !mensajeEsDelCliente(m.remitente);
     const esSistema = m.remitente && (m.remitente.includes('Sistema') || m.tipo === 'SISTEMA');
 
     const msgDiv = document.createElement('div');

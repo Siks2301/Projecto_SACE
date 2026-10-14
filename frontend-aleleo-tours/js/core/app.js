@@ -22,6 +22,17 @@ function escaperHtml(texto) {
   return String(texto == null ? '' : texto).replace(/[&<>"'/]/g, c => mapa[c]);
 }
 
+// Decide de que lado va un mensaje del chat. Devuelve true cuando el mensaje
+// salio del lado del cliente y false cuando salio del lado del equipo (asesor,
+// empleado o administrador). Los chats de cliente, empleado y administrador
+// usan esta misma regla para pintar las burbujas iguales.
+function mensajeEsDelCliente(remitente) {
+  const texto = String(remitente == null ? '' : remitente).toLowerCase();
+  if (texto.includes('cliente')) return true;
+  if (texto.includes('asesor') || texto.includes('empleado') || texto.includes('admin')) return false;
+  return true; // sin marca conocida se asume que viene del cliente
+}
+
 // Inyecta el token de sesion en todas las llamadas al API y redirige a login
 // cuando el backend responde 401 (token vencido o invalido). Definido al cargar
 // app.js, por lo que aplica a T O D O S los fetch del frontend.

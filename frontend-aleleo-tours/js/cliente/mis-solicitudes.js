@@ -984,22 +984,34 @@ async function cargarMensajesChatCliente(solicitudId, mantenerScroll = false) {
     }
 
     mensajes.forEach(m => {
-      const esCliente = (m.remitente || '').toLowerCase().includes('cliente') || !(m.remitente || '').toLowerCase().includes('asesor');
+      const esCliente = mensajeEsDelCliente(m.remitente);
+      const esSistema = (m.remitente || '').toLowerCase().includes('sistema') || m.tipo === 'SISTEMA';
+
       const divMsg = document.createElement('div');
-      divMsg.className = `chat-fila ${esCliente ? 'chat-fila-enviada' : 'chat-fila-recibida'}`;
 
-      const hora = m.fecha ? new Date(m.fecha).toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' }) : '';
+      if (esSistema) {
+        divMsg.className = 'w-100 text-center my-2';
+        divMsg.innerHTML = `
+          <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-3 py-2 rounded-pill small">
+            <i class="bi bi-exclamation-octagon-fill me-1"></i> ${escaparHtml(m.contenido)}
+          </span>
+        `;
+      } else {
+        const hora = m.fecha ? new Date(m.fecha).toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' }) : '';
 
-      divMsg.innerHTML = `
-        <div class="chat-burbuja ${esCliente ? 'chat-burbuja-enviada' : 'chat-burbuja-recibida'}">
-          <div class="chat-burbuja-autor">${escaparHtml(m.remitente || 'Asesor')}</div>
-          <div class="chat-burbuja-texto">${escaparHtml(m.contenido)}</div>
-          <div class="chat-burbuja-pie">
-            <span>${hora}</span>
-            ${esCliente ? '<i class="bi bi-check2-all chat-burbuja-tick"></i>' : ''}
+        divMsg.className = `chat-fila ${esCliente ? 'chat-fila-enviada' : 'chat-fila-recibida'}`;
+        divMsg.innerHTML = `
+          <div class="chat-burbuja ${esCliente ? 'chat-burbuja-enviada' : 'chat-burbuja-recibida'}">
+            <div class="chat-burbuja-autor">${escaparHtml(m.remitente || 'Asesor')}</div>
+            <div class="chat-burbuja-texto">${escaparHtml(m.contenido)}</div>
+            <div class="chat-burbuja-pie">
+              <span>${hora}</span>
+              ${esCliente ? '<i class="bi bi-check2-all chat-burbuja-tick"></i>' : ''}
+            </div>
           </div>
-        </div>
-      `;
+        `;
+      }
+
       contenedor.appendChild(divMsg);
     });
 
