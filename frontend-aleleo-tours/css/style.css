@@ -1951,6 +1951,11 @@ code {
   .form-container-card { margin: 20px 12px; padding: 26px 18px; }
   .footer-oficial { padding: 44px 18px 24px; margin-top: 48px; }
   .footer-container { gap: 26px; }
+
+  /* Fila de acciones de los formularios de administracion (Guardar, Eliminar,
+     Limpiar). Los tres botones suman mas ancho que la tarjeta en un telefono y
+     el ultimo quedaba fuera; ahora bajan a una segunda linea. */
+  .admin-container .d-flex.gap-2.mt-4 { flex-wrap: wrap; }
 }
 
 @media (max-width: 420px) {
