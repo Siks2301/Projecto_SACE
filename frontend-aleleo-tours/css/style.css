@@ -1837,7 +1837,23 @@ code {
 #atencionTabs .nav-link.active { background: var(--ds-coral-700) !important; color: #fff !important; border-color: transparent; }
 
 #modalAtencionEmpleado .modal-dialog { max-width: 1200px; width: 95vw; }
-#modalAtencionEmpleado .modal-body { height: 75vh; max-height: 800px; overflow: hidden; }
+/* El modal se arma como columna flexible para que el cuerpo se quede con el
+   alto disponible. Antes el cuerpo llevaba un height:75vh con min-height:520px:
+   en ventanas bajas ese minimo lo dejaba mas alto que el .modal-content (que
+   Bootstrap recorta con overflow:hidden), asi que la fila de escritura quedaba
+   cortada por debajo y no habia ninguna barra de desplazamiento que la
+   alcanzara. Con min-height:0 el cuerpo puede encoger y la fila queda siempre
+   visible; los mensajes y la columna de datos siguen desplazandose solos. */
+#modalAtencionEmpleado .modal-content { display: flex; flex-direction: column; max-height: 100%; }
+#modalAtencionEmpleado .modal-header,
+#modalAtencionEmpleado #alerta-solicitud-cancelada-modal { flex-shrink: 0; }
+#modalAtencionEmpleado .modal-body {
+  flex: 0 1 auto;
+  height: 75vh;
+  max-height: 800px;
+  min-height: 0;
+  overflow: hidden;
+}
 #modalAtencionEmpleado.modal-is-fullscreen .modal-dialog,
 #modalAtencionEmpleado.modal-is-fullscreen .modal-dialog-scrollable {
   width: 100vw !important; max-width: 100vw !important;
