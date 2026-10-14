@@ -29,22 +29,22 @@ public final class ContraseniaUtil {
     /** Devuelve el primer error o null si la contrasena es valida. */
     private static String validarReglas(String contrasenia) {
         if (contrasenia == null || contrasenia.length() < LONGITUD_MINIMA) {
-            return "La contrasena debe tener al menos " + LONGITUD_MINIMA + " caracteres.";
+            return "La contraseña debe tener al menos " + LONGITUD_MINIMA + " caracteres.";
         }
         if (!contrasenia.chars().anyMatch(Character::isUpperCase)) {
-            return "La contrasena debe incluir al menos una letra mayuscula (A-Z).";
+            return "La contraseña debe incluir al menos una letra mayúscula (A-Z).";
         }
         if (!contrasenia.chars().anyMatch(Character::isLowerCase)) {
-            return "La contrasena debe incluir al menos una letra minuscula (a-z).";
+            return "La contraseña debe incluir al menos una letra minúscula (a-z).";
         }
         if (!contrasenia.chars().anyMatch(Character::isDigit)) {
-            return "La contrasena debe incluir al menos un numero (0-9).";
+            return "La contraseña debe incluir al menos un número (0-9).";
         }
         // Mismo set de caracteres especiales que el frontend (js/app.js,
         // validarFortalezaContrasenia), para que la regla no diverja.
         String especiales = "!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?";
         if (!contrasenia.matches(".*[" + especiales + "].*")) {
-            return "La contrasena debe incluir al menos un caracter especial (ej: @, #, $, %, !).";
+            return "La contraseña debe incluir al menos un carácter especial (ej: @, #, $, %, !).";
         }
         return null;
     }

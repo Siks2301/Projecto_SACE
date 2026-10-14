@@ -123,7 +123,7 @@ public class GlobalExceptionHandler {
     // encontrado con id: " + id). Si el mensaje habla de "no encontrado" o
     // "no encontrada" respondemos 404; cualquier otro RuntimeException se
     // trata como 400 (regla de negocio incumplida, ej. "Ya existe una
-    // cuenta registrada con ese correo.", "Correo o contrasenia
+    // cuenta registrada con ese correo.", "Correo o contraseña
     // incorrectos.").
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<Object> manejarRuntimeException(RuntimeException ex) {

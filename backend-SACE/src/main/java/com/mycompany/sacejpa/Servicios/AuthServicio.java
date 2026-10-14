@@ -78,7 +78,7 @@ public class AuthServicio {
         // null reventaria dentro de BCrypt con un 400 enganoso.
         if (emailNormalizado == null || emailNormalizado.isBlank()
                 || dto.getContrasenia() == null || dto.getContrasenia().isBlank()) {
-            throw new RuntimeException("Correo o contrasenia incorrectos.");
+            throw new RuntimeException("Correo o contraseña incorrectos.");
         }
 
         Cliente cliente = repositorioCliente.findByEmailIgnoreCase(emailNormalizado).orElse(null);
@@ -90,11 +90,11 @@ public class AuthServicio {
         }
 
         Empleado empleado = repositorioEmpleado.findByEmailIgnoreCase(emailNormalizado)
-                .orElseThrow(() -> new RuntimeException("Correo o contrasenia incorrectos."));
+                .orElseThrow(() -> new RuntimeException("Correo o contraseña incorrectos."));
 
         if (empleado.getContrasenia() == null) {
             // Empleado registrado sin contraseña asignada aun por un administrador.
-            throw new RuntimeException("Esta cuenta todavia no tiene una contrasenia de acceso asignada.");
+            throw new RuntimeException("Esta cuenta todavía no tiene una contraseña de acceso asignada.");
         }
 
         return validarYConstruir(empleado.getContrasenia(), dto.getContrasenia(),
@@ -109,7 +109,7 @@ public class AuthServicio {
         // Primero la contrasena y luego el estado: no se delata si la cuenta
         // existe o si esta bloqueada cuando la contrasena es incorrecta.
         if (!passwordEncoder.matches(contraseniaIngresada, hashGuardado)) {
-            throw new RuntimeException("Correo o contrasenia incorrectos.");
+            throw new RuntimeException("Correo o contraseña incorrectos.");
         }
         if (estadoAcceso != Persona.EstadoAcceso.ACTIVA) {
             throw new RuntimeException("Tu cuenta esta inactiva o bloqueada. Contacta al administrador.");
