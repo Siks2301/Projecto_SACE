@@ -105,7 +105,11 @@
 
           <div class="col-md-6 campo-form">
             <label for="emp-email">Correo electrónico corporativo *</label>
-            <input type="email" id="emp-email" placeholder="asesor@aleleotours.com" required>
+            <div class="input-group campo-dominio">
+              <input type="text" id="emp-email" placeholder="Nombre del correo" autocomplete="off" spellcheck="false">
+              <span class="input-group-text" id="emp-email-dominio">@aleleotours.com</span>
+            </div>
+            <small class="text-muted">Escribe solo el nombre: el dominio @aleleotours.com queda fijo.</small>
           </div>
           <div class="col-md-6 campo-form">
             <label for="emp-telefono">Teléfono / Extensión</label>

@@ -1315,6 +1315,27 @@ a:hover { color: var(--ds-coral-700); }
   color: var(--ds-gray-500);
   border-radius: var(--radius-md) !important;
 }
+
+/* Correo de empleado con el dominio fijo como sufijo. El input debe repartir
+   la fila con el sufijo: .campo-form input mide el 100% y, como .input-group
+   envuelve, empujaba el dominio a una segunda linea. Tambien se aplanan las
+   esquinas que se tocan para que se lean como una sola caja. */
+.campo-form .campo-dominio { flex-wrap: nowrap; }
+.campo-form .campo-dominio input {
+  width: auto;
+  flex: 1 1 auto;
+  min-width: 0;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.campo-form .campo-dominio .input-group-text {
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+  background: var(--ds-gray-100);
+  color: var(--ds-gray-600);
+  font-weight: 600;
+  white-space: nowrap;
+}
 .form-label { font-size: 14px; }
 
 /* Boton de mostrar/ocultar contrasena. Estaba armado con style.cssText desde

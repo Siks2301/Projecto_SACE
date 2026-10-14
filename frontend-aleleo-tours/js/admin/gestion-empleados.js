@@ -7,6 +7,15 @@
 
 let empleadosCache = [];
 
+/* Dominio corporativo de los empleados. En este formulario el dominio es fijo:
+   el administrador escribe solo la parte del nombre y aqui se completa. */
+const DOMINIO_EMPLEADO = '@aleleotours.com';
+
+/* Deja solo la parte anterior al arroba, en minusculas y sin espacios. */
+function parteLocalEmpleado(valor) {
+  return String(valor || '').split('@')[0].trim().toLowerCase();
+}
+
 async function cargarEmpleados() {
   const tbody = document.getElementById('tabla-empleados-body');
   tbody.innerHTML = '<tr><td colspan="7">Cargando...</td></tr>';
@@ -80,7 +89,8 @@ function cargarEmpleadoEnFormulario(id) {
   document.getElementById('emp-id').value = empleado.id;
   if (document.getElementById('emp-nombre')) document.getElementById('emp-nombre').value = empleado.nombre || '';
   if (document.getElementById('emp-apellido')) document.getElementById('emp-apellido').value = empleado.apellido || '';
-  if (document.getElementById('emp-email')) document.getElementById('emp-email').value = empleado.email || '';
+  // Se muestra solo el nombre: el dominio lo aporta el propio formulario.
+  if (document.getElementById('emp-email')) document.getElementById('emp-email').value = parteLocalEmpleado(empleado.email);
   if (document.getElementById('emp-telefono')) document.getElementById('emp-telefono').value = empleado.telefono || '';
   if (document.getElementById('emp-departamento')) document.getElementById('emp-departamento').value = empleado.departamento || '';
   if (document.getElementById('emp-cargo')) document.getElementById('emp-cargo').value = empleado.cargoEspecifico || '';
@@ -113,10 +123,13 @@ async function guardarEmpleado(e) {
   const id = document.getElementById('emp-id').value;
   const esEdicion = !!id;
 
+  // El dominio lo pone el propio formulario: solo se toma lo anterior al arroba.
+  const localEmail = parteLocalEmpleado(document.getElementById('emp-email')?.value);
+
   const dto = {
     nombre:               document.getElementById('emp-nombre')?.value.trim() || '',
     apellido:             document.getElementById('emp-apellido')?.value.trim() || '',
-    email:                document.getElementById('emp-email')?.value.trim().toLowerCase() || '',
+    email:                localEmail ? localEmail + DOMINIO_EMPLEADO : '',
     telefono:             document.getElementById('emp-telefono')?.value.trim() || '',
     departamento:         document.getElementById('emp-departamento')?.value.trim() || '',
     cargoEspecifico:      document.getElementById('emp-cargo')?.value.trim() || '',
@@ -128,8 +141,12 @@ async function guardarEmpleado(e) {
   const pass = document.getElementById('emp-contrasenia')?.value;
   if (pass) dto.contrasenia = pass;
 
-  if (!dto.nombre || !dto.email) {
+  if (!dto.nombre || !localEmail) {
     mostrarMensaje('msg-admin', 'Nombre y correo son obligatorios.', 'error');
+    return;
+  }
+  if (!/^[a-z0-9._%+-]+$/.test(localEmail)) {
+    mostrarMensaje('msg-admin', 'El correo solo admite letras, numeros y los signos . _ % + - (sin arroba ni espacios).', 'error');
     return;
   }
   if (!esEdicion && !pass) {
@@ -201,6 +218,20 @@ document.addEventListener('DOMContentLoaded', async () => {
     Toast.mostrar('Acceso solo para administradores.', 'error');
     setTimeout(() => { window.location.href = 'index.html'; }, 1200);
     return;
+  }
+
+  // El arroba y lo que venga despues se descartan al escribir o pegar: el
+  // dominio corporativo no se puede modificar desde el formulario.
+  const inEmail = document.getElementById('emp-email');
+  if (inEmail) {
+    inEmail.addEventListener('input', () => {
+      const corte = inEmail.value.indexOf('@');
+      if (corte === -1) return;
+      const pos = inEmail.selectionStart;
+      inEmail.value = inEmail.value.slice(0, corte);
+      const nueva = Math.min(pos, inEmail.value.length);
+      inEmail.setSelectionRange(nueva, nueva);
+    });
   }
 
   form.addEventListener('submit', guardarEmpleado);
