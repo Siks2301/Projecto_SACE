@@ -550,13 +550,17 @@ async function cargarMensajesChat(solicitudId, mantenerScroll = false) {
         </span>
       `;
     } else {
-      msgDiv.className = `d-flex flex-column ${esEmpleado ? 'align-items-end' : 'align-items-start'} mb-2`;
+      const hora = new Date(m.fecha || Date.now()).toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' });
+      msgDiv.className = `chat-fila ${esEmpleado ? 'chat-fila-enviada' : 'chat-fila-recibida'}`;
       msgDiv.innerHTML = `
-        <div class="p-3 rounded-4 shadow-sm text-dark ${esEmpleado ? 'bg-primary-subtle text-primary-emphasis border border-primary-subtle' : 'bg-white border'}" style="max-width: 82%;">
-          <div class="fw-bold small mb-1 ${esEmpleado ? 'text-primary' : 'text-dark'}">${escaperHtml(m.remitente || 'Usuario')}</div>
-          <div class="small">${escaperHtml(m.contenido)}</div>
+        <div class="chat-burbuja ${esEmpleado ? 'chat-burbuja-enviada' : 'chat-burbuja-recibida'}">
+          <div class="chat-burbuja-autor">${escaperHtml(m.remitente || 'Usuario')}</div>
+          <div class="chat-burbuja-texto">${escaperHtml(m.contenido)}</div>
+          <div class="chat-burbuja-pie">
+            <span>${hora}</span>
+            ${esEmpleado ? '<i class="bi bi-check2-all chat-burbuja-tick"></i>' : ''}
+          </div>
         </div>
-        <small class="text-muted px-1 mt-1" style="font-size:10px;">${new Date(m.fecha || Date.now()).toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' })}</small>
       `;
     }
     contenedorMsg.appendChild(msgDiv);

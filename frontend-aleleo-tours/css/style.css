@@ -1875,6 +1875,56 @@ code {
   flex: 1 1 auto !important; height: 100% !important; max-height: none !important;
 }
 
+/* ───────────────  CHATS CON ASPECTO DE WHATSAPP  ───────────────
+   Los tres hilos de conversacion de SACE (cliente, empleado y administrador)
+   comparten el mismo lenguaje visual: fondo beige, verde a la derecha para los
+   mensajes propios y blanco a la izquierda para los del otro lado, con el
+   nombre del emisor arriba, la hora dentro de la burbuja y el visto doble en
+   los enviados. Se usan clases propias (.chat-fila y .chat-burbuja) en lugar
+   de las utilidades de color de Bootstrap para no depender de ellas. */
+#chat-empleado-mensajes,
+#chat-cliente-mensajes,
+#chat-admin-mensajes {
+  background-color: #EFEAE2;
+  /* Bootstrap separa los mensajes con .gap-2 !important; en WhatsApp las
+     burbujas van mucho mas juntas. */
+  gap: 3px !important;
+}
+
+.chat-fila { display: flex; width: 100%; }
+.chat-fila-enviada  { justify-content: flex-end; }
+.chat-fila-recibida { justify-content: flex-start; }
+
+.chat-burbuja {
+  max-width: 75%;
+  padding: 6px 9px 8px;
+  border-radius: 8px;
+  box-shadow: 0 1px 1px rgba(11, 20, 26, .13);
+  color: #111B21;
+  font-size: 14px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+/* La esquina del lado del emisor se cuadra para imitar la colita del globo. */
+.chat-burbuja-enviada  { background-color: #D9FDD3; border-top-right-radius: 2px; }
+.chat-burbuja-recibida { background-color: #FFFFFF; border-top-left-radius: 2px; }
+
+.chat-burbuja-autor { font-size: 12px; font-weight: 700; margin-bottom: 2px; }
+.chat-burbuja-enviada  .chat-burbuja-autor { color: #0E7A5F; }
+.chat-burbuja-recibida .chat-burbuja-autor { color: #027EB5; }
+
+.chat-burbuja-texto { white-space: pre-wrap; }
+
+.chat-burbuja-pie {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 3px;
+  margin-top: 2px;
+  font-size: 11px;
+  color: #667781;
+}
+.chat-burbuja-tick { font-size: 14px; color: #667781; }
 
 /* ───────────────────  18. RESPONSIVE  ─────────────────── */
 /* Criterio: el diseño de escritorio se conserva y se comprime; el diseño de
@@ -1972,6 +2022,9 @@ code {
      Limpiar). Los tres botones suman mas ancho que la tarjeta en un telefono y
      el ultimo quedaba fuera; ahora bajan a una segunda linea. */
   .admin-container .d-flex.gap-2.mt-4 { flex-wrap: wrap; }
+
+  /* En el telefono las burbujas pueden ocupar algo mas de ancho. */
+  .chat-burbuja { max-width: 88%; }
 }
 
 @media (max-width: 420px) {

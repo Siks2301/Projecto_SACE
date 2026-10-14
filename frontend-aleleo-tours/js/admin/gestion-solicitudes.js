@@ -352,15 +352,19 @@ async function cargarMensajesChatAdmin(solicitudId, mantenerScroll = false) {
           </span>
         `;
       } else {
-        divMsg.className = esAsesor ? 'align-self-end bg-primary text-white p-2 px-3 rounded-3' : 'align-self-start bg-white border p-2 px-3 rounded-3 shadow-sm';
-        divMsg.style.maxWidth = '75%';
+        divMsg.className = `chat-fila ${esAsesor ? 'chat-fila-enviada' : 'chat-fila-recibida'}`;
 
         const hora = m.fecha ? new Date(m.fecha).toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' }) : '';
 
         divMsg.innerHTML = `
-          <div class="small fw-bold mb-1 ${esAsesor ? 'text-info' : 'text-primary'}">${escaparHtml(m.remitente || 'Usuario')}</div>
-          <div>${escaparHtml(m.contenido)}</div>
-          <div class="text-end small opacity-75 mt-1" style="font-size: 10px;">${hora}</div>
+          <div class="chat-burbuja ${esAsesor ? 'chat-burbuja-enviada' : 'chat-burbuja-recibida'}">
+            <div class="chat-burbuja-autor">${escaparHtml(m.remitente || 'Usuario')}</div>
+            <div class="chat-burbuja-texto">${escaparHtml(m.contenido)}</div>
+            <div class="chat-burbuja-pie">
+              <span>${hora}</span>
+              ${esAsesor ? '<i class="bi bi-check2-all chat-burbuja-tick"></i>' : ''}
+            </div>
+          </div>
         `;
       }
       contenedor.appendChild(divMsg);

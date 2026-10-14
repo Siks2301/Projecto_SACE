@@ -986,15 +986,19 @@ async function cargarMensajesChatCliente(solicitudId, mantenerScroll = false) {
     mensajes.forEach(m => {
       const esCliente = (m.remitente || '').toLowerCase().includes('cliente') || !(m.remitente || '').toLowerCase().includes('asesor');
       const divMsg = document.createElement('div');
-      divMsg.className = esCliente ? 'align-self-end bg-primary text-white p-2 px-3 rounded-3' : 'align-self-start bg-white border p-2 px-3 rounded-3 shadow-sm';
-      divMsg.style.maxWidth = '75%';
+      divMsg.className = `chat-fila ${esCliente ? 'chat-fila-enviada' : 'chat-fila-recibida'}`;
 
       const hora = m.fecha ? new Date(m.fecha).toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' }) : '';
 
       divMsg.innerHTML = `
-        <div class="small fw-bold mb-1 ${esCliente ? 'text-info' : 'text-success'}">${escaparHtml(m.remitente || 'Asesor')}</div>
-        <div>${escaparHtml(m.contenido)}</div>
-        <div class="text-end small opacity-75 mt-1" style="font-size: 10px;">${hora}</div>
+        <div class="chat-burbuja ${esCliente ? 'chat-burbuja-enviada' : 'chat-burbuja-recibida'}">
+          <div class="chat-burbuja-autor">${escaparHtml(m.remitente || 'Asesor')}</div>
+          <div class="chat-burbuja-texto">${escaparHtml(m.contenido)}</div>
+          <div class="chat-burbuja-pie">
+            <span>${hora}</span>
+            ${esCliente ? '<i class="bi bi-check2-all chat-burbuja-tick"></i>' : ''}
+          </div>
+        </div>
       `;
       contenedor.appendChild(divMsg);
     });
