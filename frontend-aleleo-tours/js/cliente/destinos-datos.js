@@ -42,7 +42,7 @@ const IMAGENES_POR_NOMBRE = [
   [['medellin'],                 'img/Medellin.jpg'],
   [['tayrona'],                  'img/Tayrona.jpg'],
   [['providencia'],              'img/Providencia.jpg'],
-  [['salento', 'cocora', 'quindio'], 'img/Medellin.jpg']
+  [['salento', 'cocora', 'quindio'], 'img/Salento.jpg']
 ];
 
 function resolverImagen(destino, nombre) {
@@ -100,7 +100,7 @@ const DESTINOS_DEFAULT = [
     precio: 230000,
     duracion: '2 d\u00edas / 1 noche',
     tipoServicio: 'TOUR_EXCURSION',
-    img: 'img/Medellin.jpg',
+    img: 'img/Salento.jpg',
     categorias: ['naturaleza', 'ciudad']
   },
   {
