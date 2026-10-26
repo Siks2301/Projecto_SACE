@@ -20,7 +20,7 @@ las versiones `.md`, los diagramas, las capturas y el DDL del esquema.
 | 6 | Gestión del proyecto (10 %) | [`02-Backlog-y-Gestion-del-Proyecto-SACE.md`](02-Backlog-y-Gestion-del-Proyecto-SACE.md) · backlog · 11 historias de usuario · tareas T1…T8 · sprints S1…S5 · seguimiento y cumplimiento | Completo (5) |
 | 7 | Documentación (5 %) | README.md (requisitos, instalación, tecnologías, configuración y evidencias) · docs/*.md · [`05-Manual-de-Usuario-SACE.md`](05-Manual-de-Usuario-SACE.md) · INDICE_EVIDENCIAS.md | Completo (5) |
 | 8 | Preparación para pruebas (5 %) | [`03-Plan-de-Pruebas-SACE.md`](03-Plan-de-Pruebas-SACE.md) · casos CP-01–CP-24 · datos de prueba · criterios de aceptación · **92 PASS / 0 FAIL** | Completo (5) |
-| 9 | Preparación para el despliegue (5 %) | [`04-Plan-de-Despliegue-SACE.md`](04-Plan-de-Despliegue-SACE.md) · [`06-Comprobante-de-Despliegue-SACE.md`](06-Comprobante-de-Despliegue-SACE.md) con verificación real (servicios, salud HTTP, capturas) | Completo (5) |
+| 9 | Preparación para el despliegue (5 %) | [`04-Plan-de-Despliegue-SACE.md`](04-Plan-de-Despliegue-SACE.md) · [`06-Comprobante-de-Despliegue-SACE.md`](06-Comprobante-de-Despliegue-SACE.md) con verificación real (servicios, salud HTTP, capturas) · [`10-Detalle-Despliegue-Como-Se-Hizo-Y-Como-Funciona.md`](10-Detalle-Despliegue-Como-Se-Hizo-Y-Como-Funciona.md) · [`deploy/README.md`](../deploy/README.md) | Completo (5) |
 
 ## Recursos del repositorio
 
@@ -34,5 +34,5 @@ las versiones `.md`, los diagramas, las capturas y el DDL del esquema.
 ## Credenciales de demostración
 
 - Administrador semilla: `admin@aleleotours.com` / `admin123` (solo desarrollo).
-- Cliente de demostración: `carlos.captura@ejemplo.com` / `DemoClave2026!a`.
+- Cliente de demostración: `cesarleonardo.rm2301@gmail.com` / `DemoClave2026!a`.
 - Pasarela de pagos: **Wompi** (sandbox) y versión simulada. El monto lo calcula el backend desde el catálogo; no hay cuenta de destino fija en el código. Ver `docs/09-Integracion-Pasarela-Pagos-SACE.md`.

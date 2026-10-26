@@ -74,7 +74,7 @@ Este es el bloque más extenso y el que muestra la aplicación de verdad. Se div
 
 | Función | Cómo se muestra en la aplicación (demo en vivo) | Dónde está el código (IntelliJ / VS Code) |
 |---|---|---|
-| Registro / login de cliente | `registro.html` (crear cuenta) y `login.html` (entrar con `carlos.captura@ejemplo.com`) | IntelliJ: `AuthController.java`, `ClienteController.java`; VS Code: `js/core/app.js` (`inicializarLogin`/`inicializarRegistro`) |
+| Registro / login de cliente | `registro.html` (crear cuenta) y `login.html` (entrar con `cesarleonardo.rm2301@gmail.com`) | IntelliJ: `AuthController.java`, `ClienteController.java`; VS Code: `js/core/app.js` (`inicializarLogin`/`inicializarRegistro`) |
 | Catálogo de destinos y búsqueda | En `index.html` seleccionar un destino → clic en **Buscar Plan** → `destinos.html` lista los planes filtrados | IntelliJ: `ServicioController.java` (`GET /api/servicios`); VS Code: `js/cliente/destinos.js` (`leerParametrosBusqueda`) |
 | Crear y consultar solicitudes (PQR/reserva) | Login cliente → **Mis solicitudes** → nueva solicitud → aparece listada | IntelliJ: `SolicitudController.java`, `SolicitudServicio.java`; VS Code: `mis-solicitudes.html`, `js/cliente/mis-solicitudes.js` |
 | Chat del hilo de la solicitud | Abrir una solicitud → escribir un mensaje en el hilo | IntelliJ: `MensajeController.java`; VS Code: `js/cliente/mis-solicitudes.js` |
@@ -148,7 +148,7 @@ La siguiente tabla resume quién domina cada módulo, en qué bloques habla, con
 
 #### Antes de empezar
 
-Antes de iniciar la sustentación hay que dejar el ambiente listo para no perder tiempo en el momento del demo. La pantalla debe tener preparadas las tres herramientas con el proyecto abierto: **IntelliJ IDEA** con el proyecto `backend-SACE` (y el backend en ejecución en la pestaña *Run*, donde se espera el mensaje «Started … on port 8082», que confirma que la base de datos se creó sola), **Visual Studio Code** con la carpeta `frontend-aleleo-tours` abierta y **pgAdmin** conectado a la base `SACE_db`. El frontend se sirve en el puerto 8091 y se abre `http://localhost:8091` en una ventana de incógnito, para que la sesión empiece limpia. Conviene tener abierta en otra pestaña el repositorio `https://github.com/Siks2301/Projecto_SACE`, por si hace falta proyectar algo adicional de último minuto (además se usa como plan B). También se tienen a la mano las credenciales de demostración — `admin@aleleotours.com` / `admin123` y `carlos.captura@ejemplo.com` / `DemoClave2026!a`.
+Antes de iniciar la sustentación hay que dejar el ambiente listo para no perder tiempo en el momento del demo. La pantalla debe tener preparadas las tres herramientas con el proyecto abierto: **IntelliJ IDEA** con el proyecto `backend-SACE` (y el backend en ejecución en la pestaña *Run*, donde se espera el mensaje «Started … on port 8082», que confirma que la base de datos se creó sola), **Visual Studio Code** con la carpeta `frontend-aleleo-tours` abierta y **pgAdmin** conectado a la base `SACE_db`. El frontend se sirve en el puerto 8091 y se abre `http://localhost:8091` en una ventana de incógnito, para que la sesión empiece limpia. Conviene tener abierta en otra pestaña el repositorio `https://github.com/Siks2301/Projecto_SACE`, por si hace falta proyectar algo adicional de último minuto (además se usa como plan B). También se tienen a la mano las credenciales de demostración — `admin@aleleotours.com` / `admin123` y `cesarleonardo.rm2301@gmail.com` / `DemoClave2026!a`.
 
 #### Secuencia
 

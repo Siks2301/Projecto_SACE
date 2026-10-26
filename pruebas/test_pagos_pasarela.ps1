@@ -5,7 +5,7 @@
 #   El flujo completo contra el backend REAL, en modo pasarela simulada
 #   (app.pagos.pasarela=mock), que no necesita internet ni llaves de Wompi:
 #
-#     1. registro de cliente y creacion de solicitud
+#     1. inicio de sesion del cliente unico y creacion de solicitud
 #     2. configuracion de pagos que ve el navegador
 #     3. cotizacion: el monto sale del catalogo, no del cliente
 #     4. inicio de pago: nace PENDIENTE, con referencia PAGO-XXXXX
@@ -21,8 +21,9 @@
 #   2. powershell -NoProfile -ExecutionPolicy Bypass -File .\test_pagos_pasarela.ps1
 #
 # NOTAS
-#   - Cada ejecucion registra un cliente nuevo con correo unico, porque el
-#     correo es la clave primaria del login. No borra nada.
+#   - Inicia sesion con el cliente unico del proyecto
+#     (cesarleonardo.rm2301@gmail.com); no registra cuentas nuevas.
+#   - No borra nada: la solicitud y el pago que crea quedan en la base.
 #   - Los nombres de campo de la API se tomaron de los records de
 #     PagoDTOs.java: idPago, referencia, estado, comprobanteDisponible,
 #     urlCheckout, yaPagado, metodos[{codigo,nombre}].
@@ -54,13 +55,13 @@ function RawPost($uri, $body, $hdr) {
     }
 }
 
-Write-Host "`n=== 1. Registro de cliente ===" -ForegroundColor Cyan
-$email = "prueba.pasarela.$([DateTimeOffset]::UtcNow.ToUnixTimeSeconds())@test.com"
-$reg = Invoke-RestMethod -Uri "$base/auth/registro" -Method Post -ContentType 'application/json' -Body (@{
-    nombre='Prueba'; apellido='Pasarela'; email=$email; telefono='3001234567'; contrasenia='DemoClave2026!a'
+Write-Host "`n=== 1. Inicio de sesion del cliente unico ===" -ForegroundColor Cyan
+$email = 'cesarleonardo.rm2301@gmail.com'
+$reg = Invoke-RestMethod -Uri "$base/auth/login" -Method Post -ContentType 'application/json' -Body (@{
+    email=$email; contrasenia='DemoClave2026!a'
 } | ConvertTo-Json)
 $hdr = @{ Authorization = "Bearer $($reg.token)" }
-Check 'registro devuelve token de CLIENTE' ($reg.tipoUsuario -eq 'CLIENTE') "tipo=$($reg.tipoUsuario)"
+Check 'login devuelve token de CLIENTE' ($reg.tipoUsuario -eq 'CLIENTE') "tipo=$($reg.tipoUsuario)"
 
 Write-Host "`n=== 2. Crear solicitud con servicio 1 (precio 320.000) ===" -ForegroundColor Cyan
 $sol = Invoke-RestMethod -Uri "$base/solicitudes" -Method Post -Headers $hdr -ContentType 'application/json' -Body (@{

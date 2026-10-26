@@ -31,4 +31,4 @@ Evidencia visual del **diseño de interfaces** (criterio 2 de la rúbrica) y del
 | 15 | `03_Despliegue_Destinos.png` | Catálogo de destinos consultado desde el despliegue |
 
 > Credenciales de demostración: admin `admin@aleleotours.com` / `admin123`.
-> Cliente demo: `carlos.captura@ejemplo.com` / `DemoClave2026!a`.
+> Cliente demo: `cesarleonardo.rm2301@gmail.com` / `DemoClave2026!a`.

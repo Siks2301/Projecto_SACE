@@ -15,7 +15,7 @@ Este manual describe el uso del Sistema de Atención y Gestión de Solicitudes d
 ### 5.3 Perfiles y credenciales de acceso
 | Perfil | Cómo ingresar | Credenciales de demostración |
 |---|---|---|
-| Cliente | Pestaña 'Cliente' de la página de login | Registrarse con correo y contraseña propios (ej.: carlos.captura@ejemplo.com) |
+| Cliente | Pestaña 'Cliente' de la página de login | Registrarse con correo y contraseña propios (ej.: cesarleonardo.rm2301@gmail.com) |
 | Empleado de soporte | Pestaña 'Empleado' de la página de login | Cuenta asignada por el administrador |
 | Administrador | Pestaña 'Empleado' de la página de login | admin@aleleotours.com / admin123 (semilla, solo desarrollo) |
 
