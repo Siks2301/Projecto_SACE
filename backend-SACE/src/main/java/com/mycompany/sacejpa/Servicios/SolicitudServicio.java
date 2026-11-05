@@ -6,6 +6,7 @@ import com.mycompany.sacejpa.Mapper.SolicitudMapper;
 import com.mycompany.sacejpa.Modelo.Chatbot;
 import com.mycompany.sacejpa.Modelo.Cliente;
 import com.mycompany.sacejpa.Modelo.Empleado;
+import com.mycompany.sacejpa.Modelo.Persona;
 import com.mycompany.sacejpa.Modelo.Servicio;
 import com.mycompany.sacejpa.Modelo.Solicitud;
 import com.mycompany.sacejpa.Repositorio.Reposi_Chatbot;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 @Service
@@ -83,17 +85,33 @@ public class SolicitudServicio {
         }
         asignarRelaciones(solicitud, dto);
         if (solicitud.getEmpleadoAsignado() == null) {
-            try {
-                java.util.List<Empleado> dispon = repositorioEmpleado.findAll().stream()
-                        .filter(e -> e.getEstadoDisponibilidad() == Empleado.EstadoDisponibilidad.DISPONIBLE)
-                        .collect(java.util.stream.Collectors.toList());
-                if (!dispon.isEmpty()) {
-                    solicitud.setEmpleadoAsignado(dispon.get(0));
-                }
-            } catch (Exception ex) {}
+            solicitud.setEmpleadoAsignado(elegirAsesorAlAzar());
         }
         Solicitud guardada = repositorioSolicitud.save(solicitud);
         return SolicitudMapper.toDTO(guardada);
+    }
+
+    /**
+     * Elige al azar un asesor o coordinador con disponibilidad DISPONIBLE.
+     *
+     * <p>Antes se tomaba {@code dispon.get(0)}, es decir, siempre el primer
+     * empleado de la lista (orden de la BD), por lo que la asignación no era
+     * aleatoria en absoluto y recaía sobre la misma persona. Además se colaban
+     * los administradores, que también pueden estar DISPONIBLES.
+     *
+     * @return el empleado elegido, o {@code null} si no hay ninguno disponible
+     *         con rol de atención (la solicitud queda sin asignar).
+     */
+    private Empleado elegirAsesorAlAzar() {
+        List<Empleado> candidatos = repositorioEmpleado.findAll().stream()
+                .filter(e -> e.getEstadoDisponibilidad() == Empleado.EstadoDisponibilidad.DISPONIBLE)
+                .filter(e -> e.getTipoUsuario() == Persona.TipoUsuario.ASESOR_VIAJES
+                        || e.getTipoUsuario() == Persona.TipoUsuario.COORDINADOR_DESTINO)
+                .collect(Collectors.toList());
+        if (candidatos.isEmpty()) {
+            return null;
+        }
+        return candidatos.get(ThreadLocalRandom.current().nextInt(candidatos.size()));
     }
 
     public SolicitudDTOs servactualiza(Long id, SolicitudDTOs dto, String tipoUsuario, Long usuarioId) {
