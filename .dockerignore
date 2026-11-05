@@ -1,0 +1,40 @@
+# Contexto de compilacion de la imagen Docker: RAIZ del repositorio.
+# Este archivo evita que se suban al contexto archivos que no hacen falta
+# (y que ademas son pesados o contienen datos personales).
+
+# Artefactos de compilacion Java
+**/target/
+*.class
+*.jar
+*.war
+
+# Comprobantes PDF de pagos: son datos personales de los clientes.
+# La base guarda solo la ruta RELATIVA; el PDF se regenera desde los
+# datos del pago si falta.
+backend-SACE/uploads/
+uploads/
+
+# IDE
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+.settings/
+.classpath
+.project
+
+# Git
+.git/
+.gitignore
+
+# Documentacion y evidencias: no hacen falta en la imagen
+docs/
+2_Evidencias_Documentales/
+pruebas/
+
+# Sistema
+Thumbs.db
+Desktop.ini
+.DS_Store
+*.log

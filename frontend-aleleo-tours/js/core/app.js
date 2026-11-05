@@ -5,7 +5,13 @@
 
 'use strict';
 
-const API_BASE = 'http://localhost:8082/api';
+// La direccion del API no va incrustada aqui: la resuelve js/core/config.js
+// (unico archivo que hay que editar para cambiar de entorno). Se mantiene
+// el respaldo a localhost para que, si el script de configuracion no llegara
+// a cargarse, la API local siga funcionando en desarrollo.
+const API_BASE = (typeof window !== 'undefined' && window.SACE_API_BASE)
+  ? window.SACE_API_BASE
+  : 'http://localhost:8082/api';
 
 // Escapa caracteres HTML para evitar inyeccion (XSS) al renderizar datos que
 // vienen del usuario o del backend. Se usa en panel-empleado.js y destinos.js

@@ -24,9 +24,20 @@ import java.util.List;
  * 1. Un usuario Administrador (admin@aleleotours.com / admin123).
  * 2. Los paquetes y servicios turisticos base (Cartagena, San Andres, Santa Marta, Medellin, Tayrona, Providencia).
  * 3. Preguntas frecuentes para el Chatbot.
+ *
+ * <p>El administrador se crea a partir de {@code app.admin.email} y
+ * {@code app.admin.password}. En desarrollo ambos tienen valores por defecto.
+ * En produccion la contrasena llega por la variable de entorno
+ * {@code SACE_ADMIN_PASSWORD} y, si el administrador ya existe pero su
+ * contrasena no coincide, se <b>rota</b> al valor recibido. Asi basta con
+ * cambiar la variable y redesplegar para rotar la clave, sin tocar la base de
+ * datos a mano.
  */
 @Component
 public class DataInitializer implements CommandLineRunner {
+
+    /** Contrasena usada solo cuando no se define SACE_ADMIN_PASSWORD. */
+    private static final String CONTRASENA_POR_DEFECTO = "admin123";
 
     @Autowired
     private Reposi_Empleado repositorioEmpleado;
@@ -43,6 +54,12 @@ public class DataInitializer implements CommandLineRunner {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @org.springframework.beans.factory.annotation.Value("${app.admin.email:admin@aleleotours.com}")
+    private String emailAdmin;
+
+    @org.springframework.beans.factory.annotation.Value("${app.admin.password:}")
+    private String passwordAdmin;
+
     @Override
     public void run(String... args) throws Exception {
         inicializarAdmin();
@@ -50,9 +67,18 @@ public class DataInitializer implements CommandLineRunner {
         inicializarPreguntasFrecuentesYChatbot();
     }
 
+    /**
+     * Crea el administrador si no existe y, si ya existe, sincroniza su
+     * contrasena con la variable de entorno cuando esta viene definida.
+     */
     private void inicializarAdmin() {
-        String emailAdmin = "admin@aleleotours.com";
-        if (repositorioEmpleado.findByEmailIgnoreCase(emailAdmin).isEmpty()) {
+        String contrasenaObjetivo = (passwordAdmin == null || passwordAdmin.trim().isEmpty())
+                ? CONTRASENA_POR_DEFECTO
+                : passwordAdmin.trim();
+
+        java.util.Optional<Empleado> existente = repositorioEmpleado.findByEmailIgnoreCase(emailAdmin);
+
+        if (existente.isEmpty()) {
             Empleado admin = new Empleado();
             admin.setNombre("Administrador");
             admin.setApellido("General");
@@ -62,14 +88,33 @@ public class DataInitializer implements CommandLineRunner {
             admin.setEstadoAcceso(Persona.EstadoAcceso.ACTIVA);
             admin.setTipoDocumento(Persona.TipoDocumento.CC);
             admin.setNumeroDocumento("100000001");
-            admin.setContrasenia(passwordEncoder.encode("admin123"));
+            admin.setContrasenia(passwordEncoder.encode(contrasenaObjetivo));
             admin.setDepartamento("Tecnologia y Operaciones");
             admin.setCargoEspecifico("Administrador de Sistema");
             admin.setEstadoDisponibilidad(Empleado.EstadoDisponibilidad.DISPONIBLE);
 
             repositorioEmpleado.save(admin);
-            System.out.println(">>> [SACE SEED] Usuario Administrador creado: " + emailAdmin + " / admin123");
+            System.out.println(">>> [SACE SEED] Usuario Administrador creado: " + emailAdmin
+                    + (contrasenaObjetivo.equals(CONTRASENA_POR_DEFECTO)
+                    ? " / admin123" : " / contrasena definida en SACE_ADMIN_PASSWORD"));
+            return;
         }
+
+        // El administrador ya existe: se rota la contrasena si el entorno
+        // pide una nueva. Es lo que permite cambiar la clave en produccion
+        // sin entrar a la base de datos.
+        Empleado admin = existente.get();
+        if (passwordEncoder.matches(contrasenaObjetivo, admin.getContrasenia())) {
+            return;
+        }
+        if ((passwordAdmin == null || passwordAdmin.trim().isEmpty())) {
+            System.out.println(">>> [SACE SEED] Administrador existente. Se mantiene su contrasena "
+                    + "(SACE_ADMIN_PASSWORD no esta definida).");
+            return;
+        }
+        admin.setContrasenia(passwordEncoder.encode(contrasenaObjetivo));
+        repositorioEmpleado.save(admin);
+        System.out.println(">>> [SACE SEED] Contrasena del administrador rotada desde SACE_ADMIN_PASSWORD.");
     }
 
     private void inicializarServicios() {

@@ -1,0 +1,120 @@
+# =====================================================================
+# SACE - Orquestacion local / servidor propio (Hetzner, DigitalOcean, OVH)
+# ---------------------------------------------------------------------
+# Levanta los tres componentes del sistema:
+#   db   -> PostgreSQL 18
+#   api  -> Backend Spring Boot (imagen construida desde el Dockerfile)
+#   web  -> nginx con el frontend estatico y el proxy inverso hacia la API
+#
+# Requisitos: Docker y Docker Compose v2 en el servidor.
+#
+#   1. cp deploy/.env.example deploy/.env
+#   2. Editar deploy/.env (contrasenas y secretos)
+#   3. cd deploy && docker compose up -d --build
+#   4. Certificados (si usas dominios propios):
+#      docker compose run --rm certbot certonly --webroot -w /var/www/certbot \
+#        -d aleleotours.com -d www.aleleotours.com -d api.aleleotours.com \
+#        --agree-tos -m CORREO@ejemplo.com
+#      (despues, descomentar el bloque 'ssl' de deploy/nginx.conf)
+#
+# Nota de contexto: este archivo vive en deploy/, por eso el contexto de
+# compilacion de la imagen es '..' (la raiz del repositorio) y el frontend
+# se monta desde '../frontend-aleleo-tours'.
+#
+# El archivo 'deploy/.env' lo lee Docker Compose automaticamente (asi
+# sustituye ${POSTGRES_PASSWORD} y demas). NO se versiona: esta en el
+# .gitignore del repositorio.
+# =====================================================================
+
+name: sace
+
+services:
+
+  # ---------- Base de datos ----------
+  db:
+    image: postgres:18-alpine
+    container_name: sace-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-SACE_db}
+      POSTGRES_USER: ${POSTGRES_USER:-sac_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?falta POSTGRES_PASSWORD en deploy/env-produccion.env}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-sac_user} -d ${POSTGRES_DB:-SACE_db}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - sace
+    # El puerto 5432 NO se publica: la base solo es accesible desde la red
+    # interna de Docker. Para entrar por consola:
+    #   docker compose exec db psql -U sac_user -d SACE_db
+
+  # ---------- Backend (API REST) ----------
+  api:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    image: sace-api:latest
+    container_name: sace-api
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - ./.env
+    environment:
+      PORT: "8082"
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/${POSTGRES_DB:-SACE_db}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-sac_user}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:?falta POSTGRES_PASSWORD en deploy/.env}
+      SACE_UPLOAD_DIR: /app/uploads/comprobantes
+      SACE_SHOW_SQL: "false"
+      SACE_DDL_AUTO: update
+    volumes:
+      # Los comprobantes PDF deben sobrevivir a un 'docker compose down'.
+      - comprobantes:/app/uploads/comprobantes
+    networks:
+      - sace
+    # El puerto NO se publica: la API se expone unicamente por nginx, con
+    # HTTPS y un unico dominio. Para depurar:
+    #   docker compose logs -f api
+
+  # ---------- Frontend estatico + proxy inverso ----------
+  web:
+    image: nginx:1.27-alpine
+    container_name: sace-web
+    restart: unless-stopped
+    depends_on:
+      - api
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ../frontend-aleleo-tours:/usr/share/nginx/html:ro
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./certbot/www:/var/www/certbot:ro
+      - ./certbot/conf:/etc/letsencrypt:ro
+    networks:
+      - sace
+
+  # ---------- Emision de certificados (solo se usa a mano) ----------
+  certbot:
+    image: certbot/certbot:latest
+    container_name: sace-certbot
+    volumes:
+      - ./certbot/www:/var/www/certbot
+      - ./certbot/conf:/etc/letsencrypt
+    entrypoint: >
+      /bin/sh -c "trap exit TERM; while :; do certbot renew --webroot -w /var/www/certbot; sleep 12h & wait $${!}; done;"
+    profiles:
+      - certbot
+
+volumes:
+  pgdata:
+  comprobantes:
+
+networks:
+  sace:

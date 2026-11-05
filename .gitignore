@@ -44,3 +44,10 @@ Desktop.ini
 # el PDF se regenera solo desde los datos del pago si falta.
 backend-SACE/uploads/
 
+# ===== Despliegue =====
+# Secretos del despliegue: contrasenas, llaves de Wompi, token secreto.
+deploy/.env
+deploy/certbot/
+*.pem
+*.key
+

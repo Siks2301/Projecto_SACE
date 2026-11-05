@@ -1,0 +1,97 @@
+# =====================================================================
+# Blueprint de Render para el backend SACE
+# ---------------------------------------------------------------------
+# Uso:
+#   1. Sube el repositorio a GitHub (ya esta en https://github.com/Siks2301/Projecto_SACE).
+#   2. En Render: "New" -> "Blueprint" -> conecta el repositorio.
+#   3. Render lee este archivo y crea el servicio web.
+#   4. Completa a mano las variables marcadas con "sync: false" (Render
+#      te las pide en el formulario).
+#
+# AVISOS IMPORTANTES DEL PLAN FREE DE RENDER:
+#   - El servicio se apaga tras 15 minutos sin trafico y vuelve a arrancar
+#     en el siguiente request (la primera respuesta tarda ~50 s).
+#   - La base de datos PostgreSQL FREE de Render EXPIRA a los 30 dias y se
+#     borra. Para una base que no muera, usa Neon (gratis, sin expiracion)
+#     como se explica en deploy/README.md y pega sus credenciales en las
+#     variables SPRING_DATASOURCE_*.
+# =====================================================================
+
+services:
+  - type: web
+    name: sace-api
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    plan: free
+    region: oregon
+    autoDeploy: true
+
+    # Verificacion de que la API quedo arriba (la usa Render para el
+    # enrutado y para reiniciar el contenedor si deja de responder).
+    healthCheckPath: /api/salud
+
+    envVars:
+      # --- Conexion a PostgreSQL ---
+      # Formato: jdbc:postgresql://HOST:PUERTO/NOMBRE_BD
+      # Ejemplo Neon: jdbc:postgresql://ep-xxx.us-east-2.aws.neon.tech/neondb?sslmode=require
+      - key: SPRING_DATASOURCE_URL
+        sync: false
+      - key: SPRING_DATASOURCE_USERNAME
+        sync: false
+      - key: SPRING_DATASOURCE_PASSWORD
+        sync: false
+
+      # --- Seguridad ---
+      # Firma de los tokens de sesion. Render genera un valor aleatorio
+      # si usas generateValue; puedes reemplazarlo por el tuyo.
+      - key: SACE_TOKEN_SECRET
+        generateValue: true
+      # Contrasena del administrador semilla. Escribe una tuya: con
+      # generateValue no la conocerias y no podrias entrar.
+      - key: SACE_ADMIN_PASSWORD
+        sync: false
+
+      # --- CORS: dominios del frontend ---
+      # Ejemplo: https://aleleotours.com,https://www.aleleotours.com,https://mi-proyecto.pages.dev
+      - key: SACE_CORS_ORIGINS
+        sync: false
+
+      # --- Comprobantes PDF ---
+      # El plan free no incluye disco persistente. Si conectas un disco
+      # en /var/data, esta ruta conserva los PDF entre redespliegues.
+      - key: SACE_UPLOAD_DIR
+        value: /var/data/comprobantes
+
+      # --- Ajustes de Spring ---
+      - key: SACE_SHOW_SQL
+        value: "false"
+      - key: SACE_DDL_AUTO
+        value: update
+
+      # --- Pasarela de pagos ---
+      # Empieza con "mock" (simulada). Cambia a "wompi" cuando tengas
+      # las llaves reales de produccion.
+      - key: PAGOS_PASARELA
+        value: mock
+
+      # --- Correo (opcional; el servicio tiene fail-safe si no hay SMTP) ---
+      - key: SPRING_MAIL_HOST
+        sync: false
+      - key: SPRING_MAIL_PORT
+        sync: false
+      - key: SPRING_MAIL_USERNAME
+        sync: false
+      - key: SPRING_MAIL_PASSWORD
+        sync: false
+
+# ---------------------------------------------------------------------
+# Si prefieres la base de datos de Render en vez de Neon, descomenta
+# este bloque. OJO: la instancia FREE expira a los 30 dias.
+#
+# databases:
+#   - name: sace-db
+#     databaseName: SACE_db
+#     user: sace
+#     plan: free
+# ---------------------------------------------------------------------

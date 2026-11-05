@@ -64,9 +64,13 @@ public class AuthInterceptor implements HandlerInterceptor {
             return "/api/auth/login".equals(path) || "/api/auth/registro".equals(path);
         }
         if ("GET".equalsIgnoreCase(metodo)) {
+            // /api/salud es publico a proposito: lo consultan las plataformas en
+            // la nube como health check y la verificacion post-despliegue, y no
+            // expone datos del negocio (solo estado del servicio y de la BD).
             return "/api/servicios".equals(path)
                     || "/api/preguntas-frecuentes".equals(path)
-                    || "/api/chatbots".equals(path);
+                    || "/api/chatbots".equals(path)
+                    || "/api/salud".equals(path);
         }
         return false;
     }
