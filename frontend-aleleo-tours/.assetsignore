@@ -1,0 +1,13 @@
+# =====================================================================
+# .assetsignore  ->  archivos que NO se publican en Cloudflare
+# ---------------------------------------------------------------------
+# Cloudflare lee este archivo desde la raiz del directorio de assets y
+# excluye lo que coincida. Se usa sobre todo al desplegar desde una
+# maquina local, donde existe node_modules.
+#
+# OJO: la carpeta pruebas/ SI se publica a proposito. Contiene el plan de
+# pruebas con Jest y sus evidencias, y se deja accesible desde el sitio
+# para que el instructor pueda revisarla en linea.
+# =====================================================================
+
+node_modules/

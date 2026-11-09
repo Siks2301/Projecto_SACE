@@ -60,3 +60,8 @@ frontend-aleleo-tours.rar
 # El lockfile del proyecto de pruebas si se versiona: fija las versiones
 # exactas para que 'npm ci' reproduzca la misma instalacion.
 !frontend-aleleo-tours/pruebas/package-lock.json
+
+# ===== Cloudflare (carpeta local de Wrangler) =====
+# 'wrangler deploy' y 'wrangler dev' crean esta carpeta con estado local.
+# La configuracion que si se versiona es wrangler.jsonc.
+.wrangler/

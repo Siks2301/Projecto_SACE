@@ -4,8 +4,8 @@
 # Guia paso a paso para publicar el proyecto. Tres caminos posibles,
 # de mas sencillo a mas control:
 #
-#   Opcion A (gratis, recomendada)  Cloudflare Pages + Render + Neon
-#   Opcion B (pago, la mas comoda)  Cloudflare Pages + Railway
+#   Opcion A (gratis, recomendada)  Cloudflare Workers + Render + Neon
+#   Opcion B (pago, la mas comoda)  Cloudflare Workers + Railway
 #   Opcion C (control total)        Servidor propio con Docker Compose
 #
 # Antes de empezar, dos preparaciones:
@@ -24,7 +24,7 @@
         |
         v
     +---------------------------------------------------------------+
-    |  FRONTEND (estatico)                 Cloudflare Pages          |
+    |  FRONTEND (estatico)                Cloudflare Workers        |
     |  frontend-aleleo-tours/  ->  https://www.aleleotours.com     |
     |  Sin servidor, sin build, CDN global, HTTPS automatico         |
     +------------------------------+--------------------------------+
@@ -49,7 +49,7 @@
 
 
 # =====================================================================
-# OPCION A - TODO GRATIS (Cloudflare Pages + Render + Neon)
+# OPCION A - TODO GRATIS (Cloudflare Workers + Render + Neon)
 # =====================================================================
 
 ## A.1 Base de datos en Neon (PostgreSQL gratis, sin expiracion)
@@ -83,7 +83,7 @@
    | SPRING_DATASOURCE_USERNAME| usuario de Neon                              |
    | SPRING_DATASOURCE_PASSWORD| contrasena de Neon                            |
    | SACE_ADMIN_PASSWORD        | una contrasena que tu recuerdes              |
-   | SACE_CORS_ORIGINS          | https://www.aleleotours.com,https://aleleotours.com,https://TU-PROYECTO.pages.dev |
+   | SACE_CORS_ORIGINS          | https://www.aleleotours.com,https://aleleotours.com,https://TU-WORKER.workers.dev |
    | SPRING_MAIL_HOST          | (opcional)                                   |
    | SPRING_MAIL_PORT          | (opcional)                                   |
    | SPRING_MAIL_USERNAME      | (opcional)                                   |
@@ -99,25 +99,39 @@
    sustentacion,Deja una pestaña abierta o haz una peticion cada poco
    mientras preparas la demo. (La opcion B no tiene este problema.)
 
-## A.3 Frontend en Cloudflare Pages
+## A.3 Frontend en Cloudflare (Workers con assets estaticos)
+
+Asi se desplego realmente el 9 de noviembre de 2026. El repositorio ya
+trae `wrangler.jsonc` en la raiz, que es lo que le dice a Cloudflare que
+publique la carpeta `frontend-aleleo-tours`.
 
 1. Crear cuenta en https://dash.cloudflare.com (o iniciar sesion con
    GitHub).
-2. "Workers & Pages" -> "Create" -> "Pages" -> "Connect to Git".
+2. "Workers & Pages" -> "Create" -> "Workers" -> "Connect to Git".
 3. Seleccionar el repositorio `Projecto_SACE`.
 4. Configuracion del build:
-      - Framework preset : None
-      - Build command    : (dejar vacio; el sitio no tiene build)
-      - Build output     : frontend-aleleo-tours
-      - Root directory   : (dejar vacio)
-5. "Save and Deploy". En 30 segundos estara vivo en
-   `https://TU-PROYECTO.pages.dev`.
-6. Conectar el dominio: "Custom domains" -> "Add a domain" ->
-   `www.aleleotours.com`. Cloudflare crea el registro DNS solo.
-   Repite con `aleleotours.com` si quieres el dominio sin www.
-7. Ajustar el backend: en Render, "Settings" -> "Environment" ->
-   "SACE_CORS_ORIGINS" -> agregar `https://www.aleleotours.com`.
+      - Build command : npx wrangler deploy
+      - Root directory: (dejar vacio)
+      - El nombre del Worker y el directorio de assets los toma de
+        `wrangler.jsonc` (`aleleotours` y `frontend-aleleo-tours`).
+5. "Deploy". Al terminar, la URL es
+   `https://aleleotours.<subdominio-de-tu-cuenta>.workers.dev`.
+6. Comprobar que `workers.dev` este habilitado:
+   Worker -> "Settings" -> "Domains & Routes" -> fila `workers.dev`.
+   Si esta deshabilitado, TODAS las rutas responden `error code: 1042`
+   aunque el deploy haya dicho "Success". Es el fallo que se perdio mas
+   tiempo en el primer despliegue.
+7. Conectar el dominio (opcional): "Settings" -> "Domains & Routes" ->
+   "Add custom domain" -> `www.aleleotours.com`.
+8. Ajustar el backend: en Render, "Settings" -> "Environment" ->
+   "SACE_CORS_ORIGINS" -> poner el origen EXACTO del sitio
+   (`https://aleleotours.<subdominio>.workers.dev`, o el dominio propio).
    Guardar. Render redespliega solo.
+
+Cloudflare Pages tambien sirve para este proyecto (mismo directorio
+`frontend-aleleo-tours`, build command vacio, output
+`frontend-aleleo-tours`). La diferencia es solo la URL final:
+`*.pages.dev` en vez de `*.workers.dev`.
 
 ## A.4 Apuntar el frontend al backend
 
@@ -142,7 +156,7 @@ Despues sube el cambio:
 
     git add -A && git commit -m "chore(deploy): apuntar la API al backend desplegado" && git push
 
-Cloudflare Pages redespliega solo en cuanto llega el commit.
+Cloudflare redespliega solo en cuanto llega el commit.
 
 ## A.5 Lista de verificacion
 
@@ -159,7 +173,7 @@ Cloudflare Pages redespliega solo en cuanto llega el commit.
 
 
 # =====================================================================
-# OPCION B - PAGAR LO JUSTO (Cloudflare Pages + Railway)
+# OPCION B - PAGAR LO JUSTO (Cloudflare Workers + Railway)
 # =====================================================================
 
 Railway te da la API, PostgreSQL y un volumen persistente todo junto,
@@ -203,7 +217,7 @@ inicial.
    |---------------------|----------------------------------------------------|
    | SACE_TOKEN_SECRET   | openssl rand -base64 48                            |
    | SACE_ADMIN_PASSWORD | tu contrasena                                       |
-   | SACE_CORS_ORIGINS   | https://www.aleleotours.com,https://TU.pages.dev    |
+   | SACE_CORS_ORIGINS   | https://www.aleleotours.com,https://TU.workers.dev   |
    | SACE_SHOW_SQL       | false                                              |
    | SACE_DDL_AUTO       | update                                             |
    | PAGOS_PASARELA      | mock                                               |

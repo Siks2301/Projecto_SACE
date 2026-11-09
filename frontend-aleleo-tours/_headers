@@ -1,10 +1,16 @@
 # =====================================================================
-# _headers  ->  Cloudflare Pages
+# _headers  ->  Cloudflare (Pages y Workers con assets estaticos)
 # ---------------------------------------------------------------------
-# Cloudflare Pages lee este archivo del directorio de salida (la carpeta
-# frontend-aleleo-tours) y aplica las cabeceras a cada respuesta.
+# Cloudflare lee este archivo desde la raiz del directorio publicado (la
+# carpeta frontend-aleleo-tours) y aplica las cabeceras a cada respuesta.
+# Funciona igual en Cloudflare Pages y en Workers con assets estaticos,
+# que es como esta publicado el sitio actualmente.
 #
-# Archivo: https://developers.cloudflare.com/pages/configuration/headers/
+# Comprobado el 9 de noviembre de 2026 sobre el Worker desplegado: las
+# respuestas traen HSTS, X-Frame-Options, nosniff, Permissions-Policy y
+# Cache-Control max-age=604800 en /css, /js, /img y /vendor.
+#
+# Documentacion: https://developers.cloudflare.com/workers/static-assets/headers/
 # =====================================================================
 
 

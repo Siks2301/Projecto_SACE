@@ -41,7 +41,7 @@ public class WebConfig implements WebMvcConfigurer {
      *
      * <p>Se leen de {@code app.cors.origins} (variable de entorno
      * {@code SACE_CORS_ORIGINS}) porque en produccion el frontend se
-     * publica en un dominio propio o en Cloudflare Pages, no en
+     * publica en un dominio propio o en Cloudflare, no en
      * {@code localhost}. Fijar los origenes en el codigo obligaria a
      * recompilar y redesplegar la API cada vez que cambia la direccion
      * del sitio.

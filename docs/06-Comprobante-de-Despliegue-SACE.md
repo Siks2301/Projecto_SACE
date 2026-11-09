@@ -235,3 +235,131 @@ variables y los mismos flags de JVM. Las tres rutas de despliegue documentadas
 construyen la imagen en servidores con memoria suficiente. El detalle del
 diagnóstico está en `10-Detalle-Despliegue-Como-Se-Hizo-Y-Como-Funciona.md`,
 apartado 13, error 7.
+
+### 6.10 Primer despliegue real en la nube (salida real)
+
+El **9 de noviembre de 2026** se publicó el sistema completo con la opción A del
+plan de despliegue. A diferencia de 6.9, aquí ya no hay nada local: los tres
+componentes están en Internet y se comprobaron desde fuera.
+
+| Componente | Plataforma | URL |
+|---|---|---|
+| Frontend | Cloudflare Workers (assets estáticos) | `https://aleleotours.cesarleonardo-rm2301.workers.dev` |
+| Backend | Render (contenedor desde el `Dockerfile`) | `https://sace-api.onrender.com` |
+| Base de datos | Neon (PostgreSQL 17.11) | `neondb`, conexión directa con `sslmode=require` |
+
+#### 6.10.1 Build y arranque del backend
+
+El `Dockerfile` se construyó por primera vez en un servidor real (en el equipo
+local no fue posible, ver 6.9.7):
+
+```
+==> Checking out commit 05c5892 in branch main
+#20 exporting to image
+#20 DONE 0.2s
+==> Deploying...
+Tomcat initialized with port 10000 (http)
+HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@7d18338b
+HikariPool-1 - Start completed.
+PagoConstraintInitializer: indices de integridad del modulo de pagos verificados
+PersonaEmailConstraintInitializer: unicidad de persona.email verificada
+Tomcat started on port 10000 (http) with context path ''
+Started SacejpaApplication in 126.497 seconds (process running for 136.023)
+==> Your service is live
+==> Available at your primary URL https://sace-api.onrender.com
+```
+
+Hibernate creó el esquema en Neon, que estaba vacía, y el seed insertó el
+administrador, los 6 paquetes turísticos, las preguntas frecuentes y el chatbot.
+
+#### 6.10.2 Build y publicación del frontend
+
+Cloudflare ejecutó `npx wrangler deploy` con la configuración de `wrangler.jsonc`:
+
+```
+Detected Project Settings:
+ - Worker Name: aleleotours
+ - Framework: Static
+ - Output Directory: frontend-aleleo-tours
+Read 94 files from the assets directory
+Success! Uploaded 71 files (1.90 sec)
+Deployed aleleotours triggers (0.89 sec)
+  https://aleleotours.cesarleonardo-rm2301.workers.dev
+Success: Build completed.
+```
+
+#### 6.10.3 Verificación desde Internet
+
+Las once páginas del sitio respondieron `200`, y las cabeceras de
+`frontend-aleleo-tours/_headers` se aplicaron de verdad:
+
+```
+GET /                          -> 200
+GET /login  /registro  /destinos  /mis-solicitudes  /reportes
+GET /panel-empleado  /gestion-solicitudes  /gestion-servicios
+GET /gestion-clientes  /gestion-empleados              -> 200 (las once)
+
+GET /css/style.css
+  HTTP 200
+  Cache-Control: public, max-age=604800
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: SAMEORIGIN
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(self), camera=(), microphone=(), payment=()
+```
+
+En un navegador real, la portada cargó los destinos desde la API, no desde el
+HTML:
+
+```
+GET https://sace-api.onrender.com/api/servicios               -> 200
+GET https://sace-api.onrender.com/api/preguntas-frecuentes    -> 200
+```
+
+#### 6.10.4 Salud, CORS y autorización
+
+```
+GET https://sace-api.onrender.com/api/salud
+  HTTP 200 en 0.39 s
+  {"estado":"OK","aplicacion":"SACE - Sistema de Atencion al Cliente (AleLeo Tours)",
+   "version":"1.0.0","baseDatos":"conectada","momento":"2026-11-09T16:04:54Z"}
+
+GET /api/servicios   Origin: https://aleleotours.cesarleonardo-rm2301.workers.dev
+  HTTP 200
+  Access-Control-Allow-Origin: https://aleleotours.cesarleonardo-rm2301.workers.dev
+  Access-Control-Allow-Credentials: true
+
+GET /api/servicios   Origin: https://sitio-no-listado.example
+  HTTP 403   (correcto)
+
+GET /api/clientes    (sin token)
+  HTTP 401   (correcto)
+```
+
+Los 6 servicios devueltos por la API: Paquete Vacacional Cartagena, Vuelo + Hotel
+San Andrés, Experiencia Santa Marta y Playas, Tour Medellín Innovadora y Café,
+Ecoturismo Parque Tayrona y Paraíso Providencia Isla Virgen.
+
+#### 6.10.5 Dos fallos que costaron tiempo (y su causa)
+
+1. **`error code: 1042` en todas las rutas del frontend.** El deploy decía
+   `Success`, pero cualquier ruta —incluso un subdominio inventado dentro de la
+   misma cuenta— devolvía 1042. La causa: `workers.dev` no estaba habilitado
+   para ese Worker. Se corrigió en *Worker → Settings → Domains & Routes →
+   `workers.dev` → Enable*.
+2. **CORS en `403` con todos los orígenes.** `SACE_CORS_ORIGINS` en Render
+   seguía apuntando a una URL que el sitio ya no usaba. Se cambió al origen
+   exacto del Worker y, tras el redespliegue automático, las peticiones
+   pasaron a `200`.
+
+Ambos casos están recogidos como diagnóstico en el documento 10, apartado 13.
+
+#### 6.10.6 Nota sobre el tiempo de arranque
+
+El primer arranque tardó **126 s**, frente a los 14 s de la prueba local (6.9.2).
+La diferencia no es del código: en el primer arranque Hibernate tiene que crear
+las 11 tablas contra Neon, que está en otra red. En arranques posteriores el
+esquema ya existe y el tiempo baja. Aun así, el plan gratuito de Render apaga el
+servicio a los 15 minutos sin tráfico y la primera petición después tarda en
+volver a levantar el contenedor.

@@ -53,7 +53,11 @@ services:
         sync: false
 
       # --- CORS: dominios del frontend ---
-      # Ejemplo: https://aleleotours.com,https://www.aleleotours.com,https://mi-proyecto.pages.dev
+      # Valor real del despliegue actual (Cloudflare Workers):
+      #   https://aleleotours.cesarleonardo-rm2301.workers.dev
+      # Debe coincidir EXACTO con el origen del sitio. Si el frontend
+      # cambia de URL y esta variable no, el navegador recibe 403.
+      # Ejemplo con dominio propio: https://aleleotours.com,https://www.aleleotours.com
       - key: SACE_CORS_ORIGINS
         sync: false
 

@@ -1,0 +1,48 @@
+// =====================================================================
+// wrangler.jsonc  ->  Frontend SACE en Cloudflare Workers (assets estaticos)
+// ---------------------------------------------------------------------
+// Este archivo lo usa `npx wrangler deploy` para publicar el sitio.
+// Antes no existia en el repositorio: Cloudflare lo generaba dentro de su
+// entorno de build, asi que el despliegue dependia de esa generacion
+// automatica y no era reproducible desde una maquina local.
+//
+// Que publica: la carpeta frontend-aleleo-tours (HTML/CSS/JS sin build).
+// No hay codigo de Worker: Cloudflare sirve los archivos tal cual desde su
+// red, igual que hace Cloudflare Pages, pero la URL queda en *.workers.dev.
+//
+// Probado con wrangler 4.159.0 el 9 de noviembre de 2026.
+// =====================================================================
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+
+  // Nombre del Worker. Define la URL:
+  //   https://aleleotours.<subdominio-de-la-cuenta>.workers.dev
+  "name": "aleleotours",
+
+  "compatibility_date": "2026-11-09",
+
+  "observability": {
+    "enabled": true
+  },
+
+  "assets": {
+    // Directorio que se publica, relativo a la raiz del repositorio.
+    "directory": "./frontend-aleleo-tours",
+
+    // /login.html responde 307 hacia /login, y ambas formas sirven la
+    // misma pagina. Es el comportamiento por defecto; se deja explicito
+    // para que no cambie si Cloudflare modifica el valor implicito.
+    "html_handling": "auto-trailing-slash",
+
+    // Una ruta inexistente devuelve 404. No hay 404.html ni rutas de SPA:
+    // el sitio son once paginas HTML reales.
+    "not_found_handling": "none"
+  },
+
+  // URL publica en *.workers.dev (es la que usa el frontend desplegado).
+  "workers_dev": true,
+
+  // Sin URLs de previsualizacion: no se usan y su enrutado devuelve
+  // error 1042 cuando workers.dev esta deshabilitado.
+  "preview_urls": false
+}

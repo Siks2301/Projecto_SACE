@@ -86,7 +86,7 @@ El proyecto quedó preparado para publicarse en la nube **sin recompilar**: lo q
 **Arquitectura objetivo** — se separan las tres piezas según su naturaleza:
 
 ```
-FRONTEND estatico     Cloudflare Pages    CDN + HTTPS, sin build, costo $0
+FRONTEND estatico     Cloudflare Workers  CDN + HTTPS, sin build, costo $0
         |  fetch() a /api/...
         v
 BACKEND Spring Boot   Render / Railway    contenedor construido desde el Dockerfile
@@ -110,11 +110,13 @@ BASE DE DATOS         Neon / Railway      PostgreSQL 18 (SACE_db)
 
 | Opción | Componentes | Costo | Cuándo conviene |
 |---|---|---|---|
-| A | Cloudflare Pages + Render + Neon | $0 | Entrega académica y demostración |
-| B | Cloudflare Pages + Railway | ~5 USD/mes | Sin cold start y con volumen persistente |
+| A | Cloudflare Workers + Render + Neon | $0 | Entrega académica y demostración |
+| B | Cloudflare Workers + Railway | ~5 USD/mes | Sin cold start y con volumen persistente |
 | C | VPS con Docker Compose + nginx | ~4 EUR/mes | Control total, dominio propio, respaldos |
 
 **Verificación realizada**: el 4 de noviembre de 2026 se ejecutó el `.jar` contra una base de datos vacía usando las variables de entorno de producción. La salida real (health check, esquema creado, semilla, CORS, login) está en `06-Comprobante-de-Despliegue-SACE.md`, sección 6.9.
+
+**Opción A ejecutada**: el 9 de noviembre de 2026 se publicó el sistema completo con esta ruta y quedó en línea: API en `https://sace-api.onrender.com`, sitio en `https://aleleotours.cesarleonardo-rm2301.workers.dev` y base en Neon. La evidencia está en la sección 6.10 del mismo documento.
 
 ### 4.9 Riesgos del despliegue en la nube y dónde se tratan
 

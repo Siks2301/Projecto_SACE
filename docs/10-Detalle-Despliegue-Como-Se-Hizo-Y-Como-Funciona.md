@@ -64,7 +64,7 @@ entorno.
     │  1. GET https://www.aleleotours.com/index.html
     ▼
 ┌──────────────────────────────────────────────────────────────┐
-│ FRONTEND (estático)                    Cloudflare Pages      │
+│ FRONTEND (estático)                   Cloudflare Workers     │
 │   frontend-aleleo-tours/  →  CDN global, HTTPS, sin build    │
 │   js/core/config.js resuelve la URL del API                  │
 └───────────────────────┬──────────────────────────────────────┘
@@ -371,7 +371,7 @@ Cómo quedó resuelto:
 | HTTPS obligatorio | Redirección 301 y HSTS en nginx; TLS automático en Cloudflare |
 | Webhook de pagos | Firma SHA-256 verificada con `WOMPI_EVENTS_SECRET` (ver documento 09) |
 | Rotación de credenciales | `SACE_ADMIN_PASSWORD` rota la clave del administrador al reiniciar |
-| Caché y cabeceras del sitio | `frontend-aleleo-tours/_headers` (Cloudflare Pages) |
+| Caché y cabeceras del sitio | `frontend-aleleo-tours/_headers` (Cloudflare Workers / Pages) |
 
 ---
 
@@ -394,13 +394,19 @@ Secuencia real de un primer despliegue (opción A):
    el chatbot *AleLeoBot*.
 8. **`/api/salud` responde 200**, la plataforma marca el servicio como sano y le
    empieza a enviar tráfico.
-9. **Cloudflare Pages sirve el sitio.** `config.js` detecta
-   `www.aleleotours.com` y resuelve `https://api.aleleotours.com/api`.
-10. **El navegador llama al API.** El `Origin` está en `SACE_CORS_ORIGINS`, el
-    backend responde con `Access-Control-Allow-Origin` y la aplicación funciona.
+9. **Cloudflare sirve el sitio.** El build de Cloudflare ejecuta
+   `npx wrangler deploy` con el `wrangler.jsonc` de la raíz, que publica la
+   carpeta `frontend-aleleo-tours` como assets estáticos del Worker
+   `aleleotours`. Como todavía no hay dominio propio, `config.js` usa la URL
+   fija de `API_FIJA` (`https://sace-api.onrender.com/api`).
+10. **El navegador llama al API.** El `Origin` exacto del sitio debe estar en
+    `SACE_CORS_ORIGINS`, el backend responde con `Access-Control-Allow-Origin`
+    y la aplicación funciona.
 
 Comprobado en la verificación del apartado 14: si el `Origin` no está en la
-lista, el backend responde **403** y el navegador bloquea la petición.
+lista, el backend responde **403** y el navegador bloquea la petición. Eso fue
+justo lo que ocurrió en el primer despliegue real: la variable seguía apuntando
+a un dominio que el sitio ya no usaba, y hubo que corregirla en Render.
 
 ---
 
@@ -521,6 +527,24 @@ La prueba se hizo sobre una base **temporal y vacía** (`sace_deploy_test`), no
 sobre la base de desarrollo, para reproducir el escenario real de Neon y no
 alterar los datos locales.
 
+**Primer despliegue real en la nube (9 de noviembre de 2026).** Sobre esa misma
+configuración se publicó el sistema completo y se comprobó en Internet:
+
+| Comprobación | Resultado |
+|---|---|
+| Backend en Render (`sace-api`) | `Started SacejpaApplication in 126.5 s`, servicio live |
+| Base de datos | Neon, PostgreSQL 17.11, esquema creado por Hibernate |
+| Frontend en Cloudflare | `200` en las once páginas, `_headers` aplicado |
+| Home en navegador real | 6 destinos cargados desde `/api/servicios` |
+| CORS con el origen real del sitio | `Access-Control-Allow-Origin` correcto |
+| CORS con un origen no listado | **403** |
+| Ruta protegida sin token | **401** |
+
+La salida completa está en `06-Comprobante-de-Despliegue-SACE.md` §6.10. Aquella
+prueba local del 4 de noviembre no construyó la imagen Docker por falta de
+memoria; **Render sí la construyó**, así que el `Dockerfile` quedó validado en un
+entorno real.
+
 **Sobre la imagen Docker:** no se pudo construir en este equipo por el problema de
 memoria descrito en el error 7 del apartado anterior. Esto no compromete el
 despliegue: las tres rutas documentadas construyen la imagen en servidores con
@@ -544,7 +568,9 @@ el mismo perfil de configuración que usará el contenedor.
 | `deploy/.env.example` | Plantilla de variables de entorno |
 | `deploy/README.md` | Guía práctica de despliegue (opciones A, B y C) |
 | `frontend-aleleo-tours/js/core/config.js` | Resolución de la URL del API |
-| `frontend-aleleo-tours/_headers` | Cabeceras y caché para Cloudflare Pages |
+| `frontend-aleleo-tours/_headers` | Cabeceras y caché para Cloudflare |
+| `wrangler.jsonc` | Configuración del frontend en Cloudflare Workers (reproducible) |
+| `frontend-aleleo-tours/.assetsignore` | Excluye `node_modules/` del sitio publicado |
 | `backend-SACE/.../Controladores/SaludController.java` | Endpoint `/api/salud` |
 | `docs/10-Detalle-Despliegue-Como-Se-Hizo-Y-Como-Funciona.md` | Este documento |
 
