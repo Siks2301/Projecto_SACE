@@ -1,65 +1,24 @@
 # =====================================================================
-# _headers  ->  Cloudflare (Pages y Workers con assets estaticos)
+# _headers  ->  cabeceras de los assets estaticos (Cloudflare Workers)
 # ---------------------------------------------------------------------
-# Cloudflare lee este archivo desde la raiz del directorio publicado (la
-# carpeta frontend-aleleo-tours) y aplica las cabeceras a cada respuesta.
-# Funciona igual en Cloudflare Pages y en Workers con assets estaticos,
-# que es como esta publicado el sitio actualmente.
+# Cloudflare guardaba el JS y el HTML en el navegador hasta 7 dias
+# (Cache-Control: public, max-age=604800). Como el sitio no usa nombres de
+# archivo con hash, despues de desplegar un arreglo el navegador seguia
+# ejecutando la version anterior.
 #
-# Comprobado el 9 de noviembre de 2026 sobre el Worker desplegado: las
-# respuestas traen HSTS, X-Frame-Options, nosniff, Permissions-Policy y
-# Cache-Control max-age=604800 en /css, /js, /img y /vendor.
+# Con "max-age=0, must-revalidate" el navegador reutiliza el archivo solo si
+# el ETag coincide (respuesta 304, muy barata). Cada despliegue se ve al
+# instante sin obligar al usuario a limpiar la cache.
 #
-# Documentacion: https://developers.cloudflare.com/workers/static-assets/headers/
+# Los archivos con hash en el nombre no existen en este proyecto; si algun
+# dia se agregan, conviene darles max-age largo con immutable.
 # =====================================================================
 
-
-/*
-  X-Content-Type-Options: nosniff
-  X-Frame-Options: SAMEORIGIN
-  Referrer-Policy: strict-origin-when-cross-origin
-  Permissions-Policy: geolocation=(self), camera=(), microphone=(), payment=()
-  Strict-Transport-Security: max-age=31536000; includeSubDomains
-
-
-# ---------------------------------------------------------------------
-# RECURSOS ESTATICOS (Bootstrap, fuentes, imagenes, JS)
-# Se cachean 7 dias: son archivos que cambian poco.
-# ---------------------------------------------------------------------
-/vendor/*
-  Cache-Control: public, max-age=604800
-
-/css/*
-  Cache-Control: public, max-age=604800
-
 /js/*
-  Cache-Control: public, max-age=604800
+  Cache-Control: public, max-age=0, must-revalidate
 
-/img/*
-  Cache-Control: public, max-age=604800
-
-
-# ---------------------------------------------------------------------
-# PAGINAS HTML
-# Sin cache: al redesplegar, el navegador debe pedir la version nueva.
-# ---------------------------------------------------------------------
 /*.html
-  Cache-Control: no-cache, must-revalidate
+  Cache-Control: public, max-age=0, must-revalidate
 
-
-# ---------------------------------------------------------------------
-# CONTENT-SECURITY-POLICY  (desactivada a proposito)
-# ---------------------------------------------------------------------
-# Activala cuando la app este estable, pero ANTES de descomentar esta
-# seccion, ajusta 'connect-src' con el dominio real de tu API:
-#
-#   - backend en Render    : https://TU-SERVIDIO.onrender.com
-#   - backend en Railway   : https://TU-SERVICIO.up.railway.app
-#   - backend con dominio  : https://api.aleleotours.com
-#
-# Si te equivocas en connect-src, el navegador BLOQUEA las llamadas a la
-# API y la pagina muestra "Failed to fetch" aunque el backend este bien.
-#
-# /*
-#   Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://api.aleleotours.com; frame-src 'self' https://checkout.wompi.co https://*.wompi.co; base-uri 'self'; form-action 'self' https://checkout.wompi.co
-# */
+/
+  Cache-Control: public, max-age=0, must-revalidate

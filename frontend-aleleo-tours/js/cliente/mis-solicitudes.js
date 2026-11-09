@@ -103,6 +103,11 @@ async function cargarMisSolicitudes() {
         categoria: 'RESERVA',
         fechaCreacion: rl.fechaReserva || new Date().toISOString(),
         esLocal: true,
+        // Se conserva el servicio para poder registrar la reserva en el backend
+        // cuando el cliente pulse "Pagar": sin servicioGeneradoId el servidor no
+        // sabe cuanto vale y rechaza el cobro.
+        servicioId: rl.servicioId != null ? Number(rl.servicioId) : null,
+        pasajeros: Number(rl.pasajeros) || 1,
         precioEstimado: Number(rl.precio) || 0
       });
     }
@@ -470,6 +475,24 @@ async function cargarPrecioDesdeServidor(solicitudId) {
 }
 
 /**
+ * Indica si una solicitud vive solo en el navegador (reserva de localStorage)
+ * y todavia no tiene un id real del backend.
+ *
+ * <p>Las reservas locales usan {@code Date.now()} como id, por eso ademas de la
+ * bandera {@code esLocal} se comprueba el tamano del numero: un id de base de
+ * datos es pequeno y uno de milisegundos supera los mil millones.
+ *
+ * @param {object} solicitud solicitud a comprobar
+ * @returns {boolean} true si hay que registrarla antes de cobrar
+ */
+function esSolicitudLocal(solicitud) {
+  if (!solicitud) return false;
+  if (solicitud.esLocal) return true;
+  const id = Number(solicitud.id);
+  return Number.isFinite(id) && id > 1000000000;
+}
+
+/**
  * Abre el modal de pago.
  *
  * <p>Se pide el precio al servidor antes de mostrar nada. Si la solicitud no
@@ -496,31 +519,57 @@ async function abrirModalPago(solicitudId) {
   setProgresoPago(false);
   resetearBotonPago();
 
+  const montoEl = document.getElementById('pago-monto-input');
+  const btnConfirmar = document.getElementById('btn-confirmar-pago');
+
   document.getElementById('pago-solicitud-id').value = solicitudParaPago.id;
   document.getElementById('pago-tour-titulo').textContent = solicitudParaPago.titulo || 'Reserva de Viaje';
   document.getElementById('pago-solicitud-badge').textContent = `Solicitud #SOL-${solicitudParaPago.id}`;
 
   // Se muestra de inmediato para que el usuario vea que la accion arranco, y
   // se rellena el precio en cuanto responde el servidor.
-  document.getElementById('pago-monto-input').value = 'Calculando...';
+  montoEl.value = 'Calculando...';
+  // Mientras no haya precio no se puede cobrar: evita que se envie un pago con
+  // el texto "Calculando..." como monto.
+  if (btnConfirmar) btnConfirmar.disabled = true;
   modalBs.show();
 
   try {
     // Primero la configuracion (metodos habilitados y pasarela activa).
     await obtenerConfiguracionPagos();
 
+    // Una reserva hecha sin sesion (o cuando fallo el POST inicial) solo existe
+    // en localStorage y su id es Date.now(). Cotizarla tal cual devuelve 400
+    // porque esa solicitud no existe en el backend, asi que se registra primero.
+    if (esSolicitudLocal(solicitudParaPago)) {
+      const idReal = await persistirSolicitudLocal();
+      if (!idReal) {
+        throw new Error('No pudimos registrar la reserva en el servidor. '
+          + 'Verifica tu sesión y que el destino siga disponible.');
+      }
+      // persistirSolicitudLocal() actualiza el objeto de la lista; se refresca
+      // la vista para que los botones usen el id nuevo del backend.
+      document.getElementById('pago-solicitud-id').value = idReal;
+      document.getElementById('pago-solicitud-badge').textContent = `Solicitud #SOL-${idReal}`;
+      renderizarSolicitudes();
+    }
+
     // Despues el precio. En este orden porque el selector de metodos es
     // independiente del monto y ambos necesitan estar listos antes de que el
     // usuario pulse "Pagar".
     const monto = await cargarPrecioDesdeServidor(solicitudParaPago.id);
 
-    document.getElementById('pago-monto-input').value = formatearPesos(monto);
+    montoEl.value = formatearPesos(monto);
     document.getElementById('pago-monto-origina').textContent =
       'Precio fijado por AleLeo Tours segun el catalogo de servicios.';
     document.getElementById('pago-notas-input').value = '';
+    if (btnConfirmar) btnConfirmar.disabled = false;
 
   } catch (error) {
-    // Se cierra el modal: no se cobra nada y el motivo queda claro.
+    // No se deja "Calculando..." colgando: se limpia el campo y se avisa del
+    // motivo (con el modal cerrado el aviso queda visible en la pagina).
+    montoEl.value = '';
+    if (btnConfirmar) btnConfirmar.disabled = false;
     modalBs.hide();
     if (typeof Toast !== 'undefined') {
       Toast.mostrar(error.message || 'No pudimos abrir el pago.', 'error');
@@ -699,11 +748,19 @@ async function procesarPagoSolicitud(e) {
   }
 
   try {
+    // Sin un precio real no se envia nada: el campo muestra el valor que
+    // cotizo el servidor y solo entonces se habilita el boton.
+    const montoTexto = document.getElementById('pago-monto-input').value.trim();
+    if (!montoTexto || montoTexto === 'Calculando...') {
+      mostrarMensaje('msg-modal-pago', 'El precio aún se está calculando. Espera un momento e inténtalo otra vez.', 'error');
+      return;
+    }
+
     let targetSolicitudId = Number(rawSolicitudId);
 
     // Si la solicitud es local (reserva en localStorage o ID no persistido en
     // backend), se registra primero para poder cobrarla.
-    if (solicitudParaPago && (solicitudParaPago.esLocal || isNaN(targetSolicitudId) || targetSolicitudId > 1000000000)) {
+    if (esSolicitudLocal(solicitudParaPago)) {
       targetSolicitudId = await persistirSolicitudLocal();
     }
 
@@ -794,6 +851,15 @@ async function persistirSolicitudLocal() {
   const sesion = Sesion.obtener ? Sesion.obtener() : JSON.parse(sessionStorage.getItem('aleleo_sesion') || 'null');
   if (!sesion || !sesion.id) return null;
 
+  // Sin el servicio el backend no puede calcular el precio y rechazaria el
+  // cobro con un 400. Se corta aqui con un aviso claro en lugar de crear una
+  // solicitud inservible.
+  const servicioId = Number(solicitudParaPago && solicitudParaPago.servicioId);
+  if (!Number.isFinite(servicioId) || servicioId <= 0) {
+    console.warn('La reserva local no tiene servicioId: no se puede cotizar.');
+    return null;
+  }
+
   try {
     const respSol = await fetch(`${API_BASE}/solicitudes`, {
       method: 'POST',
@@ -806,7 +872,9 @@ async function persistirSolicitudLocal() {
         estado: 'PENDIENTE',
         prioridad: 'MEDIA',
         categoria: 'RESERVA',
-        clienteId: sesion.id
+        clienteId: sesion.id,
+        // El precio lo calcula el backend desde el catalogo del servicio.
+        servicioGeneradoId: servicioId
       })
     });
 
