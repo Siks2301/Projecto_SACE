@@ -51,3 +51,12 @@ deploy/certbot/
 *.pem
 *.key
 
+
+# ===== Respaldo comprimido del frontend =====
+# Artefacto local de respaldo (10 MB). El codigo ya esta versionado en la
+# carpeta frontend-aleleo-tours/, asi que el .rar no aporta al repositorio.
+frontend-aleleo-tours.rar
+
+# El lockfile del proyecto de pruebas si se versiona: fija las versiones
+# exactas para que 'npm ci' reproduzca la misma instalacion.
+!frontend-aleleo-tours/pruebas/package-lock.json

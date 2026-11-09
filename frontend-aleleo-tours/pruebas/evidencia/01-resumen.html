@@ -1,0 +1,103 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8">
+<title>Resumen de ejecución</title><style>
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: "Segoe UI", system-ui, sans-serif; color: #0f172a; background: #eef2f7; }
+  .hoja { width: 1280px; margin: 0 auto; padding: 40px 48px 48px; background: #ffffff; }
+  h1 { margin: 0 0 6px; font-size: 30px; letter-spacing: -.3px; }
+  h2 { margin: 28px 0 12px; font-size: 19px; }
+  p.sub { margin: 0; color: #475569; font-size: 14px; }
+  .marca { display: flex; align-items: center; gap: 14px; margin-bottom: 22px; }
+  .logo { width: 46px; height: 46px; border-radius: 12px; background: #0e7490; color: #fff;
+          display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 20px; }
+  .pill { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; }
+  .ok { background: #dcfce7; color: #15803d; }
+  .card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px 18px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { text-align: left; background: #0e7490; color: #fff; padding: 9px 10px; font-weight: 600; }
+  td { padding: 8px 10px; border-bottom: 1px solid #e2e8f0; vertical-align: top; }
+  tr:nth-child(even) td { background: #f8fafc; }
+  code, .mono { font-family: Consolas, "Cascadia Mono", monospace; }
+  .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin: 18px 0 4px; }
+  .kpi { border-radius: 12px; padding: 16px 18px; background: #f1f5f9; border-left: 5px solid #0e7490; }
+  .kpi b { display: block; font-size: 30px; line-height: 1.1; }
+  .kpi span { font-size: 12px; color: #475569; text-transform: uppercase; letter-spacing: .4px; }
+  .kpi.verde { border-left-color: #16a34a; }
+  footer { margin-top: 26px; padding-top: 12px; border-top: 1px solid #e2e8f0; color: #64748b; font-size: 12px;
+           display: flex; justify-content: space-between; }
+</style></head><body>
+<div class="hoja">
+  
+    <div class="marca">
+      <div class="logo">AL</div>
+      <div>
+        <div style="font-weight:700;letter-spacing:.4px;color:#0e7490;font-size:13px">ALELÉO TOURS · SACE</div>
+        <h1>Plan de pruebas del frontend — Resumen de ejecución</h1>
+        <p class="sub">Proyecto académico SACE (AleLeo Tours) · Ficha 3171149-B · Pruebas unitarias con Jest + jsdom</p>
+      </div>
+    </div><div class="card" style="display:flex;gap:34px;font-size:13px;color:#334155">
+       <div><b>Comando</b><br><span class="mono">npx jest --verbose</span></div>
+       <div><b>Carpeta</b><br><span class="mono">frontend-aleleo-tours/pruebas</span></div>
+       <div><b>Sistema</b><br>Windows_NT 10.0.26200 (x64)</div>
+       <div><b>Node / Jest</b><br>v24.21.0 · 29.7.0 · jsdom</div>
+     </div>
+  <div class="kpis">
+    <div class="kpi"><b>7</b><span>Suites ejecutadas</span></div>
+    <div class="kpi"><b>48</b><span>Casos de prueba</span></div>
+    <div class="kpi verde"><b>48</b><span>Casos aprobados</span></div>
+    <div class="kpi verde"><b>0</b><span>Casos fallidos</span></div>
+  </div>
+  <h2>Suites y módulos cubiertos</h2>
+  <table>
+    <thead><tr><th style="width:36%">Módulo del frontend</th><th>Qué se verifica</th>
+      <th style="width:9%;text-align:center">Casos</th><th style="width:10%;text-align:center">Estado</th></tr></thead>
+    <tbody><tr>
+    <td><strong>Núcleo · configuración de entorno</strong><br><span class="mono" style="color:#64748b;font-size:12px">js/core/config.js</span></td>
+    <td>Resolución de la URL del API (override, dominio, localhost).</td>
+    <td style="text-align:center"><strong>4</strong></td>
+    <td style="text-align:center"><span class="pill ok">PASS</span></td>
+  </tr><tr>
+    <td><strong>Núcleo · sesión y seguridad</strong><br><span class="mono" style="color:#64748b;font-size:12px">js/core/app.js</span></td>
+    <td>Escapado HTML (XSS), chat, contraseñas, sesión, Toast y fetch con token.</td>
+    <td style="text-align:center"><strong>12</strong></td>
+    <td style="text-align:center"><span class="pill ok">PASS</span></td>
+  </tr><tr>
+    <td><strong>Cliente · catálogo de destinos</strong><br><span class="mono" style="color:#64748b;font-size:12px">js/cliente/destinos-datos.js + destinos.js</span></td>
+    <td>Normalización, imágenes, categorías, mapeo del backend, precios y pasajeros.</td>
+    <td style="text-align:center"><strong>13</strong></td>
+    <td style="text-align:center"><span class="pill ok">PASS</span></td>
+  </tr><tr>
+    <td><strong>Administrador · reportes</strong><br><span class="mono" style="color:#64748b;font-size:12px">js/admin/reportes.js</span></td>
+    <td>Rangos de fecha, query string y etiquetas de estado/categoría.</td>
+    <td style="text-align:center"><strong>7</strong></td>
+    <td style="text-align:center"><span class="pill ok">PASS</span></td>
+  </tr><tr>
+    <td><strong>Cliente · mis solicitudes</strong><br><span class="mono" style="color:#64748b;font-size:12px">js/cliente/mis-solicitudes.js</span></td>
+    <td>Estados de la solicitud, pagos aprobados y formato de pesos.</td>
+    <td style="text-align:center"><strong>5</strong></td>
+    <td style="text-align:center"><span class="pill ok">PASS</span></td>
+  </tr><tr>
+    <td><strong>Empleado · panel operativo</strong><br><span class="mono" style="color:#64748b;font-size:12px">js/empleado/panel-empleado.js</span></td>
+    <td>Control de acceso del asesor y contadores del tablero (KPI).</td>
+    <td style="text-align:center"><strong>5</strong></td>
+    <td style="text-align:center"><span class="pill ok">PASS</span></td>
+  </tr><tr>
+    <td><strong>Administrador · empleados</strong><br><span class="mono" style="color:#64748b;font-size:12px">js/admin/gestion-empleados.js</span></td>
+    <td>Normalización del correo corporativo del empleado.</td>
+    <td style="text-align:center"><strong>2</strong></td>
+    <td style="text-align:center"><span class="pill ok">PASS</span></td>
+  </tr></tbody>
+  </table>
+  <h2>Resultado global</h2>
+  <div class="card" style="display:flex;justify-content:space-between;align-items:center">
+    <div style="font-size:15px">
+      <span class="pill ok" style="font-size:13px">7 suites aprobadas · 48/48 pruebas aprobadas · 0 fallos</span>
+      <div style="color:#475569;font-size:13px;margin-top:8px">
+        Tiempo total de ejecución: <b>6.279 s</b>
+        · Cobertura funcional de las reglas puras del frontend.
+      </div>
+    </div>
+    <div class="mono" style="font-size:12px;color:#64748b">frontend-aleleo-tours/pruebas/tests</div>
+  </div>
+  <footer><span>Evidencia generada automáticamente a partir de la ejecución real de Jest.</span>
+          <span>Página 1 de 3 · 7 de noviembre de 2026 a las 11:52 a. m.</span></footer>
+</div></body></html>

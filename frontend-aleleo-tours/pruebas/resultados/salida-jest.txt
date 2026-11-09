@@ -1,0 +1,86 @@
+PASS tests/destinos.test.js
+  destinos-datos.js - normalizacion de texto
+    √ CP-13: pasa a minusculas, quita acentos y colapsa espacios (36 ms)
+    √ CP-14: normalizarVarios une campos y descarta los vacios (3 ms)
+  destinos-datos.js - imagen y categorias
+    √ CP-15: resuelve la foto por destino y cae en Cartagena cuando no la conoce (3 ms)
+    √ CP-16: clasifica el destino en las categorias del filtro (4 ms)
+    √ CP-16b (OBS-01): el catalogo del backend pierde categorias frente a la copia local (3 ms)
+  destinos-datos.js - mapeo del servicio del backend
+    √ CP-17: mapearServicio traduce el DTO a la tarjeta del catalogo (1 ms)
+    √ CP-18: mapearServicio aplica valores por defecto si el backend manda datos incompletos (4 ms)
+  destinos-datos.js - etiquetas y precios
+    √ CP-19: etiquetaTipoServicio solo etiqueta los tipos conocidos e incluyeVuelos solo a los aereos (3 ms)
+    √ CP-20: formatearPrecio usa el formato de pesos colombianos (51 ms)
+    √ CP-20b: etiquetaCategorias une como maximo dos categorias (2 ms)
+  destinos.js - reserva y busqueda
+    √ CP-21: leerPasajeros acota el valor al rango 1-10 y usa 1 si no es numero (13 ms)
+    √ CP-22: destinoCoincide acepta nombre, titulo y palabras sueltas (sin acentos) (1 ms)
+    √ CP-23: la copia local del catalogo mantiene los 7 destinos y precios enteros (10 ms)
+
+PASS tests/app.test.js
+  app.js - escaperHtml (prevencion de XSS)
+    √ CP-05: escapa los seis caracteres peligrosos de HTML (34 ms)
+    √ CP-06: tolera null, undefined y numeros sin romper la interfaz (2 ms)
+  app.js - mensajeEsDelCliente (autoria de burbujas del chat)
+    √ CP-07: identifica cliente, equipo y remitentes desconocidos (13 ms)
+  app.js - validarFortalezaContrasenia
+    √ CP-08: acepta una contrasena con los cinco requisitos (5 ms)
+    √ CP-09: rechaza cada requisito incumplido con un mensaje distinto (3 ms)
+  app.js - Sesion
+    √ CP-10: guarda, lee y cierra la sesion en sessionStorage (3 ms)
+    √ CP-10b: si sessionStorage tiene basura no lanza y devuelve null (3 ms)
+  app.js - Toast
+    √ CP-11: crea el contenedor, pinta el aviso y lo retira a los 3,5 s (32 ms)
+    √ CP-11b: reutiliza un unico contenedor para varios avisos y usa tipo info por defecto (11 ms)
+  app.js - protegerFetch (token y sesion vencida)
+    √ CP-12: inyecta el token solo en las llamadas al API propia (3 ms)
+    √ CP-12b: respeta un Authorization que ya venia en la peticion (1 ms)
+    √ CP-12c: ante un 401 borra la sesion (1 ms)
+
+PASS tests/mis-solicitudes.test.js
+  mis-solicitudes.js - estado de la solicitud
+    √ CP-31: normalizarEstado pasa a mayusculas y usa PENDIENTE por defecto (7 ms)
+    √ CP-32: formatearTextoEstado distingue reserva de las demas categorias (2 ms)
+    √ CP-33: formatearTextoEstado traduce los estados finales y conserva los desconocidos (2 ms)
+  mis-solicitudes.js - pagos
+    √ CP-34: esPagoAprobado reconoce las tres variantes del backend (2 ms)
+    √ CP-35: formatearPesos usa separador de miles colombiano y evita mostrar NaN (5 ms)
+
+PASS tests/config.test.js
+  config.js - resolucion de la URL del API
+    √ CP-01: en localhost usa el backend de desarrollo en el puerto 8082 (12 ms)
+    √ CP-02: en un dominio real deduce https://api.<dominio>/api (6 ms)
+    √ CP-03: window.SACE_API_BASE tiene prioridad (override en caliente) y se limpian las barras finales (4 ms)
+    √ CP-04: sin window (entorno sin navegador) cae en el valor local por defecto (3 ms)
+
+PASS tests/reportes.test.js
+  reportes.js - filtros de fecha
+    √ CP-24: HOY devuelve el mismo dia en desde y hasta (81 ms)
+    √ CP-25: SEMANA cubre los ultimos 7 dias incluido hoy (6 ms)
+    √ CP-26: MES_ACTUAL empieza el dia 1 y MES_ANTERIOR cierra el mes completo (2 ms)
+    √ CP-27: HISTORICO y cualquier preset desconocido van sin filtro de fecha (2 ms)
+    √ CP-28: construirQueryParams solo agrega los extremos informados (48 ms)
+  reportes.js - etiquetas legibles
+    √ CP-29: formatearEstado traduce los cuatro estados y deja pasar lo desconocido (2 ms)
+    √ CP-30: formatearCategoria traduce el catalogo y embellece las categorias nuevas (7 ms)
+
+PASS tests/panel-empleado.test.js
+  panel-empleado.js - acceso del asesor
+    √ CP-36: sin sesion o con la cuenta inactiva/bloqueada no hay acceso (15 ms)
+    √ CP-37: solo ACTIVA + DISPONIBLE habilita el panel (sin distinguir mayusculas) (1 ms)
+    √ CP-37b: una sesion sin estados declarados se asume ACTIVA y DISPONIBLE (1 ms)
+  panel-empleado.js - contadores KPI
+    √ CP-38: calcularKPIs cuenta asignadas, pendientes, en proceso y resueltas (26 ms)
+    √ CP-38b: sin solicitudes los contadores quedan en cero y no falla si faltan los nodos (2 ms)
+
+PASS tests/gestion-empleados.test.js
+  gestion-empleados.js - correo corporativo
+    √ CP-39: parteLocalEmpleado deja solo el texto anterior a la arroba, en minusculas y sin espacios (2 ms)
+    √ CP-40: valores vacios o nulos no rompen el formulario
+
+Test Suites: 7 passed, 7 total
+Tests:       48 passed, 48 total
+Snapshots:   0 total
+Time:        6.279 s
+Ran all test suites.

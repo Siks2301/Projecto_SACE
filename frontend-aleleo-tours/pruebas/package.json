@@ -1,0 +1,15 @@
+{
+  "name": "sace-frontend-pruebas",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Pruebas unitarias del frontend SACE (AleLeo Tours) con Jest + jsdom",
+  "scripts": {
+    "test": "jest",
+    "test:verbose": "jest --verbose --colors=false",
+    "test:json": "jest --json --outputFile=resultados/resultados.json --colors=false"
+  },
+  "devDependencies": {
+    "jest": "29.7.0",
+    "jest-environment-jsdom": "29.7.0"
+  }
+}

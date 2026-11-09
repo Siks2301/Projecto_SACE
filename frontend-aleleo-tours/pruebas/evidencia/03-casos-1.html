@@ -1,0 +1,189 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8">
+<title>Casos de prueba ejecutados (1/2)</title><style>
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: "Segoe UI", system-ui, sans-serif; color: #0f172a; background: #eef2f7; }
+  .hoja { width: 1280px; margin: 0 auto; padding: 40px 48px 48px; background: #ffffff; }
+  h1 { margin: 0 0 6px; font-size: 30px; letter-spacing: -.3px; }
+  h2 { margin: 28px 0 12px; font-size: 19px; }
+  p.sub { margin: 0; color: #475569; font-size: 14px; }
+  .marca { display: flex; align-items: center; gap: 14px; margin-bottom: 22px; }
+  .logo { width: 46px; height: 46px; border-radius: 12px; background: #0e7490; color: #fff;
+          display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 20px; }
+  .pill { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; }
+  .ok { background: #dcfce7; color: #15803d; }
+  .card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px 18px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { text-align: left; background: #0e7490; color: #fff; padding: 9px 10px; font-weight: 600; }
+  td { padding: 8px 10px; border-bottom: 1px solid #e2e8f0; vertical-align: top; }
+  tr:nth-child(even) td { background: #f8fafc; }
+  code, .mono { font-family: Consolas, "Cascadia Mono", monospace; }
+  .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin: 18px 0 4px; }
+  .kpi { border-radius: 12px; padding: 16px 18px; background: #f1f5f9; border-left: 5px solid #0e7490; }
+  .kpi b { display: block; font-size: 30px; line-height: 1.1; }
+  .kpi span { font-size: 12px; color: #475569; text-transform: uppercase; letter-spacing: .4px; }
+  .kpi.verde { border-left-color: #16a34a; }
+  footer { margin-top: 26px; padding-top: 12px; border-top: 1px solid #e2e8f0; color: #64748b; font-size: 12px;
+           display: flex; justify-content: space-between; }
+
+  table{font-size:12.5px} td{padding:7px 9px}
+</style></head><body>
+<div class="hoja">
+  
+    <div class="marca">
+      <div class="logo">AL</div>
+      <div>
+        <div style="font-weight:700;letter-spacing:.4px;color:#0e7490;font-size:13px">ALELÉO TOURS · SACE</div>
+        <h1>Casos de prueba ejecutados (1 de 2)</h1>
+        <p class="sub">48 casos · 7 suites · todos aprobados · casos 1 a 24 de 48</p>
+      </div>
+    </div><table>
+    <thead><tr><th style="width:9%">ID</th><th style="width:24%">Módulo</th>
+      <th>Caso de prueba</th><th style="width:9%;text-align:center">Tiempo</th>
+      <th style="width:9%;text-align:center">Estado</th></tr></thead>
+    <tbody><tr>
+      <td class="mono" style="white-space:nowrap">CP-01</td>
+      <td>Núcleo · configuración de entorno</td>
+      <td>en localhost usa el backend de desarrollo en el puerto 8082</td>
+      <td style="text-align:center;white-space:nowrap">5 ms</td>
+      <td style="text-align:center"><span class="pill ok">PASS</span></td>
+    </tr><tr>
+      <td class="mono" style="white-space:nowrap">CP-02</td>
+      <td>Núcleo · configuración de entorno</td>
+      <td>en un dominio real deduce https://api.<dominio>/api</td>
+      <td style="text-align:center;white-space:nowrap">3 ms</td>
+      <td style="text-align:center"><span class="pill ok">PASS</span></td>
+    </tr><tr>
+      <td class="mono" style="white-space:nowrap">CP-03</td>
+      <td>Núcleo · configuración de entorno</td>
+      <td>window.SACE_API_BASE tiene prioridad (override en caliente) y se limpian las barras finales</td>
+      <td style="text-align:center;white-space:nowrap">5 ms</td>
+      <td style="text-align:center"><span class="pill ok">PASS</span></td>
+    </tr><tr>
+      <td class="mono" style="white-space:nowrap">CP-04</td>
+      <td>Núcleo · configuración de entorno</td>
+      <td>sin window (entorno sin navegador) cae en el valor local por defecto</td>
+      <td style="text-align:center;white-space:nowrap">3 ms</td>
+      <td style="text-align:center"><span class="pill ok">PASS</span></td>
+    </tr><tr>
+      <td class="mono" style="white-space:nowrap">CP-05</td>
+      <td>Núcleo · sesión y seguridad</td>
+      <td>escapa los seis caracteres peligrosos de HTML</td>
+      <td style="text-align:center;white-space:nowrap">43 ms</td>
+      <td style="text-align:center"><span class="pill ok">PASS</span></td>
+    </tr><tr>
+      <td class="mono" style="white-space:nowrap">CP-06</td>
+      <td>Núcleo · sesión y seguridad</td>
+      <td>tolera null, undefined y numeros sin romper la interfaz</td>
+      <td style="text-align:center;white-space:nowrap">15 ms</td>
+      <td style="text-align:center"><span class="pill ok">PASS</span></td>
+    </tr><tr>
+      <td class="mono" style="white-space:nowrap">CP-07</td>
+      <td>Núcleo · sesión y seguridad</td>
+      <td>identifica cliente, equipo y remitentes desconocidos</td>
+      <td style="text-align:center;white-space:nowrap">2 ms</td>
+      <td style="text-align:center"><span class="pill ok">PASS</span></td>
+    </tr><tr>
+      <td class="mono" style="white-space:nowrap">CP-08</td>
+      <td>Núcleo · sesión y seguridad</td>
+      <td>acepta una contrasena con los cinco requisitos</td>
+      <td style="text-align:center;white-space:nowrap">6 ms</td>
+      <td style="text-align:center"><span class="pill ok">PASS</span></td>
+    </tr><tr>
+      <td class="mono" style="white-space:nowrap">CP-09</td>
+      <td>Núcleo · sesión y seguridad</td>
+      <td>rechaza cada requisito incumplido con un mensaje distinto</td>
+      <td style="text-align:center;white-space:nowrap">4 ms</td>
+      <td style="text-align:center"><span class="pill ok">PASS</span></td>
+    </tr><tr>
+      <td class="mono" style="white-space:nowrap">CP-10</td>
+      <td>Núcleo · sesión y seguridad</td>
+      <td>guarda, lee y cierra la sesion en sessionStorage</td>
+      <td style="text-align:center;white-space:nowrap">4 ms</td>
+      <td style="text-align:center"><span class="pill ok">PASS</span></td>
+    </tr><tr>
+      <td class="mono" style="white-space:nowrap">CP-10b</td>
+      <td>Núcleo · sesión y seguridad</td>
+      <td>si sessionStorage tiene basura no lanza y devuelve null</td>
+      <td style="text-align:center;white-space:nowrap">6 ms</td>
+      <td style="text-align:center"><span class="pill ok">PASS</span></td>
+    </tr><tr>
+      <td class="mono" style="white-space:nowrap">CP-11</td>
+      <td>Núcleo · sesión y seguridad</td>
+      <td>crea el contenedor, pinta el aviso y lo retira a los 3,5 s</td>
+      <td style="text-align:center;white-space:nowrap">34 ms</td>
+      <td style="text-align:center"><span class="pill ok">PASS</span></td>
+    </tr><tr>
+      <td class="mono" style="white-space:nowrap">CP-11b</td>
+      <td>Núcleo · sesión y seguridad</td>
+      <td>reutiliza un unico contenedor para varios avisos y usa tipo info por defecto</td>
+      <td style="text-align:center;white-space:nowrap">11 ms</td>
+      <td style="text-align:center"><span class="pill ok">PASS</span></td>
+    </tr><tr>
+      <td class="mono" style="white-space:nowrap">CP-12</td>
+      <td>Núcleo · sesión y seguridad</td>
+      <td>inyecta el token solo en las llamadas al API propia</td>
+      <td style="text-align:center;white-space:nowrap">2 ms</td>
+      <td style="text-align:center"><span class="pill ok">PASS</span></td>
+    </tr><tr>
+      <td class="mono" style="white-space:nowrap">CP-12b</td>
+      <td>Núcleo · sesión y seguridad</td>
+      <td>respeta un Authorization que ya venia en la peticion</td>
+      <td style="text-align:center;white-space:nowrap">1 ms</td>
+      <td style="text-align:center"><span class="pill ok">PASS</span></td>
+    </tr><tr>
+      <td class="mono" style="white-space:nowrap">CP-12c</td>
+      <td>Núcleo · sesión y seguridad</td>
+      <td>ante un 401 borra la sesion</td>
+      <td style="text-align:center;white-space:nowrap">1 ms</td>
+      <td style="text-align:center"><span class="pill ok">PASS</span></td>
+    </tr><tr>
+      <td class="mono" style="white-space:nowrap">CP-13</td>
+      <td>Cliente · catálogo de destinos</td>
+      <td>pasa a minusculas, quita acentos y colapsa espacios</td>
+      <td style="text-align:center;white-space:nowrap">48 ms</td>
+      <td style="text-align:center"><span class="pill ok">PASS</span></td>
+    </tr><tr>
+      <td class="mono" style="white-space:nowrap">CP-14</td>
+      <td>Cliente · catálogo de destinos</td>
+      <td>normalizarVarios une campos y descarta los vacios</td>
+      <td style="text-align:center;white-space:nowrap">3 ms</td>
+      <td style="text-align:center"><span class="pill ok">PASS</span></td>
+    </tr><tr>
+      <td class="mono" style="white-space:nowrap">CP-15</td>
+      <td>Cliente · catálogo de destinos</td>
+      <td>resuelve la foto por destino y cae en Cartagena cuando no la conoce</td>
+      <td style="text-align:center;white-space:nowrap">17 ms</td>
+      <td style="text-align:center"><span class="pill ok">PASS</span></td>
+    </tr><tr>
+      <td class="mono" style="white-space:nowrap">CP-16</td>
+      <td>Cliente · catálogo de destinos</td>
+      <td>clasifica el destino en las categorias del filtro</td>
+      <td style="text-align:center;white-space:nowrap">3 ms</td>
+      <td style="text-align:center"><span class="pill ok">PASS</span></td>
+    </tr><tr>
+      <td class="mono" style="white-space:nowrap">CP-16b (OBS-01)</td>
+      <td>Cliente · catálogo de destinos</td>
+      <td>el catalogo del backend pierde categorias frente a la copia local</td>
+      <td style="text-align:center;white-space:nowrap">2 ms</td>
+      <td style="text-align:center"><span class="pill ok">PASS</span></td>
+    </tr><tr>
+      <td class="mono" style="white-space:nowrap">CP-17</td>
+      <td>Cliente · catálogo de destinos</td>
+      <td>mapearServicio traduce el DTO a la tarjeta del catalogo</td>
+      <td style="text-align:center;white-space:nowrap">1 ms</td>
+      <td style="text-align:center"><span class="pill ok">PASS</span></td>
+    </tr><tr>
+      <td class="mono" style="white-space:nowrap">CP-18</td>
+      <td>Cliente · catálogo de destinos</td>
+      <td>mapearServicio aplica valores por defecto si el backend manda datos incompletos</td>
+      <td style="text-align:center;white-space:nowrap">1 ms</td>
+      <td style="text-align:center"><span class="pill ok">PASS</span></td>
+    </tr><tr>
+      <td class="mono" style="white-space:nowrap">CP-19</td>
+      <td>Cliente · catálogo de destinos</td>
+      <td>etiquetaTipoServicio solo etiqueta los tipos conocidos e incluyeVuelos solo a los aereos</td>
+      <td style="text-align:center;white-space:nowrap">1 ms</td>
+      <td style="text-align:center"><span class="pill ok">PASS</span></td>
+    </tr></tbody>
+  </table><footer><span>Evidencia generada automáticamente a partir de la ejecución real de Jest.</span>
+          <span>Página 3 de 4 · 7 de noviembre de 2026 a las 11:52 a. m.</span></footer></div></body></html>
