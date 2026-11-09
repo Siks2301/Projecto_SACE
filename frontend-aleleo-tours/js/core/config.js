@@ -22,9 +22,11 @@
 (function () {
 
   // --- 2) Valor fijo por entorno. Edita SOLO esta linea al desplegar. ------
-  // Ejemplo de produccion:  const API_FIJA = 'https://api.aleleotours.com/api';
-  // Deja la cadena vacia ('') para que el sitio detecte el dominio solo.
-  const API_FIJA = '';
+  // Produccion actual (Render): el backend vive en sace-api.onrender.com.
+  // Cuando se registre el dominio propio y la API quede en api.aleleotours.com,
+  // basta con dejar esta cadena vacia ('') y la deteccion por dominio del
+  // punto 3 la resolvera sola.
+  const API_FIJA = 'https://sace-api.onrender.com/api';
 
   // Dominios de desarrollo: nunca se les deduce una API remota.
   const ES_LOCAL = /^(localhost|127\.0\.0\.1|0\.0\.0\.0|\[::1\]|::1)$/i;
