@@ -1,8 +1,17 @@
-# Errores encontrados en AleLeo Tours — SACE
+# Anexo — Errores encontrados y correcciones
+
+_Proyecto académico AleLeo Tours (SENA) · Ficha / Grupo: 3171149-B_
+_Actualizado: 10 de noviembre de 2026_
+
+> **Qué es este documento.** La bitácora de hallazgos y correcciones del sistema,
+> con las rondas de verificación manual que se hicieron mientras se corregían. Es
+> el **anexo del Plan de Pruebas** ([`03-Plan-de-Pruebas-SACE.md`](03-Plan-de-Pruebas-SACE.md)):
+> las **92** suites formales y sus CP viven allí; aquí se documenta el trabajo de
+> depuración (104 + 35 comprobaciones manuales) que no forma parte de esos CP.
 
 Medidos con inspección de DOM, pruebas reales en el navegador y consultas a la
 base, no de forma teórica.
-Fechas de verificación: 4 de octubre de 2026.
+Fecha de la última verificación: 4 de octubre de 2026.
 
 ---
 

@@ -664,7 +664,7 @@ function inicializarTabsLogin() {
  * preguntas frecuentes, etc. son TEXT en la base, pero el formulario tiene que
  * poner un techo. Antes no havia ninguno, y al superar el limite el backend
  * respondia con un mensaje que no explicaba la causa (ver el 3.9 de
- * docs/errores-encontrados.md). Con el contador, el usuario ve cuanto le queda
+ * docs/Anexo-Errores-y-Correcciones.md). Con el contador, el usuario ve cuanto le queda
  * antes de llegar al tope en lugar de encontrarse un error.
  *
  * <p>Se activa sola en cualquier textarea o input que traiga el atributo

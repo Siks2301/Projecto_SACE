@@ -39,10 +39,12 @@ El backlog se deriva de las 11 historias de usuario documentadas en 'Historias_d
 | Historias de usuario documentadas | 11 (HU-01 … HU-11) |
 | Requerimientos funcionales identificados | 14 (RF-01 … RF-14) |
 | Requerimientos no funcionales | 8 (RNF-01 … RNF-08) |
-| Casos de prueba ejecutados | 62 PASS / 0 FAIL (21/09/2026) |
+| Casos de prueba ejecutados | 92 PASS / 0 FAIL (21 sep + 3 oct 2026) |
 | Pruebas de regresión del backend | 37 |
 | Pruebas de correcciones de seguridad | 12 |
 | Pruebas del frontend (DOM simulado) | 13 |
+| Pruebas del módulo de pagos (pasarela) | 30 |
+| Pruebas del frontend con Jest (Actividad 1) | 48 PASS / 0 FAIL (7 suites) |
 | Repositorio publicado | github.com/Siks2301/Projecto_SACE |
 
 ### 2.5 Distribución del trabajo por integrante

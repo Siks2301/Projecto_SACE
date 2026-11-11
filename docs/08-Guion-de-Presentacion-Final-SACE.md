@@ -27,10 +27,10 @@ La duración total recomendada es de 15 a 20 minutos, más la ronda de preguntas
 | 5 | Base de datos y normalización (criterio 4) | Yerson | 1.5 min | **pgAdmin**: BD `SACE_db` + GitHub: `docs/07-…` |
 | 6 | Control de versiones y colaboración (criterio 5) | Felipe | 1 min | GitHub: pestaña *Commits* y *Ramas* del repo |
 | 7 | Gestión del proyecto (criterio 6) | Yerson | 1.5 min | GitHub: `docs/02-Backlog…` |
-| 8 | Documentación (criterio 7) | Felipe | 1 min | GitHub: README + `docs/05-…` + `docs/INDICE_EVIDENCIAS.md` |
+| 8 | Documentación (criterio 7) | Felipe | 1 min | GitHub: README + `docs/05-…` + `docs/INDICE.md` |
 | 9 | Preparación para pruebas (criterio 8) | Cesar | 1 min | GitHub: `docs/03-Plan-de-Pruebas…` |
 | 10 | Preparación para el despliegue (criterio 9) | Cesar | 1.5 min | GitHub: `docs/04-…` + `docs/06-…` + verificación en vivo |
-| 11 | Cierre y preguntas del jurado | Todos | 2 min | GitHub: `docs/INDICE_EVIDENCIAS.md` |
+| 11 | Cierre y preguntas del jurado | Todos | 2 min | GitHub: `docs/INDICE.md` |
 
 ---
 
@@ -58,7 +58,7 @@ Después nombra los requerimientos funcionales RF-01…RF-14 (registro, login, c
 
 **En GitHub:** Felipe abre la carpeta `docs/diagramas/` y proyecta las imágenes en este orden: primero el **diagrama de casos de uso**, que muestra qué puede hacer cada rol; después el **diagrama de clases**, que muestra la estructura del sistema; luego el **diagrama de arquitectura**, que explica cómo se conectan el frontend, el backend y la base de datos; y por último el **modelo entidad relación** y el **modelo relacional**, que muestran cómo se organizan los datos. En GitHub basta hacer clic sobre cada imagen para ampliarla.
 
-Felipe explica el diseño de la base de datos apoyándose en el modelo relacional: 11 tablas, la herencia de persona → cliente/empleado y las tablas puente que resuelven las relaciones muchos a muchos. Para el diseño de interfaces abre la carpeta `docs/capturas/` y pasa 6 u 8 capturas representativas (login, home del administrador, gestión de solicitudes, reportes, destinos y mis solicitudes con el chatbot), guiándose por el índice que aparece en `docs/INDICE-CAPTURAS.md`. Cierra diciendo: «todo esto se implementó y lo van a ver funcionando en la demostración».
+Felipe explica el diseño de la base de datos apoyándose en el modelo relacional: 11 tablas, la herencia de persona → cliente/empleado y las tablas puente que resuelven las relaciones muchos a muchos. Para el diseño de interfaces abre la carpeta `docs/capturas/` y pasa 6 u 8 capturas representativas (login, home del administrador, gestión de solicitudes, reportes, destinos y mis solicitudes con el chatbot), guiándose por el índice que aparece en `docs/INDICE.md`. Cierra diciendo: «todo esto se implementó y lo van a ver funcionando en la demostración».
 
 ---
 
@@ -110,7 +110,7 @@ Con las tablas y sus constraints en pantalla (pgAdmin), explica la integridad de
 
 #### 7. Documentación — Felipe (1 min) — criterio 7 (5 %)
 
-**En GitHub:** Felipe vuelve al README de la raíz y muestra los requisitos y la instalación paso a paso: las tecnologías (PostgreSQL 18, Java 17, Spring Boot y Maven), la configuración de variables de entorno y cómo levantar el backend y el frontend. Después abre `docs/05-Manual-de-Usuario-SACE.md`, el manual de uso por perfil (cliente, empleado y administrador), y por último abre `docs/INDICE_EVIDENCIAS.md`, que mapea los nueve criterios de la rúbrica con sus evidencias; este índice es, en palabras de Felipe, la «llave» de toda la sustentación, porque demuestra con qué evidencia se cubre cada punto evaluado.
+**En GitHub:** Felipe vuelve al README de la raíz y muestra los requisitos y la instalación paso a paso: las tecnologías (PostgreSQL 18, Java 17, Spring Boot y Maven), la configuración de variables de entorno y cómo levantar el backend y el frontend. Después abre `docs/05-Manual-de-Usuario-SACE.md`, el manual de uso por perfil (cliente, empleado y administrador), y por último abre `docs/INDICE.md`, que mapea los nueve criterios de la rúbrica con sus evidencias; este índice es, en palabras de Felipe, la «llave» de toda la sustentación, porque demuestra con qué evidencia se cubre cada punto evaluado.
 
 ---
 
@@ -122,13 +122,13 @@ Con las tablas y sus constraints en pantalla (pgAdmin), explica la integridad de
 
 #### 9. Preparación para el despliegue — Cesar (1.5 min) — criterio 9 (5 %)
 
-**En GitHub:** Cesar abre `docs/04-Plan-de-Despliegue-SACE.md` y muestra la configuración real del despliegue: las dependencias (PostgreSQL 18, JDK 17 y Maven), las variables de entorno y la arquitectura de despliegue local del proyecto. Después abre `docs/06-Comprobante-de-Despliegue-SACE.md`, donde está la verificación real: los servicios escuchando en el puerto 8082 (la API) y en el 8091 (el frontend), el `GET /api/servicios` respondiendo 200 y el login del administrador con su token. Para terminar, abre las capturas de despliegue que están en `docs/capturas/` (`01_Despliegue_Login.png`, `02_Despliegue_Home.png` y `03_Despliegue_Destinos.png`). Si el ambiente lo permite, hace la verificación en vivo: enciende el backend, muestra el log y consulta un recurso de la API.
+**En GitHub:** Cesar abre `docs/04-Plan-de-Despliegue-SACE.md` y muestra la configuración real del despliegue: las dependencias (PostgreSQL 18, JDK 17 y Maven), las variables de entorno y la arquitectura de despliegue local del proyecto. Después abre `docs/06-Despliegue-Comprobante-y-Detalle-SACE.md`, donde está la verificación real: los servicios escuchando en el puerto 8082 (la API) y en el 8091 (el frontend), el `GET /api/servicios` respondiendo 200 y el login del administrador con su token. Para terminar, abre las capturas de despliegue que están en `docs/capturas/` (`01_Despliegue_Login.png`, `02_Despliegue_Home.png` y `03_Despliegue_Destinos.png`). Si el ambiente lo permite, hace la verificación en vivo: enciende el backend, muestra el log y consulta un recurso de la API.
 
 ---
 
 #### Cierre — todos (2 min)
 
-**En GitHub:** se abre `docs/INDICE_EVIDENCIAS.md` y se recorre la tabla de autoevaluación con los nueve criterios de la rúbrica y su evidencia. Cada integrante hace un resumen de una frase de su módulo — Cesar sobre el backend y la seguridad, Yerson sobre la base de datos, Felipe sobre el frontend — y el equipo cierra con un «Quedamos atentos a sus preguntas». Cada integrante responde las preguntas que corresponden a su módulo.
+**En GitHub:** se abre `docs/INDICE.md` y se recorre la tabla de autoevaluación con los nueve criterios de la rúbrica y su evidencia. Cada integrante hace un resumen de una frase de su módulo — Cesar sobre el backend y la seguridad, Yerson sobre la base de datos, Felipe sobre el frontend — y el equipo cierra con un «Quedamos atentos a sus preguntas». Cada integrante responde las preguntas que corresponden a su módulo.
 
 ---
 
@@ -138,7 +138,7 @@ La siguiente tabla resume quién domina cada módulo, en qué bloques habla, con
 
 | Integrante | Módulo que domina | Habla en | Entrega / herramienta que muestra | Responde preguntas de |
 |---|---|---|---|---|
-| Cesar Leonardo Ramírez Montejo | Backend, seguridad, pagos/PDF, pruebas y despliegue | Apertura, desarrollo (1.ª parte), pruebas, despliegue, cierre | IntelliJ: `backend-SACE/…`, `API-Endpoints`; GitHub: `03-Plan-de-Pruebas`, `04/06-Despliegue` | Token/seguridad, pasarela de pagos, comprobante, 62/62 pruebas, despliegue |
+| Cesar Leonardo Ramírez Montejo | Backend, seguridad, pagos/PDF, pruebas y despliegue | Apertura, desarrollo (1.ª parte), pruebas, despliegue, cierre | IntelliJ: `backend-SACE/…`, `API-Endpoints`; GitHub: `03-Plan-de-Pruebas`, `04/06-Despliegue` | Token/seguridad, pasarela de pagos, comprobante, 92/92 pruebas, despliegue |
 | Yerson Alexei Torres Garcia | Base de datos y modelos | Análisis, base de datos, gestión | pgAdmin: BD `SACE_db`; GitHub: `01-Analisis…`, `SACE_db_ddl.sql`, `07-Modelo de Datos…`, `02-Backlog…` | Problema/alcance/requerimientos, MER/relacional/DDL, normalización, backlog y sprints |
 | Felipe Gonzales Quitero | Frontend e interfaces | Diseño, desarrollo (demo), control de versiones, documentación | VS Code: `frontend-aleleo-tours/`; GitHub: `docs/diagramas/`, `docs/capturas/`, Commits/Ramas, README | Interfaz/capturas, chatbot, GitHub/commits, README/manual |
 
@@ -165,7 +165,7 @@ La secuencia de la demostración sigue el mapa «Cómo mostrar las funciones» d
 
 #### Plan B si falla la conexión, el demo o el internet
 
-Si la demostración local fallara, las capturas ya tomadas en el propio repositorio permiten avanzar igual: se proyectan desde `docs/capturas/` (12 de interfaz y 3 del despliegue), que están indexadas en `docs/INDICE-CAPTURAS.md`. Si el problema es el internet y GitHub no carga, se usan las **copias locales** de las evidencias: los `.md` de la carpeta `docs/` (se abren en IntelliJ o VS Code con vista previa Markdown, o en el explorador de archivos) y las imágenes de `docs/diagramas/` y `docs/capturas/`, que son las mismas evidencias que están versionadas en el repositorio. En cualquier caso, el código siempre se puede mostrar desde las herramientas locales (IntelliJ y VS Code) sin depender de internet.
+Si la demostración local fallara, las capturas ya tomadas en el propio repositorio permiten avanzar igual: se proyectan desde `docs/capturas/` (12 de interfaz y 3 del despliegue), que están indexadas en `docs/INDICE.md`. Si el problema es el internet y GitHub no carga, se usan las **copias locales** de las evidencias: los `.md` de la carpeta `docs/` (se abren en IntelliJ o VS Code con vista previa Markdown, o en el explorador de archivos) y las imágenes de `docs/diagramas/` y `docs/capturas/`, que son las mismas evidencias que están versionadas en el repositorio. En cualquier caso, el código siempre se puede mostrar desde las herramientas locales (IntelliJ y VS Code) sin depender de internet.
 
 ---
 
@@ -200,4 +200,4 @@ La siguiente tabla agrupa las preguntas que con más frecuencia hace el jurado, 
 - Explicar lo técnico con una analogía cuando haga falta: el interceptor del token es «el portero que revisa la identificación en cada puerta»; la normalización es «organizar un closet para que cada cosa tenga su lugar».
 - Ser honestos en el alcance: el pago es un flujo académico simulado (no hay pasarela real ni DIAN) y la base de datos no se entrega porque se autogenera.
 - Cada integrante responde las preguntas de su módulo; si no sabe algo, deriva sin inventar: «eso lo maneja X, que lo desarrolló», y se apoya en el repositorio para mostrar la evidencia.
-- Cerrar siempre con `docs/INDICE_EVIDENCIAS.md` (los 9 criterios con su evidencia), agradecer al jurado por su tiempo y quedar atentos a sus preguntas.
+- Cerrar siempre con `docs/INDICE.md` (los 9 criterios con su evidencia), agradecer al jurado por su tiempo y quedar atentos a sus preguntas.

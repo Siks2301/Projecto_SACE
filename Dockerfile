@@ -41,7 +41,7 @@ RUN apk add --no-cache fontconfig ttf-dejavu \
 COPY --from=build /build/target/sacejpa-*.jar /app/app.jar
 
 # Directorio de comprobantes PDF. En un PaaS hay que montarlo como volumen
-# persistente (ver deploy/README.md): el disco del contenedor es efimero y
+# persistente (ver docs/04-Plan-de-Despliegue-SACE.md): el disco del contenedor es efimero y
 # los comprobantes se perderian en cada redespliegue.
 RUN mkdir -p /app/uploads/comprobantes && chown -R sace:sace /app
 

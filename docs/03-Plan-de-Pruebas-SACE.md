@@ -23,7 +23,7 @@ Verificar el cumplimiento funcional y de seguridad del sistema SACE de extremo a
 | Control de cambios | Repositorio Git/GitHub (rama main + ramas de funcionalidad) |
 
 ### 3.4 Datos de prueba
-- Administrador: admin@aleleotours.com / admin123 (semilla de DataInitializer).
+- Administrador: admin@aleleotours.com / admin123 (semilla de `DataInitializer`, solo desarrollo; en producción la clave llega por `SACE_ADMIN_PASSWORD`).
 - Clientes creados por corrida con dominio de prueba (victima/atacante…@test.com, contraseña Viaje2026!).
 - Solicitudes por cada categoría (RESERVA, EQUIPAJE, CANCELADA, etc.) y estados (PENDIENTE, RESUELTA).
 - Pagos: cobro en línea contra la pasarela (Wompi en sandbox o versión simulada). Se verifica que el monto lo calcula el backend desde el catálogo, que un `monto` enviado por el cliente se rechaza con 400, y que el reintento de la misma solicitud se bloquea por el índice único parcial.
@@ -88,7 +88,16 @@ Ejecutado el 21 de septiembre de 2026 con el backend real y la base de datos loc
 > de forma natural cortando la red en mitad de una transacción real contra
 > Wompi.
 
-### 3.7 Criterios de aceptación
+**Qué cuenta y qué no.** Las **92** son las suites formales de este plan y la
+cifra oficial de la entrega. Aparte existen:
+
+- **48 casos** de la Actividad 1 (Jest, frontend aislado): ver
+  [`Actividad-01-Plan-de-Pruebas-Frontend-Jest.md`](Actividad-01-Plan-de-Pruebas-Frontend-Jest.md).
+- **Rondas manuales** de verificación durante la corrección de errores (104 y 35
+  comprobaciones), que no son casos CP y se documentan en
+  [`Anexo-Errores-y-Correcciones.md`](Anexo-Errores-y-Correcciones.md).
+
+### 3.8 Criterios de aceptación
 - Cada historia de usuario (HU-01 … HU-11) tiene criterios de aceptación descritos en 'Historias_de_usuario.docx' y verificados por los CP correspondientes.
 - La autorización por propiedad debe devolver 403 (o 404) y nunca exponer datos ajenos.
 - El doble cobro debe rechazarse de forma explícita (400).

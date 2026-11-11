@@ -1,100 +1,82 @@
 # Projecto_SACE — Sistema de Atención al Cliente (AleLeo Tours)
 
-Proyecto académico **SENA** compuesto por dos partes:
+Proyecto académico **SENA** (ficha 3171149-B_) compuesto por dos partes:
 
 | Carpeta | Descripción | Tecnología |
 |---|---|---|
-| [`backend-SACE/`](backend-SACE/) | API REST del sistema: autenticación, solicitudes (PQR/reservas), mensajes, pagos con comprobante PDF y reportes | Java 17 · Spring Boot 3.2 · JPA/Hibernate · PostgreSQL |
-| [`frontend-aleleo-tours/`](frontend-aleleo-tours/) | Sitio estático de la agencia: destinos, registro/login, panel de cliente, panel de empleado/admin y chatbot | HTML · CSS · Bootstrap · JavaScript vanilla |
+| [`backend-SACE/`](backend-SACE/) | API REST: autenticación, solicitudes (PQR/reservas), mensajes, pagos con comprobante PDF y reportes | Java 17 · Spring Boot 3.2 · JPA/Hibernate · PostgreSQL |
+| [`frontend-aleleo-tours/`](frontend-aleleo-tours/) | Sitio estático: destinos, registro/login, panel de cliente, panel de empleado/admin y chatbot | HTML · CSS · Bootstrap 5.3 · JavaScript vanilla |
 
-## Requisitos
+## Inicio rápido (local)
 
-- JDK 17
-- Maven 3.8+
-- PostgreSQL 18+ (base de datos `SACE_db`, usuario `postgres`, contraseña `1234`, puerto `5432`)
-
-## Crear la base de datos (una sola vez)
-
-La BD **no está incluida en el repo** (no es necesaria): solo se crea vacía y el
-proyecto la llena solo. Con PostgreSQL corriendo:
-
-```sql
-CREATE DATABASE SACE_db;
-```
-
-Al arrancar el backend, Hibernate crea todas las tablas (`ddl-auto=update`) y
-`DataInitializer` inserta los datos iniciales: el administrador, el catálogo de
-servicios/destinos y las preguntas frecuentes del chatbot.
-(`backend-SACE/src/main/resources/schema_pagos.sql` queda como referencia de la tabla `pago`;
-`schema_email_unico.sql` y `schema_datos_corporativos.sql` son las correcciones de datos
-aplicadas sobre la base: correo único en `persona`, dominio `@aleleotours.com` y un solo administrador.)
-
-## Ejecutar el backend
+Requisitos: JDK 17, Maven 3.8+ y PostgreSQL 18+ en el puerto 5432.
 
 ```powershell
+# 1) Base de datos vacía (solo la primera vez)
+#    CREATE DATABASE SACE_db;   -> con psql o pgAdmin
+
+# 2) Backend  ->  http://localhost:8082
 cd backend-SACE
 mvn spring-boot:run
-```
 
-Queda escuchando en **http://localhost:8082**.
-
-La configuración está en `backend-SACE/src/main/resources/application.properties`.
-
-## Ejecutar el frontend
-
-Es un sitio 100 % estático; basta con servir la carpeta:
-
-```powershell
+# 3) Frontend ->  http://localhost:8091
 cd frontend-aleleo-tours
 python -m http.server 8091 --bind 127.0.0.1
 ```
 
-Abrir **http://localhost:8091**. El frontend asume el backend en `localhost:8082`.
+Hibernate crea las tablas (`ddl-auto=update`) y `DataInitializer` siembra el
+administrador, el catálogo y las preguntas frecuentes del chatbot.
 
-## Usuario administrador por defecto
+Administrador semilla (**solo desarrollo**): `admin@aleleotours.com` / `admin123`.
+En producción la contraseña se define con `SACE_ADMIN_PASSWORD`; no se usa la de
+este README.
 
-- Email: `admin@aleleotours.com`
-- Contraseña: `admin123`
+> El procedimiento completo, las variables de entorno y el despliegue en la nube
+> (Cloudflare + Render + Neon), en Railway o en un VPS están en
+> [`docs/04-Plan-de-Despliegue-SACE.md`](docs/04-Plan-de-Despliegue-SACE.md).
 
 ## Funcionalidades
 
-- Registro/login de clientes (apellido opcional) y panel de empleados/administradores.
-- Gestión de solicitudes por categorías: RESERVA, CONSULTA, CAMBIO_FECHA, EQUIPAJE, OTRO.
+- Registro/login de clientes (apellido opcional) y paneles de empleado y administrador.
+- Gestión de solicitudes por categorías: RESERVA, CONSULTA, CAMBIO_FECHA, EQUIPAJE y OTRO.
 - Chat de mensajes por solicitud y chatbot con catálogo desde la API.
-- **Pago en línea con pasarela real** (Wompi, sandbox) o pasarela simulada sin conexión: el precio lo calcula el backend desde el catálogo (el cliente solo elige método), confirmación por webhook firmado con SHA-256 y polling de respaldo, anti-doble-cobro garantizado con índice único parcial en la base de datos, y comprobante PDF con sello SHA-256 + IVA 19 %. Detalle en [`docs/09-Integracion-Pasarela-Pagos-SACE.md`](docs/09-Integracion-Pasarela-Pagos-SACE.md).
+- **Pago en línea** con pasarela real (Wompi, sandbox) o simulada, sin conexión:
+  el precio lo calcula el backend desde el catálogo (el cliente solo elige el
+  método), confirmación por webhook firmado con SHA-256 y polling de respaldo,
+  anti-doble-cobro con índice único parcial y comprobante PDF con sello SHA-256 e
+  IVA 19 %. Detalle en [`docs/09-Integracion-Pasarela-Pagos-SACE.md`](docs/09-Integracion-Pasarela-Pagos-SACE.md).
 - Reportes y KPIs restringidos a administradores.
 - Autorización por propiedad (403) en pagos, cancelaciones, mensajes y reportes.
 
-## Documentación del proyecto (evidencias académicas)
+## Documentación
 
-Los documentos de entrega están en [`docs/`](docs/) (versiones `.md`) y sus
-versiones `.docx` están listas en la carpeta local de evidencias.
-El [`INDICE_EVIDENCIAS.md`](docs/INDICE_EVIDENCIAS.md) mapea cada criterio de
-la rúbrica de 9 puntos con su evidencia.
+Todo el material académico está en [`docs/`](docs/), y el mapa completo (rúbrica,
+capturas y diagramas) en [`docs/INDICE.md`](docs/INDICE.md).
 
 | Documento | Contenido |
 |---|---|
 | [`docs/01-Analisis-y-Requerimientos-SACE.md`](docs/01-Analisis-y-Requerimientos-SACE.md) | Contexto, problema, objetivos, alcance, usuarios/roles, RF y RNF |
 | [`docs/02-Backlog-y-Gestion-del-Proyecto-SACE.md`](docs/02-Backlog-y-Gestion-del-Proyecto-SACE.md) | Backlog, sprints, seguimiento y distribución del equipo |
-| [`docs/03-Plan-de-Pruebas-SACE.md`](docs/03-Plan-de-Pruebas-SACE.md) | Estrategia, casos de prueba, datos y reporte de ejecución (62 PASS/0 FAIL) |
-| [`docs/04-Plan-de-Despliegue-SACE.md`](docs/04-Plan-de-Despliegue-SACE.md) | Dependencias, variables de entorno y procedimiento de despliegue |
-| [`docs/05-Manual-de-Usuario-SACE.md`](docs/05-Manual-de-Usuario-SACE.md) | Manual de uso por perfil: cliente, empleado y administrador |
-| [`docs/06-Comprobante-de-Despliegue-SACE.md`](docs/06-Comprobante-de-Despliegue-SACE.md) | Verificación real del despliegue (servicios, salud HTTP, capturas) |
-| [`docs/07-Modelo-de-Datos-y-Normalizacion-SACE.md`](docs/07-Modelo-de-Datos-y-Normalizacion-SACE.md) | Modelo de datos, relaciones, integridad y normalización 1FN/2FN/3FN |
-| [`docs/08-Guion-de-Presentacion-Final-SACE.md`](docs/08-Guion-de-Presentacion-Final-SACE.md) | Guion de sustentación: orden, reparto por integrante, demo en vivo y Q&A |
-| [`docs/Actividad-1-Plan-de-Pruebas-Frontend-Jest.docx`](docs/Actividad-1-Plan-de-Pruebas-Frontend-Jest.docx) | Actividad 1: plan de pruebas del frontend con Jest (7 suites, 48 casos, evidencias y guion de video) |
+| [`docs/03-Plan-de-Pruebas-SACE.md`](docs/03-Plan-de-Pruebas-SACE.md) | Estrategia, CP-01…CP-24, datos y reporte (92 PASS / 0 FAIL) |
+| [`docs/Actividad-01-Plan-de-Pruebas-Frontend-Jest.md`](docs/Actividad-01-Plan-de-Pruebas-Frontend-Jest.md) | Actividad 1: Jest, 7 suites, 48 casos, evidencias y guion del video |
+| [`docs/04-Plan-de-Despliegue-SACE.md`](docs/04-Plan-de-Despliegue-SACE.md) | Arquitectura, variables y guía paso a paso (local, nube y VPS) |
+| [`docs/05-Manual-de-Usuario-SACE.md`](docs/05-Manual-de-Usuario-SACE.md) | Manual de uso por perfil |
+| [`docs/06-Despliegue-Comprobante-y-Detalle-SACE.md`](docs/06-Despliegue-Comprobante-y-Detalle-SACE.md) | Evidencia real del despliegue, decisiones técnicas y operación |
+| [`docs/07-Modelo-de-Datos-y-Normalizacion-SACE.md`](docs/07-Modelo-de-Datos-y-Normalizacion-SACE.md) | Modelo, relaciones, integridad y normalización 1FN/2FN/3FN |
+| [`docs/08-Guion-de-Presentacion-Final-SACE.md`](docs/08-Guion-de-Presentacion-Final-SACE.md) | Guion de sustentación, reparto y demo en vivo |
+| [`docs/09-Integracion-Pasarela-Pagos-SACE.md`](docs/09-Integracion-Pasarela-Pagos-SACE.md) | Pasarela Wompi, webhook, seguridad y modos `mock`/`wompi` |
+| [`docs/Anexo-Errores-y-Correcciones.md`](docs/Anexo-Errores-y-Correcciones.md) | Bitácora de hallazgos y correcciones |
 | [`docs/API-Endpoints-SACE.md`](docs/API-Endpoints-SACE.md) | Catálogo de endpoints de la API REST |
-| [`docs/INDICE-CAPTURAS.md`](docs/INDICE-CAPTURAS.md) | Índice de las 15 capturas (interfaz + despliegue) |
 
-Además: `Historias_de_usuario.docx` (HU-01…HU-11), `Historia_necesidad.docx`,
-diagramas UML (casos de uso, clases, MER, modelo relacional), diccionario de
-datos e `Informe-01-Backend` e `Informe-02-Frontend`.
+Las versiones `.docx` (Norma APA 7) están en la carpeta local
+`SACE_Entrega_Final/2_Evidencias_Documentales/`, junto con las historias de
+usuario, los informes, el diccionario de datos y las fichas de calidad.
 
 ### Pruebas automatizadas del frontend
 
-La carpeta [`frontend-aleleo-tours/pruebas/`](frontend-aleleo-tours/pruebas/) contiene la
-suite de pruebas unitarias del frontend (Jest 29 + jsdom). No requiere backend ni base de
-datos: carga los scripts reales de `js/` en un DOM simulado.
+[`frontend-aleleo-tours/pruebas/`](frontend-aleleo-tours/pruebas/) contiene la
+suite de Jest 29 + jsdom. No requiere backend ni base de datos: carga los scripts
+reales de `js/` en un DOM simulado.
 
 ```powershell
 cd frontend-aleleo-tours/pruebas
@@ -102,17 +84,9 @@ npm ci
 npx jest --verbose
 ```
 
-Resultado actual: **7 suites y 48 casos aprobados, 0 fallos** (unos 6 segundos). El plan
-completo, las capturas de la ejecución y el guion del video están en
-[`docs/Actividad-1-Plan-de-Pruebas-Frontend-Jest.docx`](docs/Actividad-1-Plan-de-Pruebas-Frontend-Jest.docx).
-
-### Evidencias visuales y base de datos
-
-| Recurso | Contenido |
-|---|---|
-| [`docs/diagramas/`](docs/diagramas/) | Diagramas en PNG: casos de uso, clases, **arquitectura del sistema**, modelo entidad-relación y modelo relacional |
-| [`docs/capturas/`](docs/capturas/) | 15 capturas de pantalla (12 interfaz + 3 despliegue) detalladas en [`INDICE-CAPTURAS.md`](docs/INDICE-CAPTURAS.md) |
-| [`docs/SACE_db_ddl.sql`](docs/SACE_db_ddl.sql) | DDL del esquema completo de `SACE_db` (solo estructura, sin datos) generado con `pg_dump --schema-only` |
+Resultado: **7 suites y 48 casos aprobados, 0 fallos**. El plan completo, las
+capturas y el guion del video están en
+[`docs/Actividad-01-Plan-de-Pruebas-Frontend-Jest.md`](docs/Actividad-01-Plan-de-Pruebas-Frontend-Jest.md).
 
 ## Equipo y distribución del trabajo
 
@@ -123,17 +97,15 @@ completo, las capturas de la ejecución y el guion del video están en
 | Felipe Gonzales Quitero | Frontend: páginas, componentes (chatbot) e integración con la API |
 
 Cada integrante tiene **commits con su autoría** sobre su módulo (evidencia de
-participación en el repositorio): Cesar (backend/API/despliegue), Yerson
-(modelo de datos y normalización, DDL) y Felipe (interfaces y capturas).
+participación en el repositorio).
 
-## Flujo de trabajo en Git (evidencia de control de versiones)
+## Flujo de trabajo en Git
 
 - Rama principal `main` con commits descriptivos y `merge --no-ff` de ramas de
-  funcionalidad (p. ej. `feature/documentacion`).
-- Commits por integrante sobre su módulo (evidencia de participación).
-- `.gitignore` para excluir artefactos de build e IDE.
-- Identidad principal: [Siks2301](https://github.com/Siks2301) —
-  `cesarleonardo.rm2301@gmail.com`.
+  funcionalidad.
+- Commits por integrante sobre su módulo.
+- `.gitignore` para excluir artefactos de build, IDE y secretos.
+- Identidad principal: [Siks2301](https://github.com/Siks2301).
 
 ## Estructura
 
@@ -147,5 +119,10 @@ Projecto_SACE/
 │   ├── css/
 │   ├── js/
 │   └── img/
-└── docs/                    # Evidencias académicas (markdown)
+├── deploy/                  # Docker Compose, nginx y plantilla de variables
+├── docs/                    # Documentación académica y evidencias
+├── Dockerfile               # Imagen de producción multi-etapa
+├── render.yaml              # Blueprint de Render
+├── railway.json             # Configuración de Railway
+└── wrangler.jsonc           # Frontend en Cloudflare Workers
 ```
