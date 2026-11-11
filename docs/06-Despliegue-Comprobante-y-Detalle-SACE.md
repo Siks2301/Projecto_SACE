@@ -24,9 +24,18 @@ _Actualizado: 10 de noviembre de 2026_
 | Local | Base de datos | PostgreSQL 18.4 | `localhost:5432` — `SACE_db` |
 | Local | Backend | Java 17 · Spring Boot 3.2 | `http://localhost:8082/api` |
 | Local | Frontend | HTML/CSS/JS · Bootstrap 5.3.3 | `http://localhost:8091` |
-| Nube | Frontend | Cloudflare Workers (assets estáticos) | `https://aleleotours.cesarleonardo-rm2301.workers.dev` |
+| Nube | Frontend | Cloudflare Workers (assets estáticos) | `https://aleleotours.aleleo.workers.dev` |
 | Nube | Backend | Render (contenedor desde el `Dockerfile`) | `https://sace-api.onrender.com` |
 | Nube | Base de datos | Neon (PostgreSQL 17.11) | `neondb`, conexión directa con `sslmode=require` |
+
+> **Cambio de URL del 11 de noviembre de 2026.** El primer despliegue usó el
+> subdominio `cesarleonardo-rm2301.workers.dev`, que Cloudflare asigna por
+> defecto. Se cambió a `aleleo` (Workers & Pages → *Change* junto a *Your
+> subdomain*), así que el sitio quedó en `https://aleleotours.aleleo.workers.dev`.
+> Los logs de las secciones siguientes son los del primer despliegue y por eso
+> muestran la URL anterior; el contenido y la configuración son los mismos.
+> Al cambiar el origen hay que actualizar `SACE_CORS_ORIGINS` en Render, o el
+> navegador recibe **403**.
 
 ---
 

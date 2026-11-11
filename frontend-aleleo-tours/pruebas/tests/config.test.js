@@ -44,7 +44,7 @@ describe('config.js - resolucion de la URL del API', () => {
     expect(API_FIJA).toMatch(/^https?:\/\//);
     expect(resolverApi({ hostname: 'localhost' })).toBe(API_FIJA);
     expect(resolverApi({ hostname: 'www.aleleotours.com' })).toBe(API_FIJA);
-    expect(resolverApi({ hostname: 'aleleotours.cesarleonardo-rm2301.workers.dev' })).toBe(API_FIJA);
+    expect(resolverApi({ hostname: 'aleleotours.aleleo.workers.dev' })).toBe(API_FIJA);
   });
 
   test('CP-02: sin valor fijo, un dominio real deduce https://api.<dominio>/api', () => {
