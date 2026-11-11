@@ -213,6 +213,23 @@ El precio sale de `Solicitud.servicioGenerado.precio`. Si no hay servicio con
 precio, **el pago se rechaza**: es preferible un mensaje claro a inventar un cero
 o permitir que alguien pague cualquier cantidad.
 
+**El catálogo cobra por persona.** `precio` es el valor unitario que muestran la
+portada y la página de destinos («desde $320.000 por persona»), así que el monto
+real es `precio × solicitud.pasajeros`. El número de viajeros se guarda en la
+columna `solicitud.pasajeros` (1 a 10, validado al crear la solicitud); las
+reservas antiguas que solo lo tenían escrito en el texto lo rescatan de
+«Pasajeros: 2» o «Reserva para 2 persona(s)». El comprobante PDF refleja la
+misma cifra en la columna CANT. y despeja el valor unitario del total.
+
+```java
+static BigDecimal totalConPasajeros(BigDecimal precioUnitario, int pasajeros) {
+    int cantidad = pasajeros < 1 ? 1 : Math.min(pasajeros, Solicitud.MAX_PASAJEROS);
+    return precioUnitario.multiply(BigDecimal.valueOf(cantidad)).setScale(2, RoundingMode.HALF_UP);
+}
+```
+
+Esta regla se protege con ocho pruebas unitarias (`CobroPorPasajerosTest`).
+
 ### 5.2 El webhook es público, pero autenticado
 
 Parece contradictorio: la pasarela no tiene cuenta de usuario en SACE, así que el

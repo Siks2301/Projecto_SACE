@@ -138,6 +138,7 @@ public class PdfComprobanteServicio {
                 : "N/A";
         String idSolicitudStr = solicitud != null ? "#SOL-" + solicitud.getId() : "N/A";
         String tituloTour = solicitud != null ? sanitizar(solicitud.getTitulo()) : "Reserva / Servicio Turistico";
+        int pasajeros = solicitud != null ? solicitud.pasajerosEfectivos() : 1;
         String referencia = sanitizar(pago.getReferencia(), "S/N");
         String metodoPago = sanitizar(
                 pago.getMetodoPago() != null ? pago.getMetodoPago().etiqueta() : null,
@@ -166,6 +167,7 @@ public class PdfComprobanteServicio {
         cDestino.setPadding(8);
         cDestino.addElement(new Paragraph("DATOS DE LA TRANSACCION & RESERVA", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 9, new Color(13, 110, 253))));
         cDestino.addElement(new Paragraph("Solicitud Asociada: " + idSolicitudStr, fontBold));
+        cDestino.addElement(new Paragraph("Pasajeros: " + pasajeros, fontNormal));
         cDestino.addElement(new Paragraph("REFERENCIA DE PAGO: " + referencia, fontDestacado));
         cDestino.addElement(new Paragraph("Metodo de Pago: " + metodoPago, fontNormal));
         cDestino.addElement(new Paragraph("Pasarela: " + pasarela, fontNormal));
@@ -190,7 +192,10 @@ public class PdfComprobanteServicio {
         BigDecimal total = pago.getMonto() != null ? pago.getMonto() : BigDecimal.ZERO;
         BigDecimal subtotal = total.divide(new BigDecimal("1.19"), 2, RoundingMode.HALF_UP); // Base exacta: Total / 1.19 (IVA 19% incluido)
         BigDecimal iva = total.subtract(subtotal);
-        BigDecimal valorUnitario = total; // CANT. siempre 1 => valor unitario == total
+        // El catalogo cobra por persona: la columna CANT. muestra los viajeros y
+        // el valor unitario se despeja del total (total / cantidad). Antes la
+        // factura decia siempre "1" aunque la reserva fuera para varias personas.
+        BigDecimal valorUnitario = total.divide(BigDecimal.valueOf(pasajeros), 2, RoundingMode.HALF_UP);
 
         addCellBody(itemTable, idSolicitudStr, fontNormal, Element.ALIGN_CENTER);
         // No se antepone una etiqueta fija de "Reserva de Tour / Plan": el titulo de la
@@ -198,7 +203,7 @@ public class PdfComprobanteServicio {
         // y anteponer un texto fijo duplicaba la palabra y ademas era incorrecto para
         // solicitudes que no son de tipo Reserva (Cotizacion, Consulta, PQR, etc).
         addCellBody(itemTable, tituloTour + " (Pago en linea verificado por pasarela)", fontNormal, Element.ALIGN_LEFT);
-        addCellBody(itemTable, "1", fontNormal, Element.ALIGN_CENTER);
+        addCellBody(itemTable, String.valueOf(pasajeros), fontNormal, Element.ALIGN_CENTER);
         addCellBody(itemTable, "$ " + MONTO_FORMAT.format(valorUnitario) + " COP", fontNormal, Element.ALIGN_RIGHT);
         addCellBody(itemTable, "$ " + MONTO_FORMAT.format(total) + " COP", fontNormal, Element.ALIGN_RIGHT);
 

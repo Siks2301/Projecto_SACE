@@ -157,10 +157,12 @@ public class PagoDTOs {
      *
      * @param solicitudId  solicitud a cotizar
      * @param titulo       nombre del tour
-     * @param monto        precio del servicio, en pesos
+     * @param monto        total a cobrar (precio unitario x viajeros), en pesos
      * @param moneda       codigo de moneda
      * @param metodos      metodos de pago que el sistema acepta
      * @param yaPagado     true si la solicitud ya tiene un cobro aprobado
+     * @param precioUnitario precio del catalogo por persona
+     * @param pasajeros    numero de viajeros cobrados
      */
     public record CotizacionDTO(
             Long solicitudId,
@@ -168,7 +170,9 @@ public class PagoDTOs {
             BigDecimal monto,
             String moneda,
             java.util.List<String> metodos,
-            boolean yaPagado
+            boolean yaPagado,
+            BigDecimal precioUnitario,
+            int pasajeros
     ) {
     }
 

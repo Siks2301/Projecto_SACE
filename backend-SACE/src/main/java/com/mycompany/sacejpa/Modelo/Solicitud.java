@@ -60,6 +60,20 @@ public class Solicitud {
     @Column(name = "categoria")
     private String categoria;
 
+    // Numero de viajeros de la reserva. El precio del catalogo es POR PERSONA,
+    // asi que el cobro se multiplica por esta cifra. Antes solo existia dentro
+    // del texto libre del asunto/descripcion ("Reserva para 2 persona(s)"), que
+    // no se podia validar ni usar para calcular: el pago cobraba una sola vez.
+    // Se deja nullable a proposito: `ddl-auto=update` agrega la columna a una
+    // tabla que ya tiene filas y un NOT NULL ahi tumba el arranque. El valor
+    // nunca queda vacio en la practica porque @PrePersist lo completa y
+    // migracion_pasajeros.sql remata la columna con DEFAULT 1 + CHECK 1..10.
+    @Column(name = "pasajeros")
+    private Integer pasajeros;
+
+    /** Tope de viajeros por reserva, igual al que aplica el formulario web. */
+    public static final int MAX_PASAJEROS = 10;
+
     // Cliente que genera la solicitud
     @ManyToOne
     @JoinColumn(name = "cliente_id")
@@ -103,6 +117,21 @@ public class Solicitud {
         this.prioridad = prioridad;
         this.categoria = categoria;
         this.cliente = cliente;
+    }
+
+    /**
+     * Asegura que toda solicitud nazca con un numero de viajeros valido.
+     *
+     * <p>Cubre los caminos que crean la entidad sin pasar por el DTO (datos
+     * semilla, pruebas, importaciones): si el numero falta se rescata del texto
+     * y, en ultimo caso, se asume una persona. Sin esto, la columna quedaria
+     * nula y el cobro multiplicaria por nada.
+     */
+    @PrePersist
+    private void completarPasajeros() {
+        if (pasajeros == null || pasajeros < 1) {
+            pasajeros = normalizarPasajeros(null, asunto, descripcion);
+        }
     }
 
     public Long getId() {
@@ -168,6 +197,75 @@ public class Solicitud {
     public void setCategoria(String categoria) {
         this.categoria = categoria;
     }
+
+    public Integer getPasajeros() {
+        return pasajeros;
+    }
+
+    public void setPasajeros(Integer pasajeros) {
+        this.pasajeros = pasajeros;
+    }
+
+    /**
+     * Numero de viajeros que se debe cobrar.
+     *
+     * <p>Nunca devuelve menos de 1: una solicitud sin el dato (creada antes de
+     * que existiera la columna) se cobra como una persona, igual que antes.
+     *
+     * @return viajeros efectivos, entre 1 y {@link #MAX_PASAJEROS}
+     */
+    public int pasajerosEfectivos() {
+        Integer valor = pasajeros != null ? pasajeros : pasajerosDesdeTexto(asunto, descripcion);
+        if (valor == null || valor < 1) {
+            return 1;
+        }
+        return Math.min(valor, MAX_PASAJEROS);
+    }
+
+    /**
+     * Normaliza el dato que llega del cliente al crear o editar una solicitud.
+     *
+     * <p>Si el DTO no trae el numero se intenta leer del texto libre, para no
+     * perder las reservas que ya venian con "Pasajeros: 2" escrito a mano.
+     *
+     * @param valor       viajeros enviados en el cuerpo (puede ser null)
+     * @param asunto      asunto de la solicitud
+     * @param descripcion detalle de la solicitud
+     * @return viajeros validados, entre 1 y {@link #MAX_PASAJEROS}
+     */
+    public static int normalizarPasajeros(Integer valor, String asunto, String descripcion) {
+        Integer efectivo = valor != null ? valor : pasajerosDesdeTexto(asunto, descripcion);
+        if (efectivo == null || efectivo < 1) {
+            return 1;
+        }
+        return Math.min(efectivo, MAX_PASAJEROS);
+    }
+
+    /**
+     * Busca el numero de viajeros dentro del texto de la solicitud.
+     *
+     * <p>Reconoce las formas que ya usa el sistema: "Pasajeros: 2" en la
+     * descripcion y "Reserva para 2 persona(s)" en el asunto. Es solo un
+     * respaldo para datos historicos; lo normal es que el numero venga aparte.
+     *
+     * @return viajeros encontrados, o {@code null} si el texto no los menciona
+     */
+    private static Integer pasajerosDesdeTexto(String asunto, String descripcion) {
+        String texto = ((descripcion == null ? "" : descripcion) + " " + (asunto == null ? "" : asunto)).trim();
+        if (texto.isEmpty()) {
+            return null;
+        }
+        java.util.regex.Matcher m = java.util.regex.Pattern
+                .compile("(?i)(?:pasajeros?|personas?|viajeros?)\\s*[:=]?\\s*(\\d{1,2})")
+                .matcher(texto);
+        if (m.find()) {
+            return Integer.valueOf(m.group(1));
+        }
+        m = java.util.regex.Pattern.compile("(?i)para\\s+(\\d{1,2})\\s+(?:persona|viajero)")
+                .matcher(texto);
+        return m.find() ? Integer.valueOf(m.group(1)) : null;
+    }
+
 
     public Cliente getCliente() {
         return cliente;

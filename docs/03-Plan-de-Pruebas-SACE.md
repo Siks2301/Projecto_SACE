@@ -63,6 +63,7 @@ Verificación de lo específico de la pasarela. Se ejecutan en modo `mock`
 | CP-22 | `app.pagos.mock.resultado=RECHAZADO` | Estado RECHAZADO, mensaje de rechazo y **sin** comprobante |
 | CP-23 | Falta la llave de integridad con `pasarela=wompi` | 400 explicando qué configurar; el pago queda PENDIENTE, no APROBADO |
 | CP-24 | Pérdida del webhook | La conciliación (cada 5 min) o el polling de respaldo cierran el pago igual |
+| CP-25 | Cobro por número de pasajeros | El total es el precio unitario del catálogo **× viajeros** de la solicitud (1 a 10). Una reserva de 4 personas a $320.000 cobra $1.280.000, no $320.000. Las reservas antiguas rescatan el número del texto («Pasajeros: 2») y el comprobante muestra CANT. y valor unitario reales |
 
 Cubiertos automáticamente por `pruebas/test_pagos_pasarela.ps1`: CP-15, CP-16,
 CP-17, CP-21, y además el precio calculado por el servidor, el rechazo de
@@ -96,6 +97,10 @@ cifra oficial de la entrega. Aparte existen:
 - **Rondas manuales** de verificación durante la corrección de errores (104 y 35
   comprobaciones), que no son casos CP y se documentan en
   [`Anexo-Errores-y-Correcciones.md`](Anexo-Errores-y-Correcciones.md).
+- **8 pruebas unitarias** de regresión del backend añadidas en noviembre de 2026
+  (`backend-SACE/src/test/.../CobroPorPasajerosTest.java`, `mvn test`): fijan la
+  regla del CP-25, el tope de 10 viajeros, los centavos y el rescate del número
+  desde el texto histórico. 8 PASS / 0 FAIL.
 
 ### 3.8 Criterios de aceptación
 - Cada historia de usuario (HU-01 … HU-11) tiene criterios de aceptación descritos en 'Historias_de_usuario.docx' y verificados por los CP correspondientes.

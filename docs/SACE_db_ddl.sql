@@ -297,13 +297,15 @@ CREATE TABLE public.solicitud (
     estado character varying(255),
     fecha_creacion timestamp(6) without time zone,
     prioridad character varying(255),
+    pasajeros integer DEFAULT 1 NOT NULL,
     titulo character varying(255),
     chatbot_asignado_id bigint,
     cliente_id bigint,
     empleado_asignado_id bigint,
     servicio_generado_id bigint,
     CONSTRAINT solicitud_estado_check CHECK (((estado)::text = ANY ((ARRAY['PENDIENTE'::character varying, 'EN_PROCESO'::character varying, 'RESUELTA'::character varying, 'CANCELADA'::character varying])::text[]))),
-    CONSTRAINT solicitud_prioridad_check CHECK (((prioridad)::text = ANY ((ARRAY['BAJA'::character varying, 'MEDIA'::character varying, 'ALTA'::character varying, 'URGENTE'::character varying])::text[])))
+    CONSTRAINT solicitud_prioridad_check CHECK (((prioridad)::text = ANY ((ARRAY['BAJA'::character varying, 'MEDIA'::character varying, 'ALTA'::character varying, 'URGENTE'::character varying])::text[]))),
+    CONSTRAINT solicitud_pasajeros_rango CHECK (((pasajeros >= 1) AND (pasajeros <= 10)))
 );
 
 

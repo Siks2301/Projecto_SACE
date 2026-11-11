@@ -158,6 +158,11 @@ public class SolicitudServicio {
             if (dto.getCategoria() != null) {
                 solicitud.setCategoria(dto.getCategoria());
             }
+            if (dto.getPasajeros() != null) {
+                // Cambiar el numero de viajeros cambia lo que se cobra: se
+                // revalida contra el tope en vez de confiar en el cuerpo.
+                solicitud.setPasajeros(Solicitud.normalizarPasajeros(dto.getPasajeros(), null, null));
+            }
             asignarRelaciones(solicitud, dto);
             Solicitud actualizada = repositorioSolicitud.save(solicitud);
             return SolicitudMapper.toDTO(actualizada);

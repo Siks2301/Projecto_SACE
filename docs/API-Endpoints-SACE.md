@@ -43,10 +43,15 @@ Pagos en línea contra una pasarela real (Wompi) o una pasarela simulada según 
 configuración. El monto **lo calcula el backend** desde el catálogo de servicios;
 el cliente solo elige el método. Ver `docs/09-Integracion-Pasarela-Pagos-SACE.md`.
 
+El catálogo guarda el precio **por persona**, así que el monto es
+`precio unitario × solicitud.pasajeros` (1–10). `GET /pagos/cotizacion/{id}`
+devuelve ese desglose en `monto`, `precioUnitario` y `pasajeros`; `POST /pagos`
+solo recibe `solicitudId`, `metodoPago` y `notas`.
+
 | Método | Ruta | Descripción |
 |---|---|---|
 | GET | `/pagos/configuracion` | Pasarela activa y métodos de pago habilitados |
-| GET | `/pagos/cotizacion/{idSolicitud}` | Precio que SACE cobra por una solicitud |
+| GET | `/pagos/cotizacion/{idSolicitud}` | Total a cobrar (unitario × pasajeros) y su desglose |
 | POST | `/pagos` | Inicia un cobro. Acepta **solo** `solicitudId`, `metodoPago` y `notas` |
 | GET | `/pagos/estado/{referencia}` | Estado del pago; reconcilia con la pasarela antes de responder |
 | GET | `/pagos/comprobante/{idPago}` | Descargar comprobante PDF (solo si está APROBADO; sello SHA-256 + IVA) |

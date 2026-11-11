@@ -41,8 +41,9 @@ este README.
 - Gestión de solicitudes por categorías: RESERVA, CONSULTA, CAMBIO_FECHA, EQUIPAJE y OTRO.
 - Chat de mensajes por solicitud y chatbot con catálogo desde la API.
 - **Pago en línea** con pasarela real (Wompi, sandbox) o simulada, sin conexión:
-  el precio lo calcula el backend desde el catálogo (el cliente solo elige el
-  método), confirmación por webhook firmado con SHA-256 y polling de respaldo,
+  el precio lo calcula el backend desde el catálogo **por persona y lo multiplica
+  por los viajeros de la reserva** (el cliente solo elige el método), confirmación
+  por webhook firmado con SHA-256 y polling de respaldo,
   anti-doble-cobro con índice único parcial y comprobante PDF con sello SHA-256 e
   IVA 19 %. Detalle en [`docs/09-Integracion-Pasarela-Pagos-SACE.md`](docs/09-Integracion-Pasarela-Pagos-SACE.md).
 - Reportes y KPIs restringidos a administradores.

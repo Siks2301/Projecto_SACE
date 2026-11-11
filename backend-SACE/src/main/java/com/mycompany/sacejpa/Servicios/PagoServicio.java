@@ -115,7 +115,9 @@ public class PagoServicio {
     @Transactional(readOnly = true)
     public PagoDTOs.CotizacionDTO cotizar(Long solicitudId, TokenServicio.Sesion sesion) {
         Solicitud solicitud = obtenerSolicitudAutorizada(solicitudId, sesion);
-        BigDecimal precio = precioDe(solicitud);
+        BigDecimal precioUnitario = precioUnitarioDe(solicitud);
+        int pasajeros = solicitud.pasajerosEfectivos();
+        BigDecimal precio = totalConPasajeros(precioUnitario, pasajeros);
         boolean yaPagado = existePagoAprobado(solicitud.getId());
 
         List<String> metodos = pagosConfig.metodosHabilitados().stream()
@@ -128,7 +130,9 @@ public class PagoServicio {
                 precio,
                 "COP",
                 metodos,
-                yaPagado);
+                yaPagado,
+                precioUnitario,
+                pasajeros);
     }
 
     /**
@@ -208,6 +212,8 @@ public class PagoServicio {
         }
 
         // --- Regla 3: el monto sale del catalogo, nunca del cliente ---
+        // El catalogo es por persona: el total multiplica por los viajeros de
+        // la solicitud (pasajeros normalizado a 1..10 al crearla).
         BigDecimal precio = precioDe(solicitud);
         Cliente cliente = clienteDe(solicitud, sesion);
 
@@ -481,16 +487,48 @@ public class PagoServicio {
     // ==================================================================
 
     /**
-     * Calcula el precio a cobrar de una solicitud.
+     * Calcula el precio de la solicitud: precio unitario por numero de viajeros.
      *
-     * <p>Usa el precio del servicio generado y, si no lo hay, el precio del
-     * servicio principal del cliente. Si tampoco existe, no hay forma honesta de
-     * saber cuanto vale: se rechaza la operacion en vez de inventar un cero.
+     * <p>El catalogo guarda el valor <b>por persona</b> (es lo que muestran la
+     * portada y la pagina de destinos: "desde $X por persona"). Por eso el cobro
+     * se multiplica por {@link Solicitud#pasajerosEfectivos()}. Antes se cobraba
+     * una sola vez aunque la reserva fuera para varias personas.
+     *
+     * <p>Si no hay servicio con precio no hay forma honesta de saber cuanto
+     * vale: se rechaza la operacion en vez de inventar un cero.
      *
      * @param solicitud solicitud a cotizar
-     * @return precio en pesos
+     * @return precio total en pesos, ya multiplicado por los viajeros
      */
     private BigDecimal precioDe(Solicitud solicitud) {
+        return totalConPasajeros(precioUnitarioDe(solicitud), solicitud.pasajerosEfectivos());
+    }
+
+    /**
+     * Multiplica el precio unitario del catalogo por los viajeros de la reserva.
+     *
+     * <p>Se aisló en un metodo propio porque es la regla que mas facil se
+     * rompe: si alguien vuelve a cobrar {@code servicio.getPrecio()} sin
+     * multiplicar, el cliente paga una sola persona aunque la reserva sea para
+     * varias. La prueba unitaria de este metodo fija la regla.
+     *
+     * @param precioUnitario precio por persona (mayor que cero)
+     * @param pasajeros      viajeros, acotado a 1..{@link Solicitud#MAX_PASAJEROS}
+     * @return total en pesos con dos decimales
+     */
+    static BigDecimal totalConPasajeros(BigDecimal precioUnitario, int pasajeros) {
+        int cantidad = pasajeros < 1 ? 1 : Math.min(pasajeros, Solicitud.MAX_PASAJEROS);
+        return precioUnitario.multiply(BigDecimal.valueOf(cantidad)).setScale(2, RoundingMode.HALF_UP);
+    }
+
+    /**
+     * Precio de una sola persona segun el catalogo.
+     *
+     * @param solicitud solicitud a cotizar
+     * @return precio unitario en pesos
+     * @throws ValidacionException si la solicitud no tiene servicio con precio
+     */
+    private BigDecimal precioUnitarioDe(Solicitud solicitud) {
         Servicio servicio = solicitud.getServicioGenerado();
 
         if (servicio == null || servicio.getPrecio() == null || servicio.getPrecio().signum() <= 0) {

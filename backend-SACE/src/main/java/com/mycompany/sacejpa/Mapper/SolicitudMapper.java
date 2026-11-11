@@ -29,6 +29,7 @@ public class SolicitudMapper {
                 solicitud.getEstado() != null ? solicitud.getEstado().name() : null,
                 solicitud.getPrioridad() != null ? solicitud.getPrioridad().name() : null,
                 solicitud.getCategoria(),
+                solicitud.pasajerosEfectivos(),
                 solicitud.getCliente() != null ? solicitud.getCliente().getId() : null,
                 solicitud.getCliente() != null ? nombreCompleto(solicitud.getCliente()) : null,
                 solicitud.getCliente() != null ? solicitud.getCliente().getEmail() : null,
@@ -57,6 +58,10 @@ public class SolicitudMapper {
             solicitud.setPrioridad(Solicitud.Prioridad.valueOf(dto.getPrioridad()));
         }
         solicitud.setCategoria(dto.getCategoria());
+        // El numero de viajeros define el cobro (precio unitario x personas).
+        // Si no viene en el cuerpo se rescata del texto historico y se acota a 1..10.
+        solicitud.setPasajeros(Solicitud.normalizarPasajeros(
+                dto.getPasajeros(), dto.getAsunto(), dto.getDescripcion()));
         return solicitud;
     }
 }

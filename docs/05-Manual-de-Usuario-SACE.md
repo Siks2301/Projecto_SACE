@@ -34,7 +34,7 @@ Desde 'Registrarse' se diligencian nombre (obligatorio), apellido (opcional), co
 - Estado de la solicitud: PENDIENTE, EN_PROCESO, RESUELTA o CANCELADA; el seguimiento se ve en el mismo listado.
 - Chat con el asesor: abrir la solicitud y escribir mensajes; el asesor responde en el mismo hilo.
 - Cancelar: solo el propietario puede cancelar su solicitud y no se elimina el registro.
-- Pagar: las solicitudes RESERVADAS habilitan el botón 'Pagar'; el monto es el precio real del servicio desde la base de datos.
+- Pagar: las solicitudes RESERVADAS habilitan el botón 'Pagar'; el monto es el precio real del servicio desde la base de datos, multiplicado por el número de viajeros de la reserva (1 a 10).
 - Comprobante: tras pagar se descarga un PDF con sello de integridad (SHA-256), IVA 19 % y solo lo descarga el propietario.
 ### 5.8 Panel del empleado de soporte
 - Ver las solicitudes asignadas y su detalle, responder mediante el chat y cambiar el estado.
@@ -52,7 +52,7 @@ El botón flotante con el ícono de robot abre el asistente. Responde preguntas 
 Desde la solicitud, pulsa **Pagar**. El modal muestra el precio de la reserva **bloqueado** (lo fija AleLeo Tours, no se puede modificar) y te deja elegir el método: **PSE** (transferencia bancaria) o **Tarjeta débito/crédito**. Al confirmar, la pasarela procesa el cobro; verás una pantalla de «Procesando el pago...» mientras se confirma. Cuando el pago es aprobado, se descarga automáticamente tu **Comprobante PDF** con el desglose de IVA y el sello de integridad SHA-256.
 
 Aspectos importantes del flujo:
-- **El monto lo calcula el servidor** a partir del catálogo de servicios. Aunque intentes modificarlo, el sistema cobra el precio real.
+- **El monto lo calcula el servidor** a partir del catálogo de servicios: precio por persona × número de viajeros. Aunque intentes modificarlo, el sistema cobra el precio real.
 - **Nunca debes ingresar el número de tu tarjeta en AleLeo Tours.** Ese dato se pide directamente en la página segura de la pasarela; SACE no lo recibe.
 - Si la pasarela rechaza el pago o se cae la conexión, **no se te cobra nada** y la reserva queda disponible para reintentar.
 - Una solicitud pagada una sola vez **no se puede volver a pagar**: el sistema lo bloquea con un índice único en la base de datos.

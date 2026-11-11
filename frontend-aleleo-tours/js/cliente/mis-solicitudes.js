@@ -451,8 +451,12 @@ async function obtenerConfiguracionPagos() {
  * al servidor, que lo aceptaba sin comparar nada. Ahora el unico que dice
  * cuanto vale una reserva es el backend.
  *
+ * <p>Desde que el catalogo cobra por persona, la respuesta trae tambien
+ * {@code precioUnitario} y {@code pasajeros}; el total es el producto de ambos.
+ *
  * @param {number} solicitudId id de la solicitud a cotizar
- * @returns {Promise<number>} precio en pesos
+ * @returns {Promise<{monto:number, precioUnitario:number, pasajeros:number}>}
+ *          cotizacion del servidor, con el total ya multiplicado
  */
 async function cargarPrecioDesdeServidor(solicitudId) {
   const resp = await fetch(`${API_BASE}/pagos/cotizacion/${solicitudId}`);
@@ -471,7 +475,11 @@ async function cargarPrecioDesdeServidor(solicitudId) {
     throw new Error('Esta solicitud aun no tiene un precio asignado. Un asesor debe configurarlo.');
   }
 
-  return monto;
+  return {
+    monto,
+    precioUnitario: Number(data.precioUnitario) || monto,
+    pasajeros: Number(data.pasajeros) || 1
+  };
 }
 
 /**
@@ -557,11 +565,14 @@ async function abrirModalPago(solicitudId) {
     // Despues el precio. En este orden porque el selector de metodos es
     // independiente del monto y ambos necesitan estar listos antes de que el
     // usuario pulse "Pagar".
-    const monto = await cargarPrecioDesdeServidor(solicitudParaPago.id);
+    const cotizacion = await cargarPrecioDesdeServidor(solicitudParaPago.id);
 
-    montoEl.value = formatearPesos(monto);
+    montoEl.value = formatearPesos(cotizacion.monto);
+    // Se deja ver de donde sale el total: el catalogo es por persona.
     document.getElementById('pago-monto-origina').textContent =
-      'Precio fijado por AleLeo Tours segun el catalogo de servicios.';
+      cotizacion.pasajeros > 1
+        ? `${cotizacion.pasajeros} pasajeros × ${formatearPesos(cotizacion.precioUnitario)} por persona. Precio fijado por AleLeo Tours.`
+        : 'Precio por persona fijado por AleLeo Tours según el catálogo de servicios.';
     document.getElementById('pago-notas-input').value = '';
     if (btnConfirmar) btnConfirmar.disabled = false;
 
@@ -872,6 +883,8 @@ async function persistirSolicitudLocal() {
         estado: 'PENDIENTE',
         prioridad: 'MEDIA',
         categoria: 'RESERVA',
+        // Sin el numero de viajeros el backend cobraria una sola persona.
+        pasajeros: Number(solicitudParaPago.pasajeros) || 1,
         clienteId: sesion.id,
         // El precio lo calcula el backend desde el catalogo del servicio.
         servicioGeneradoId: servicioId

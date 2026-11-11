@@ -16,7 +16,7 @@ El esquema tiene 11 tablas en el esquema public de PostgreSQL 18.4:
 | persona | Entidad base con herencia (tipo_persona_discriminador): datos comunes de clientes y empleados (nombre, apellido, email, contraseña cifrada, documento, teléfono, tipo de usuario, estado de acceso). | id (identity) |
 | cliente | Especialización de persona para clientes (historial de consultas y preferencias de comunicación). | id (PK + FK a persona) |
 | empleado | Especialización de persona para empleados (cargo específico, departamento y disponibilidad). | id (PK + FK a persona) |
-| solicitud | Solicitudes de soporte por categoría (RESERVA, CONSULTA, CAMBIO_FECHA, EQUIPAJE, OTRO), estado y prioridad. | id (identity) |
+| solicitud | Solicitudes de soporte por categoría (RESERVA, CONSULTA, CAMBIO_FECHA, EQUIPAJE, OTRO), estado, prioridad y **número de viajeros** (`pasajeros`, 1–10) que multiplica el precio por persona al cobrar. | id (identity) |
 | mensaje | Mensajes del hilo de conversación por solicitud (TEXTO, ARCHIVO o SISTEMA) con ruta del adjunto y calificación. | id (identity) |
 | pago | Pagos: referencia única, monto, método, pasarela, código de autorización, estado, fechas de creación/aprobación, URL del comprobante y notificación. | id_pago (identity) |
 | servicio | Catálogo de servicios/destinos con precio decimal preciso y tipo de servicio. | id (identity) |
@@ -67,7 +67,7 @@ El modelo está normalizado hasta la 3FN: las tablas puente resuelven las M:N y 
 | RF-08 Chatbot con FAQs | tablas chatbot, pregunta_frecuente y la puente chatbot_pregunta_frecuente |
 | RF-09 Panel del empleado | tabla empleado (disponibilidad, departamento, cargo) |
 | RF-10 CRUD de administración | tablas cliente, empleado, servicio, solicitud, pregunta_frecuente |
-| RF-11/12 Pago y comprobante | tabla pago con id_solicitud (anti-doble-cobro), monto, llave y URL del PDF |
+| RF-11/12 Pago y comprobante | tabla pago con id_solicitud (anti-doble-cobro), monto calculado como precio unitario × pasajeros, llave y URL del PDF |
 | RF-13 Reportes y KPIs | agregaciones sobre solicitud y pago (precio real de servicio) |
 
 ### 7.7 Referencia

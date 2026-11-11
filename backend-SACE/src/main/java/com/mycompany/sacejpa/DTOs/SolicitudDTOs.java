@@ -12,6 +12,7 @@ public class SolicitudDTOs {
     private String estado;
     private String prioridad;
     private String categoria;
+    private Integer pasajeros;
     private Long clienteId;
     private String clienteNombre;
     private String clienteCorreo;
@@ -25,7 +26,7 @@ public class SolicitudDTOs {
     }
 
     public SolicitudDTOs(Long id, Date fechaCreacion, String titulo, String asunto, String descripcion,
-            String estado, String prioridad, String categoria, Long clienteId, String clienteNombre,
+            String estado, String prioridad, String categoria, Integer pasajeros, Long clienteId, String clienteNombre,
             String clienteCorreo, String clienteTelefono, Long empleadoAsignadoId,
             Long chatbotAsignadoId, Long servicioGeneradoId, List<Long> mensajesIds) {
         this.id = id;
@@ -36,6 +37,7 @@ public class SolicitudDTOs {
         this.estado = estado;
         this.prioridad = prioridad;
         this.categoria = categoria;
+        this.pasajeros = pasajeros;
         this.clienteId = clienteId;
         this.clienteNombre = clienteNombre;
         this.clienteCorreo = clienteCorreo;
@@ -108,6 +110,14 @@ public class SolicitudDTOs {
 
     public void setCategoria(String categoria) {
         this.categoria = categoria;
+    }
+
+    public Integer getPasajeros() {
+        return pasajeros;
+    }
+
+    public void setPasajeros(Integer pasajeros) {
+        this.pasajeros = pasajeros;
     }
 
     public Long getClienteId() {

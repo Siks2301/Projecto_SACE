@@ -266,6 +266,9 @@ function inicializarFormularioReserva() {
           estado: 'PENDIENTE',
           prioridad: 'MEDIA',
           categoria: 'RESERVA',
+          // El catalogo cobra por persona: el backend multiplica el precio
+          // unitario por este numero para calcular el total del pago.
+          pasajeros,
           clienteId: sesion.id,
           servicioGeneradoId: destinoSeleccionado.id
         };

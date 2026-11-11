@@ -407,6 +407,36 @@ Verificado que los tres caminos de error siguen dando la respuesta correcta: lla
 foránea `409` con el mensaje de datos relacionados, valor duplicado `409` con
 "Ya existe un registro con esos mismos datos unicos", y texto excedido `400`.
 
+### 3.10 El precio se cobraba una sola vez aunque la reserva fuera para varias personas — CORREGIDO
+
+**Síntoma.** La portada y la página de destinos dicen «desde $320.000 **por
+persona**», pero una reserva para cuatro personas generaba un pago de $320.000.
+El cliente pagaba una persona y viajaban cuatro.
+
+**Causa.** `PagoServicio.precioDe()` devolvía `servicio.getPrecio()` sin mirar a
+cuántas personas era la reserva. El número de viajeros nunca se guardó: solo
+viajaba dentro del texto libre del asunto («Reserva para 4 persona(s)»), así que
+el backend no tenía un dato que multiplicar.
+
+**Corrección.**
+
+1. Nueva columna `solicitud.pasajeros` (entero, 1–10) con su campo en la entidad
+   y en el DTO. El formulario de destinos y el registro de reservas locales ya
+   envían el número.
+2. `Solicitud.normalizarPasajeros()` valida el dato al crear o editar y, si no
+   viene, lo rescata del texto histórico («Pasajeros: 2», «Reserva para 2
+   persona(s)»), de modo que las solicitudes viejas también se cobran bien.
+3. `PagoServicio.totalConPasajeros()` multiplica el precio unitario por los
+   viajeros; la cotización devuelve además `precioUnitario` y `pasajeros` para
+   que la interfaz explique el total.
+4. El comprobante PDF muestra los pasajeros en CANT. y despeja el valor unitario
+   del total, en lugar de decir siempre «1».
+
+**Verificación.** `CobroPorPasajerosTest` (8 casos, `mvn test`): 4 personas ×
+$320.000 = $1.280.000, tope de 10, cantidades inválidas cobradas como una,
+centavos exactos y rescate desde el texto. 8 PASS / 0 FAIL. Los 48 casos de Jest
+del frontend siguen en verde.
+
 ## 4. HALLAZGOS ABIERTOS
 
 ### 4.1 Dos bases de datos con el mismo nombre en distinta caja — ALTO
