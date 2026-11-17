@@ -1,6 +1,7 @@
 package com.mycompany.sacejpa.Servicios;
 
 import com.mycompany.sacejpa.DTOs.EmpleadoDTOs;
+import com.mycompany.sacejpa.Exceptions.ValidacionException;
 import com.mycompany.sacejpa.Mapper.EmpleadoMapper;
 import com.mycompany.sacejpa.Modelo.Empleado;
 import com.mycompany.sacejpa.Repositorio.Reposi_Empleado;
@@ -8,6 +9,7 @@ import com.mycompany.sacejpa.Seguridad.ContraseniaUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -110,5 +112,30 @@ public class EmpleadoServicio {
             throw new RuntimeException("Empleado no encontrado con id: " + id);
         }
         repositorioEmpleado.deleteById(id);
+    }
+
+    /**
+     * Cambia el rol de un empleado.
+     *
+     * <p>Ruta dedicada y protegida: el PUT normal de empleados ignora
+     * {@code tipoUsuario} a proposito para que nadie se asigne privilegios
+     * editando su propio perfil. Solo el endpoint con sufijo {@code /tipo},
+     * restringido a administradores por el interceptor, puede hacerlo.
+     */
+    @Transactional
+    public EmpleadoDTOs cambiarTipo(Long id, String tipoUsuario) {
+        if (tipoUsuario == null || tipoUsuario.isBlank()) {
+            throw new ValidacionException("Debe indicar el tipo de usuario.");
+        }
+        Empleado.TipoUsuario tipo;
+        try {
+            tipo = Empleado.TipoUsuario.valueOf(tipoUsuario.trim());
+        } catch (IllegalArgumentException e) {
+            throw new ValidacionException("Tipo de usuario no valido: " + tipoUsuario);
+        }
+        Empleado empleado = repositorioEmpleado.findById(id)
+                .orElseThrow(() -> new RuntimeException("Empleado no encontrado con id: " + id));
+        empleado.setTipoUsuario(tipo);
+        return EmpleadoMapper.toDTO(repositorioEmpleado.save(empleado));
     }
 }

@@ -21,7 +21,7 @@ import java.util.List;
 /**
  * Inicializador de datos (Seed).
  * Si la base de datos PostgreSQL esta vacia o sin administrador, inserta:
- * 1. Un usuario Administrador (yeito203@aleleotours.com / clave definida en SACE_ADMIN_PASSWORD).
+ * 1. Un usuario Administrador (admin@aleleotours.com / clave definida en SACE_ADMIN_PASSWORD).
  * 2. Los paquetes y servicios turisticos base (Cartagena, San Andres, Santa Marta, Medellin, Tayrona, Providencia).
  * 3. Preguntas frecuentes para el Chatbot.
  *
@@ -55,7 +55,7 @@ public class DataInitializer implements CommandLineRunner {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @org.springframework.beans.factory.annotation.Value("${app.admin.email:yeito203@aleleotours.com}")
+    @org.springframework.beans.factory.annotation.Value("${app.admin.email:admin@aleleotours.com}")
     private String emailAdmin;
 
     @org.springframework.beans.factory.annotation.Value("${app.admin.password:}")

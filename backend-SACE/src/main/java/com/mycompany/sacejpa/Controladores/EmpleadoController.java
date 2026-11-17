@@ -33,6 +33,15 @@ public class EmpleadoController {
         return empleadoServicio.servactualiza(id, dto);
     }
 
+    /**
+     * Cambia el rol de un empleado. Solo administradores: el PUT normal no
+     * acepta tipoUsuario para impedir escaladas de privilegios.
+     */
+    @PutMapping("/{id}/tipo")
+    public EmpleadoDTOs CambiarTipoEmpleado(@PathVariable Long id, @RequestBody EmpleadoDTOs dto) {
+        return empleadoServicio.cambiarTipo(id, dto.getTipoUsuario());
+    }
+
     @DeleteMapping("/{id}")
     public void EliminaEmpleado(@PathVariable Long id) {
         empleadoServicio.eliminarEmpleado(id);
