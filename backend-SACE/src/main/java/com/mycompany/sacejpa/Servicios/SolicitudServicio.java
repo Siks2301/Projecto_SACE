@@ -82,6 +82,10 @@ public class SolicitudServicio {
             dto.setClienteId(usuarioId);
             dto.setEmpleadoAsignadoId(null);
             dto.setChatbotAsignadoId(null);
+            // El estado inicial lo decide el servidor, no el cuerpo del POST:
+            // un cliente no puede declarar su propia reserva RESUELTA ni
+            // saltarse la bandeja de atencion.
+            solicitud.setEstado(Solicitud.Estado.PENDIENTE);
         }
         asignarRelaciones(solicitud, dto);
         if (solicitud.getEmpleadoAsignado() == null) {

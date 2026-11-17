@@ -120,17 +120,38 @@ public class Solicitud {
     }
 
     /**
-     * Asegura que toda solicitud nazca con un numero de viajeros valido.
+     * Asegura que toda solicitud nazca con los valores minimos de operacion.
      *
      * <p>Cubre los caminos que crean la entidad sin pasar por el DTO (datos
-     * semilla, pruebas, importaciones): si el numero falta se rescata del texto
-     * y, en ultimo caso, se asume una persona. Sin esto, la columna quedaria
-     * nula y el cobro multiplicaria por nada.
+     * semilla, pruebas, importaciones) y tambien los {@code POST} directos al
+     * API que omiten campos: si faltan, la columna queda nula, el cobro
+     * multiplica por nada, la solicitud no aparece en la tendencia por fecha y
+     * no se puede filtrar por estado.
      */
     @PrePersist
-    private void completarPasajeros() {
-        if (pasajeros == null || pasajeros < 1) {
-            pasajeros = normalizarPasajeros(null, asunto, descripcion);
+    private void completarValoresIniciales() {
+        aplicarValoresIniciales(this);
+    }
+
+    /**
+     * Completa fecha, estado, prioridad y viajeros cuando vienen vacios.
+     *
+     * <p>Es el unico lugar donde se definen los valores con los que nace una
+     * solicitud, para que la base y las pruebas no dependan de que el cliente
+     * envie todos los campos del formulario.
+     */
+    static void aplicarValoresIniciales(Solicitud solicitud) {
+        if (solicitud.fechaCreacion == null) {
+            solicitud.fechaCreacion = new Date();
+        }
+        if (solicitud.estado == null) {
+            solicitud.estado = Estado.PENDIENTE;
+        }
+        if (solicitud.prioridad == null) {
+            solicitud.prioridad = Prioridad.MEDIA;
+        }
+        if (solicitud.pasajeros == null || solicitud.pasajeros < 1) {
+            solicitud.pasajeros = normalizarPasajeros(null, solicitud.asunto, solicitud.descripcion);
         }
     }
 
