@@ -1,7 +1,9 @@
 # API REST — Endpoints del backend SACE (AleLeo Tours)
 
 Resumen de la API REST del backend (`backend-SACE`, Java 17 · Spring Boot 3.2).
-Base URL: `http://localhost:8082/api` · Formato: JSON · Autenticación: `Authorization: Bearer <token>`.
+Base URL local: `http://localhost:8082/api` · Producción:
+`https://sace-api.onrender.com/api` · Formato: JSON · Autenticación:
+`Authorization: Bearer <token>`.
 
 ## Autenticación (`/auth`)
 
@@ -27,6 +29,10 @@ Base URL: `http://localhost:8082/api` · Formato: JSON · Autenticación: `Autho
 | POST | `/solicitudes` | Crear solicitud por categoría (RESERVA, CONSULTA, CAMBIO_FECHA, EQUIPAJE, OTRO) |
 | PUT | `/solicitudes/{id}` | Actualizar estado/prioridad/asignación |
 | DELETE | `/solicitudes/{id}` | Cancelación por el propietario (sin borrado físico de historial) |
+
+Los campos omitidos en `POST /solicitudes` los completa el servidor: `estado =
+PENDIENTE`, `prioridad = MEDIA`, `fechaCreacion = ahora` y `pasajeros` rescatado
+del texto o `1`. Un cliente no puede crear su solicitud como `RESUELTA`.
 
 ## Mensajes (`/mensajes`)
 
@@ -56,18 +62,25 @@ solo recibe `solicitudId`, `metodoPago` y `notas`.
 | GET | `/pagos/estado/{referencia}` | Estado del pago; reconcilia con la pasarela antes de responder |
 | GET | `/pagos/comprobante/{idPago}` | Descargar comprobante PDF (solo si está APROBADO; sello SHA-256 + IVA) |
 | GET | `/pagos/solicitud/{idSolicitud}` | Consultar los pagos de una solicitud |
+| DELETE | `/pagos/{id}` | **Solo admin.** Eliminar un pago (limpieza de datos de prueba) |
 | POST | `/pagos/webhook/wompi` | Notificación de la pasarela. **Público**, autenticado por checksum SHA-256 |
 | POST | `/pagos/webhook/verificacion` | Verificación de vida del endpoint |
 
 > Enviar un campo `monto` en `POST /pagos` produce `400`: el servidor rechaza
 > explícitamente que el cliente imponga el precio.
 
+El `codigoAutorizacion` y el `idTransaccionPasarela` que devuelve la pasarela se
+guardan al consultar el estado, en el webhook y en la conciliación. Por eso el
+comprobante PDF muestra el código real (p. ej. `SIM-6814`) aunque el pago se
+haya aprobado por polling y no por webhook.
+
 ## Administración (CRUD, solo admin/roles autorizados)
 
 | Método | Ruta | Descripción |
 |---|---|---|
 | GET/POST/PUT/DELETE | `/clientes`, `/clientes/{id}` | Gestión de clientes |
-| GET/POST/PUT/DELETE | `/empleados`, `/empleados/{id}` | Gestión de empleados |
+| GET/POST/PUT/DELETE | `/empleados`, `/empleados/{id}` | Gestión de empleados. El `PUT` normal ignora `tipoUsuario` |
+| PUT | `/empleados/{id}/tipo` | **Solo admin.** Cambiar rol: `ADMINISTRADOR`, `ASESOR_VIAJES`, `COORDINADOR_DESTINO` o `CLIENTE` |
 | GET/POST/PUT/DELETE | `/servicios`, `/servicios/{id}` | Gestión del catálogo |
 | GET/POST/PUT/DELETE | `/preguntas-frecuentes`, `/preguntas-frecuentes/{id}` | Gestión de FAQs |
 | GET/POST/PUT/DELETE | `/chatbots`, `/chatbots/{id}` | Gestión del chatbot |

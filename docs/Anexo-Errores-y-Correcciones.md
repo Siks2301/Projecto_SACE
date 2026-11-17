@@ -1,7 +1,7 @@
 # Anexo — Errores encontrados y correcciones
 
 _Proyecto académico AleLeo Tours (SENA) · Ficha / Grupo: 3171149-B_
-_Actualizado: 10 de noviembre de 2026_
+_Actualizado: 17 de noviembre de 2026_
 
 > **Qué es este documento.** La bitácora de hallazgos y correcciones del sistema,
 > con las rondas de verificación manual que se hicieron mientras se corregían. Es
@@ -11,7 +11,7 @@ _Actualizado: 10 de noviembre de 2026_
 
 Medidos con inspección de DOM, pruebas reales en el navegador y consultas a la
 base, no de forma teórica.
-Fecha de la última verificación: 4 de octubre de 2026.
+Fecha de la última verificación: 17 de noviembre de 2026 (ronda final en producción, sección 7).
 
 ---
 
@@ -617,3 +617,24 @@ la aplicación.
 **Balance:** 11 de 16 hallazgos corregidos, 5 abiertos (uno de ellos alto: las dos
 bases de datos). Verificado con 139 comprobaciones reales en total (104 en la
 primera ronda, 35 en la segunda), sin un solo fallo pendiente.
+
+---
+
+## 7. Ronda final: prueba E2E en producción (17 nov 2026)
+
+| # | Hallazgo | Severidad | Estado |
+|---|---|---|---|
+| 22 | `POST /api/solicitudes` guardaba `estado`, `fechaCreacion`, `prioridad` y `pasajeros` en NULL cuando el cliente los omitía | ALTA | Corregido (`34246f5`): `@PrePersist` completa los valores; `CP-V1`–`CP-V3` |
+| 23 | Un cliente podía declarar su solicitud como `RESUELTA` en el momento de crearla | ALTA | Corregido (`34246f5`): el servicio fuerza `PENDIENTE` |
+| 24 | El comprobante decía «Código de Autorización: No informado» en el flujo `PENDIENTE → APROBADO` por polling | MEDIA | Corregido (`dfd51d2`): se sincroniza el código en consulta, webhook y conciliación |
+| 25 | El seeder rotaba la contraseña de `admin@aleleotours.com`, cuenta que en producción pertenecía a un asesor | ALTA | Corregido (`f053b29`): no se sobrescriben claves existentes |
+| 26 | No existía forma de asignar roles desde la API; el `PUT /empleados/{id}` los ignora a propósito | MEDIA | Corregido (`f672bb3`): `PUT /empleados/{id}/tipo`, solo administradores |
+| 27 | No había endpoint para borrar pagos de prueba | BAJA | Corregido (`f053b29`): `DELETE /api/pagos/{id}`, solo administradores |
+
+Dos «fallos» del primer script E2E no eran del sistema: la cabecera `%PDF` se
+corrompía al reconstruir la respuesta como texto en vez de bytes, y el estado de
+la solicitud se leyó antes de que Render terminara el redespliegue. Con la
+descarga binaria y tras esperar el despliegue, ambos puntos pasaron.
+
+Producción quedó limpia: se borraron pagos 3–5, solicitudes 4–8 y clientes 4–6.
+El detalle completo está en el [`documento 10`](10-Cierre-y-Verificacion-Final-SACE.md).

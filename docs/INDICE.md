@@ -2,7 +2,7 @@
 
 _Proyecto académico AleLeo Tours (SENA) · Ficha / Grupo: 3171149-B_
 _Cesar Leonardo Ramírez Montejo · Yerson Alexei Torres Garcia · Felipe Gonzales Quitero_
-_Actualizado: 10 de noviembre de 2026_
+_Actualizado: 17 de noviembre de 2026_
 
 Este es el **único índice** del proyecto. Mapea cada criterio de la rúbrica SENA
 con su evidencia, lista las capturas y los diagramas, y dice qué documento es la
@@ -28,6 +28,7 @@ versiones `.md`, los diagramas, las capturas y el DDL del esquema.
 | 07 | [`07-Modelo-de-Datos-y-Normalizacion-SACE.md`](07-Modelo-de-Datos-y-Normalizacion-SACE.md) | Modelo de datos, relaciones, integridad y normalización 1FN/2FN/3FN |
 | 08 | [`08-Guion-de-Presentacion-Final-SACE.md`](08-Guion-de-Presentacion-Final-SACE.md) | Guion de sustentación: orden, reparto, demo en vivo y preguntas |
 | 09 | [`09-Integracion-Pasarela-Pagos-SACE.md`](09-Integracion-Pasarela-Pagos-SACE.md) | Pasarela Wompi, flujo, modelo de datos, seguridad y modos `mock`/`wompi` |
+| 10 | [`10-Cierre-y-Verificacion-Final-SACE.md`](10-Cierre-y-Verificacion-Final-SACE.md) | Estado final, credenciales de producción, correcciones y verificación E2E |
 | Anexo | [`Anexo-Errores-y-Correcciones.md`](Anexo-Errores-y-Correcciones.md) | Bitácora de hallazgos, correcciones y rondas de verificación manual |
 | Anexo | [`API-Endpoints-SACE.md`](API-Endpoints-SACE.md) | Catálogo de endpoints de la API REST |
 | Anexo | [`SACE_db_ddl.sql`](SACE_db_ddl.sql) | DDL del esquema completo de `SACE_db` (solo estructura) |
@@ -44,9 +45,9 @@ versiones `.md`, los diagramas, las capturas y el DDL del esquema.
 | 4 | Base de datos (10 %) | [`SACE_db_ddl.sql`](SACE_db_ddl.sql) · documento 07 (relaciones, integridad y normalización) · `schema_email_unico.sql` y `schema_datos_corporativos.sql` · diccionario de datos (xlsx local) | Completo (5) |
 | 5 | Control de versiones y colaboración (10 %) | Repositorio público GitHub (`Siks2301/Projecto_SACE`) · rama `main` con commits y `merge --no-ff` · commits por integrante · `.gitignore` | Completo (5) |
 | 6 | Gestión del proyecto (10 %) | Documento 02: backlog, 11 historias de usuario, tareas T1…T8, sprints S1…S5 y seguimiento | Completo (5) |
-| 7 | Documentación (5 %) | `README.md` · estos documentos · documento 05 (manual de usuario) · este índice | Completo (5) |
-| 8 | Preparación para pruebas (5 %) | Documento 03 (CP-01…CP-24, datos y criterios) · Actividad 1 (Jest) · anexo de errores | Completo (5) |
-| 9 | Preparación para el despliegue (5 %) | Documento 04 (plan y guía) · documento 06 (evidencia real, incluido el despliegue del 9-10 de noviembre de 2026 en Render + Neon + Cloudflare) | Completo (5) |
+| 7 | Documentación (5 %) | `README.md` · estos documentos · documento 05 (manual de usuario) · documento 10 (cierre) · este índice | Completo (5) |
+| 8 | Preparación para pruebas (5 %) | Documento 03 (CP-01…CP-25, CP-V y CP-AUT, datos y criterios) · Actividad 1 (Jest) · anexo de errores · documento 10 (E2E en producción) | Completo (5) |
+| 9 | Preparación para el despliegue (5 %) | Documento 04 (plan y guía) · documento 06 (evidencia real, incluido el despliegue del 9-10 de noviembre de 2026 en Render + Neon + Cloudflare) · documento 10 (verificación final) | Completo (5) |
 
 ---
 
@@ -87,13 +88,19 @@ entidad-relación y modelo relacional (PNG).
 
 ## Credenciales de demostración
 
-> Solo para desarrollo local. En producción la contraseña del administrador se
-> define con la variable `SACE_ADMIN_PASSWORD` y **no** es la de este documento.
+> En local, si la base está vacía, el seeder crea el administrador con
+> `admin@aleleotours.com` / `admin123`. En producción las cuentas son las que
+> se indican abajo y el seeder **no sobrescribe** contraseñas existentes.
 
-| Rol | Correo | Contraseña |
-|---|---|---|
-| Administrador (semilla local) | `admin@aleleotours.com` | `admin123` |
-| Cliente de demostración | `cesarleonardo.rm2301@gmail.com` | `DemoClave2026!a` |
+| Entorno | Rol | Correo | Contraseña |
+|---|---|---|---|
+| Local (semilla) | Administrador | `admin@aleleotours.com` | `admin123` |
+| Producción | Administrador | `admin@aleleotours.com` | `Empleado123$` |
+| Producción | Asesor | `yeito203@aleleotours.com` | `Empleado123$` |
+| Demostración | Cliente | `cesarleonardo.rm2301@gmail.com` | `DemoClave2026!a` |
 
 La pasarela de pagos se controla con `PAGOS_PASARELA` (`mock` por defecto o
 `wompi`). El monto lo calcula el backend desde el catálogo. Ver documento 09.
+
+El cierre, las correcciones finales y la verificación E2E en producción están
+en el [`documento 10`](10-Cierre-y-Verificacion-Final-SACE.md).

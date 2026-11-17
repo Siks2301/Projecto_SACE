@@ -70,7 +70,7 @@ Lo mínimo que hay que definir en producción:
 |---|---|
 | `SPRING_DATASOURCE_URL` / `_USERNAME` / `_PASSWORD` | Conexión a PostgreSQL (en Neon, con `?sslmode=require`) |
 | `SACE_TOKEN_SECRET` | Firma HMAC de los tokens de sesión |
-| `SACE_ADMIN_PASSWORD` | Contraseña del administrador semilla (se rota al reiniciar) |
+| `SACE_ADMIN_PASSWORD` | Contraseña del administrador **solo cuando la cuenta no existe**; no rota claves existentes |
 | `SACE_CORS_ORIGINS` | Origen exacto del frontend, sin barra final |
 | `SACE_UPLOAD_DIR` | Ruta de los comprobantes PDF (ver 4.9) |
 | `SACE_DDL_AUTO` | `update` en el primer despliegue, `none` después |
@@ -209,7 +209,7 @@ Cloudflare redespliega al recibir el commit.
 - [ ] El sitio carga y muestra los 6 destinos (vienen de la API: si aparecen, la
       API responde y el CORS está bien).
 - [ ] Registro e inicio de sesión de un cliente.
-- [ ] Inicio de sesión del administrador con `SACE_ADMIN_PASSWORD`.
+- [ ] Inicio de sesión del administrador de producción (`admin@aleleotours.com` / `Empleado123$`).
 - [ ] Crear solicitud → pagar (pasarela `mock`) → descargar el comprobante PDF.
 - [ ] Panel de reportes con gráficas.
 - [ ] El comprobante PDF sigue disponible tras un redespliegue.
@@ -317,8 +317,8 @@ pierde (documento 06, apartado 6.10).
 
 - Cambiar `SACE_TOKEN_SECRET`, la contraseña de PostgreSQL y las credenciales
   SMTP antes de exponer el sistema.
-- Rotar la contraseña del administrador semilla tras el primer ingreso
-  (`SACE_ADMIN_PASSWORD`).
+- Rotar la contraseña del administrador tras el primer ingreso con
+  `PUT /api/empleados/{id}` (el seeder ya no sobrescribe claves existentes).
 - Habilitar HTTPS y no publicar los comprobantes PDF fuera de su ruta protegida.
 - Pasar `SACE_DDL_AUTO` a `none` cuando el esquema esté estable.
 - Mantener respaldos regulares con `pg_dump`.

@@ -210,8 +210,13 @@ POST /api/auth/login  { "email": "admin@aleleotours.com", "contrasenia": "<la de
 ```
 
 El administrador se creó con la contraseña recibida en `SACE_ADMIN_PASSWORD`, no
-con un valor escrito en el código: es la comprobación de que la rotación de
-credenciales funciona.
+con un valor escrito en el código: es la comprobación de que la configuración
+por entorno funcionaba en ese despliegue.
+
+> **Estado actual (17 nov 2026):** la rotación automática fue retirada. En
+> producción el administrador es `admin@aleleotours.com` / `Empleado123$` y
+> `admin@aleleotours.com` ya no se ve afectado por `SACE_ADMIN_PASSWORD` al
+> reiniciar. Detalle en el [`documento 10`](10-Cierre-y-Verificacion-Final-SACE.md).
 
 ### 6.3.6 CORS y autorización
 
@@ -491,16 +496,19 @@ entrar a la base de datos a mano.
 
 **Ahora**:
 
-- El correo y la contraseña se leen de `app.admin.email` y `app.admin.password`.
+- El correo se lee de `app.admin.email` (`admin@aleleotours.com` por defecto) y
+  la contraseña de `app.admin.password` / `SACE_ADMIN_PASSWORD`.
 - Si el administrador **no existe**, se crea con esos valores.
-- Si **ya existe** y la variable `SACE_ADMIN_PASSWORD` está definida, la
-  contraseña se **rota** al valor recibido (comparando antes con
-  `passwordEncoder.matches` para no reescribir el hash en cada arranque).
-- Si la variable está vacía, se mantiene la contraseña actual y solo se informa
-  por consola.
+- Si **ya existe**, la contraseña **no se toca nunca**, esté o no definida la
+  variable. Antes se rotaba al arrancar; eso provocó que en producción se
+  sobrescribiera la clave de un asesor porque el correo configurado apuntaba a
+  su cuenta.
+- La rotación de claves y el cambio de roles se hacen desde la API con un
+  administrador autenticado (`PUT /api/empleados/{id}` y
+  `PUT /api/empleados/{id}/tipo`).
 
-Eso convierte la rotación de credenciales en una operación de plataforma: se
-cambia la variable y se reinicia el servicio. No se toca SQL.
+El seeder ya no es un mecanismo de rotación: solo garantiza que exista una
+cuenta administradora en una base vacía.
 
 ### 6.6.4 `SaludController.java`: `GET /api/salud`
 
@@ -713,7 +721,7 @@ correcto (cliente, folio, referencia, subtotal, IVA 19 % y total). Al reiniciar,
 | CORS restringido | Lista explícita de dominios por entorno, con credenciales |
 | HTTPS obligatorio | Redirección 301 y HSTS en nginx; TLS automático en Cloudflare |
 | Webhook de pagos | Firma SHA-256 verificada con `WOMPI_EVENTS_SECRET` (ver documento 09) |
-| Rotación de credenciales | `SACE_ADMIN_PASSWORD` rota la clave del administrador al reiniciar |
+| Rotación de credenciales | Se hace con `PUT /api/empleados/{id}`; el seeder no sobrescribe claves existentes |
 | Caché y cabeceras del sitio | `frontend-aleleo-tours/_headers` (Cloudflare Workers) |
 
 ---
@@ -730,9 +738,9 @@ correcto (cliente, folio, referencia, subtotal, IVA 19 % y total). Al reiniciar,
    `?sslmode=require` porque el proveedor exige TLS.
 6. **Hibernate crea el esquema** (11 tablas) porque `SACE_DDL_AUTO=update` y la
    base está vacía.
-7. **El seed inserta los datos base**: el administrador (con la contraseña de
-   `SACE_ADMIN_PASSWORD`), los 6 paquetes turísticos, las preguntas frecuentes y
-   el chatbot *AleLeoBot*.
+7. **El seed inserta los datos base**: el administrador (solo si no existe; con
+   la contraseña de `SACE_ADMIN_PASSWORD`), los 6 paquetes turísticos, las
+   preguntas frecuentes y el chatbot *AleLeoBot*.
 8. **`/api/salud` responde 200**, la plataforma marca el servicio como sano y le
    empieza a enviar tráfico.
 9. **Cloudflare sirve el sitio.** El build ejecuta `npx wrangler deploy` con el
@@ -757,7 +765,7 @@ una entidad puede alterar la estructura de la base de producción sin revisión.
 | Secreto | Cómo se rota |
 |---|---|
 | `SACE_TOKEN_SECRET` | Se cambia y se reinicia: invalida todas las sesiones abiertas |
-| `SACE_ADMIN_PASSWORD` | Se cambia y se reinicia: el seed rota el hash |
+| `SACE_ADMIN_PASSWORD` | Solo se usa si la cuenta no existe; para rotar una clave existente, `PUT /api/empleados/{id}` |
 | Credenciales de BD | Se rotan en el proveedor y se actualizan las variables |
 | Llaves de Wompi | Se cambian en el panel y se actualiza la variable; el modo (`mock`/`wompi`) se controla con `PAGOS_PASARELA` |
 
@@ -800,9 +808,11 @@ regenera (6.10.1).
 Falta `?sslmode=require` en la cadena JDBC. Neon rechaza conexiones sin TLS.
 
 **6. El administrador no puede entrar con la contraseña esperada.**
-`SACE_ADMIN_PASSWORD` no está definida (se usó la de desarrollo) o el servicio no
-se ha reiniciado desde que se cambió la variable. El log de arranque lo dice
-explícitamente: `[SACE SEED] Contrasena del administrador rotada...`.
+El seeder ya no rota claves: comprueba que el correo sea `admin@aleleotours.com`
+y que la cuenta no haya sido cambiada desde la API. En producción la clave
+vigente es `Empleado123$`. Para asignar una nueva, entra con un administrador y
+usa `PUT /api/empleados/{id}` con el campo `contrasenia`; si la base está vacía,
+la clave inicial sí viene de `SACE_ADMIN_PASSWORD`.
 
 **7. `docker build` se corta con `rpc error ... EOF`.**
 Ocurrió en este equipo y vale documentarlo porque no es un error del proyecto:

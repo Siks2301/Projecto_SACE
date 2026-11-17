@@ -349,6 +349,17 @@ $env:WOMPI_EVENTS_SECRET= "test_events_..."
 | `GET` | `/api/pagos/solicitud/{idSolicitud}` | Pagos de una solicitud | Sí + propietario |
 | `POST` | `/api/pagos/webhook/wompi` | Notificación de la pasarela | **Firma SHA-256** |
 | `POST` | `/api/pagos/webhook/verificacion` | Verificación de vida del endpoint | No |
+| `DELETE` | `/api/pagos/{id}` | Limpieza administrativa (solo `ADMINISTRADOR`) | Sí + admin |
+
+### Trazabilidad guardada en cada respuesta de la pasarela
+
+`PagoServicio.sincronizarDatosDePasarela()` persiste `idTransaccionPasarela` y
+`codigoAutorizacion` en los tres caminos por los que puede llegar la
+confirmación: `GET /api/pagos/estado/{referencia}`, el webhook y la conciliación
+de pendientes. Sin esta sincronización, un pago aprobado por *polling* llegaba
+al comprobante con «Código de Autorización: No informado» aunque la pasarela sí
+hubiera devuelto el código. Verificado en producción con `SIM-6814` (documento
+10).
 
 ### Cuerpo de `POST /api/pagos`
 

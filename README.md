@@ -28,12 +28,15 @@ Hibernate crea las tablas (`ddl-auto=update`) y `DataInitializer` siembra el
 administrador, el catálogo y las preguntas frecuentes del chatbot.
 
 Administrador semilla (**solo desarrollo**): `admin@aleleotours.com` / `admin123`.
-En producción la contraseña se define con `SACE_ADMIN_PASSWORD`; no se usa la de
-este README.
+En producción el administrador es `admin@aleleotours.com` / `Empleado123$` y el
+asesor `yeito203@aleleotours.com` / `Empleado123$`. `SACE_ADMIN_PASSWORD` solo
+se usa si la base está vacía: el seeder no sobrescribe claves existentes.
 
 > El procedimiento completo, las variables de entorno y el despliegue en la nube
 > (Cloudflare + Render + Neon), en Railway o en un VPS están en
 > [`docs/04-Plan-de-Despliegue-SACE.md`](docs/04-Plan-de-Despliegue-SACE.md).
+> El estado final y la verificación E2E, en
+> [`docs/10-Cierre-y-Verificacion-Final-SACE.md`](docs/10-Cierre-y-Verificacion-Final-SACE.md).
 
 ## Funcionalidades
 

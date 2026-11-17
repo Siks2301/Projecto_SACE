@@ -23,7 +23,7 @@ Verificar el cumplimiento funcional y de seguridad del sistema SACE de extremo a
 | Control de cambios | Repositorio Git/GitHub (rama main + ramas de funcionalidad) |
 
 ### 3.4 Datos de prueba
-- Administrador: admin@aleleotours.com / admin123 (semilla de `DataInitializer`, solo desarrollo; en producción la clave llega por `SACE_ADMIN_PASSWORD`).
+- Administrador: en local `admin@aleleotours.com` / `admin123` (semilla de `DataInitializer`); en producción `admin@aleleotours.com` / `Empleado123$`. El asesor de producción es `yeito203@aleleotours.com` / `Empleado123$`. El seeder no rota claves de cuentas existentes.
 - Clientes creados por corrida con dominio de prueba (victima/atacante…@test.com, contraseña Viaje2026!).
 - Solicitudes por cada categoría (RESERVA, EQUIPAJE, CANCELADA, etc.) y estados (PENDIENTE, RESUELTA).
 - Pagos: cobro en línea contra la pasarela (Wompi en sandbox o versión simulada). Se verifica que el monto lo calcula el backend desde el catálogo, que un `monto` enviado por el cliente se rechaza con 400, y que el reintento de la misma solicitud se bloquea por el índice único parcial.
@@ -69,6 +69,20 @@ Cubiertos automáticamente por `pruebas/test_pagos_pasarela.ps1`: CP-15, CP-16,
 CP-17, CP-21, y además el precio calculado por el servidor, el rechazo de
 `monto`/`amount`/`precio`, el formato de la referencia, el IDOR y la firma del
 webhook.
+
+### 3.6.1 Casos añadidos en el cierre (17 nov 2026)
+
+| Caso | Qué se prueba | Resultado esperado |
+|---|---|---|
+| CP-V1 | `POST /api/solicitudes` sin `estado`, `fechaCreacion`, `prioridad` ni `pasajeros` | `@PrePersist` completa `PENDIENTE`, `MEDIA`, fecha actual y 1 viajero; ninguna columna queda NULL |
+| CP-V2 | El cliente intenta crear su solicitud como `RESUELTA` | El servicio fuerza `PENDIENTE` |
+| CP-V3 | Reserva histórica con «Pasajeros: 2» en el texto y sin columna `pasajeros` | El número se rescata del texto y el cobro usa 2 personas |
+| CP-AUT | Pago `PENDIENTE → APROBADO` por consulta de estado (sin webhook) | El comprobante muestra el código real de la pasarela (p. ej. `SIM-6814`), no «No informado» |
+| CP-ADM | Cambio de rol por un administrador y por un asesor | 200 para el admin en `PUT /api/empleados/{id}/tipo`; 403 para el asesor |
+
+CP-V1 a CP-V3 están en `ValoresInicialesSolicitudTest` (3 pruebas); con
+`CobroPorPasajerosTest` (8) dan 11 pruebas automáticas. El resto se verificó en
+la prueba E2E de producción documentada en el [`documento 10`](10-Cierre-y-Verificacion-Final-SACE.md).
 
 ### 3.7 Reporte de ejecución
 Ejecutado el 21 de septiembre de 2026 con el backend real y la base de datos local:
