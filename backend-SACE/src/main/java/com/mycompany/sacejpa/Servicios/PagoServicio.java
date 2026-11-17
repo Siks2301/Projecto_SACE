@@ -485,6 +485,18 @@ public class PagoServicio {
         return resueltos;
     }
 
+    /**
+     * Elimina un pago. Solo para limpieza administrativa de datos de prueba:
+     * un pago es un registro contable y no debe borrarse desde el flujo del
+     * cliente. El controlador comprueba el rol antes de llamarlo.
+     */
+    @Transactional
+    public void eliminarPago(Long id) {
+        Pago pago = reposiPago.findById(id)
+                .orElseThrow(() -> new ValidacionException("Pago no encontrado con id: " + id));
+        reposiPago.delete(pago);
+    }
+
     // ==================================================================
     // Utilidades internas
     // ==================================================================

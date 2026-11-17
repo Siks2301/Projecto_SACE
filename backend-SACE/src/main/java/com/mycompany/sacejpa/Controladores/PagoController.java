@@ -137,6 +137,21 @@ public class PagoController {
         }
     }
 
+    /**
+     * Elimina un pago. Solo administradores: es una operacion de limpieza,
+     * no parte del flujo de cobro del cliente.
+     */
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> eliminarPago(@PathVariable Long id, HttpServletRequest request) {
+        TokenServicio.Sesion sesion = obtenerSesion(request);
+        if (!"ADMINISTRADOR".equalsIgnoreCase(sesion.tipoUsuario())) {
+            throw new com.mycompany.sacejpa.Exceptions.AutorizacionException(
+                    "Solo un administrador puede eliminar pagos.");
+        }
+        pagoServicio.eliminarPago(id);
+        return ResponseEntity.noContent().build();
+    }
+
     /** Pagos asociados a una solicitud. */
     @GetMapping("/solicitud/{idSolicitud}")
     public ResponseEntity<List<PagoDTOs.PagoRespuestaDTO>> obtenerPagosPorSolicitud(

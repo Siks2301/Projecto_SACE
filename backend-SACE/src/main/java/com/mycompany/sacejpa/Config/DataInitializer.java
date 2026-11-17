@@ -21,17 +21,18 @@ import java.util.List;
 /**
  * Inicializador de datos (Seed).
  * Si la base de datos PostgreSQL esta vacia o sin administrador, inserta:
- * 1. Un usuario Administrador (admin@aleleotours.com / admin123).
+ * 1. Un usuario Administrador (yeito203@aleleotours.com / clave definida en SACE_ADMIN_PASSWORD).
  * 2. Los paquetes y servicios turisticos base (Cartagena, San Andres, Santa Marta, Medellin, Tayrona, Providencia).
  * 3. Preguntas frecuentes para el Chatbot.
  *
  * <p>El administrador se crea a partir de {@code app.admin.email} y
  * {@code app.admin.password}. En desarrollo ambos tienen valores por defecto.
  * En produccion la contrasena llega por la variable de entorno
- * {@code SACE_ADMIN_PASSWORD} y, si el administrador ya existe pero su
- * contrasena no coincide, se <b>rota</b> al valor recibido. Asi basta con
- * cambiar la variable y redesplegar para rotar la clave, sin tocar la base de
- * datos a mano.
+ * {@code SACE_ADMIN_PASSWORD}, pero solo se usa al crear la cuenta: si el
+ * administrador ya existe, <b>nunca</b> se le cambia la clave. Rotar una clave
+ * existente desde el seeder provoco que se sobrescribiera la contrasena de un
+ * asesor cuando el correo configurado apuntaba a esa cuenta. Para cambiar la
+ * clave de un empleado se usa el endpoint autenticado de empleados.
  */
 @Component
 public class DataInitializer implements CommandLineRunner {
@@ -54,7 +55,7 @@ public class DataInitializer implements CommandLineRunner {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @org.springframework.beans.factory.annotation.Value("${app.admin.email:admin@aleleotours.com}")
+    @org.springframework.beans.factory.annotation.Value("${app.admin.email:yeito203@aleleotours.com}")
     private String emailAdmin;
 
     @org.springframework.beans.factory.annotation.Value("${app.admin.password:}")
@@ -68,8 +69,8 @@ public class DataInitializer implements CommandLineRunner {
     }
 
     /**
-     * Crea el administrador si no existe y, si ya existe, sincroniza su
-     * contrasena con la variable de entorno cuando esta viene definida.
+     * Crea el administrador si no existe. Si ya existe, conserva su clave:
+     * el seeder nunca debe sobrescribir la contrasena de una cuenta real.
      */
     private void inicializarAdmin() {
         String contrasenaObjetivo = (passwordAdmin == null || passwordAdmin.trim().isEmpty())
@@ -100,21 +101,12 @@ public class DataInitializer implements CommandLineRunner {
             return;
         }
 
-        // El administrador ya existe: se rota la contrasena si el entorno
-        // pide una nueva. Es lo que permite cambiar la clave en produccion
-        // sin entrar a la base de datos.
-        Empleado admin = existente.get();
-        if (passwordEncoder.matches(contrasenaObjetivo, admin.getContrasenia())) {
-            return;
-        }
-        if ((passwordAdmin == null || passwordAdmin.trim().isEmpty())) {
-            System.out.println(">>> [SACE SEED] Administrador existente. Se mantiene su contrasena "
-                    + "(SACE_ADMIN_PASSWORD no esta definida).");
-            return;
-        }
-        admin.setContrasenia(passwordEncoder.encode(contrasenaObjetivo));
-        repositorioEmpleado.save(admin);
-        System.out.println(">>> [SACE SEED] Contrasena del administrador rotada desde SACE_ADMIN_PASSWORD.");
+        // El administrador ya existe: NO se toca su contrasena. Rotar claves
+        // existentes desde el seeder provoco que se sobrescribiera la de otro
+        // empleado. El cambio de clave se hace desde el API con un
+        // administrador autenticado, no al arrancar la aplicacion.
+        System.out.println(">>> [SACE SEED] Administrador existente (" + emailAdmin
+                + "). Se conserva su contrasena actual.");
     }
 
     private void inicializarServicios() {
