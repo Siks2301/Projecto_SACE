@@ -326,6 +326,7 @@ public class PagoServicio {
             return pago;
         }
 
+        sincronizarDatosDePasarela(pago, transaccion);
         aplicarEstado(pago, transaccion.estado());
 
         if (pago.estaAprobado()) {
@@ -366,6 +367,7 @@ public class PagoServicio {
 
         try {
             PasarelaPagos.TransaccionPasarela remota = pasarela.consultar(pago.getIdTransaccionPasarela());
+            sincronizarDatosDePasarela(pago, remota);
             if (remota.estado() != null && remota.estado() != pago.getEstado()) {
                 aplicarEstado(pago, remota.estado());
                 if (pago.estaAprobado()) {
@@ -464,6 +466,7 @@ public class PagoServicio {
             try {
                 PasarelaPagos.TransaccionPasarela remota =
                         pasarela.consultar(pago.getIdTransaccionPasarela());
+                sincronizarDatosDePasarela(pago, remota);
                 if (remota.estado() != null && remota.estado() != pago.getEstado()) {
                     aplicarEstado(pago, remota.estado());
                     if (pago.estaAprobado()) {
@@ -620,6 +623,30 @@ public class PagoServicio {
             pago.setFechaAprobacion(new Date());
         }
         log.info("Pago {} paso de {} a {}", pago.getReferencia(), actual, destino);
+    }
+
+    /**
+     * Copia los datos que la pasarela solo entrega al consultar la transaccion.
+     *
+     * <p>El codigo de autorizacion no viene en la respuesta de creacion: llega
+     * cuando la transaccion se resuelve. Sin este paso, todos los pagos que se
+     * aprobaban despues de crearse (el flujo normal) imprimian el comprobante
+     * con "Codigo de autorizacion: No informado".
+     */
+    private void sincronizarDatosDePasarela(Pago pago, PasarelaPagos.TransaccionPasarela transaccion) {
+        if (pago == null || transaccion == null) {
+            return;
+        }
+        if (estaVacio(pago.getCodigoAutorizacion()) && !estaVacio(transaccion.codigoAutorizacion())) {
+            pago.setCodigoAutorizacion(transaccion.codigoAutorizacion());
+        }
+        if (estaVacio(pago.getIdTransaccionPasarela()) && !estaVacio(transaccion.idTransaccion())) {
+            pago.setIdTransaccionPasarela(transaccion.idTransaccion());
+        }
+    }
+
+    private boolean estaVacio(String valor) {
+        return valor == null || valor.isBlank();
     }
 
     /** Atajo para marcar un estado sin pasar por la maquina de estados. */
